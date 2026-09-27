@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  <rect width="640" height="360" fill="#ffccd5"/>
+  <circle cx="320" cy="180" r="55" fill="#ffffff" opacity="0.9"/>
+  <polygon points="310,160 310,200 340,180" fill="#ff5277"/>
+  <text x="320" y="280" font-size="24" font-weight="bold" fill="#4a282d" text-anchor="middle" font-family="sans-serif">Memories Clip</text>
+</svg>

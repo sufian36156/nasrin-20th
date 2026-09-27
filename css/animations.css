@@ -1,0 +1,140 @@
+/* 
+ * ====================================================================
+ * ✨ KEYFRAME ANIMATIONS — Nasrin's 20th Birthday Surprise
+ * ====================================================================
+ */
+
+/* Shake animation เมื่อกรอก OTP ผิด */
+@keyframes shakeHorizontal {
+    0%, 100% { transform: translateX(0); }
+    15% { transform: translateX(-9px) rotate(-2deg); }
+    30% { transform: translateX(8px) rotate(2deg); }
+    45% { transform: translateX(-6px) rotate(-1deg); }
+    60% { transform: translateX(5px) rotate(1deg); }
+    75% { transform: translateX(-3px); }
+    90% { transform: translateX(2px); }
+}
+
+.shake-animation {
+    animation: shakeHorizontal 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* แม่กุญแจสั่นและกระดิกเบาๆ รอการปลดล็อก */
+@keyframes lockWiggle {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    5% { transform: rotate(-8deg) scale(1.04); }
+    10% { transform: rotate(8deg) scale(1.04); }
+    15% { transform: rotate(-5deg); }
+    20% { transform: rotate(5deg); }
+    25% { transform: rotate(0deg) scale(1); }
+}
+
+.lock-wiggling {
+    animation: lockWiggle 3.5s infinite ease-in-out;
+}
+
+/* แสงระเบิดตอนปลดล็อกสำเร็จ (Burst) */
+@keyframes burstEffect {
+    0% {
+        opacity: 1;
+        transform: scale(0.6);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(2.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(3.2);
+    }
+}
+
+.animate-burst {
+    animation: burstEffect 0.8s ease-out forwards;
+}
+
+/* เปลวไฟเทียนไหววิบวับ */
+@keyframes flameFlicker {
+    0%, 100% {
+        transform: scale(1) rotate(-1deg);
+        filter: drop-shadow(0 0 8px #ffb703) drop-shadow(0 0 16px #fb8500);
+    }
+    25% {
+        transform: scale(1.08, 0.95) rotate(2deg);
+        filter: drop-shadow(0 0 12px #ffb703) drop-shadow(0 0 22px #fb8500);
+    }
+    50% {
+        transform: scale(0.96, 1.05) rotate(-2deg);
+        filter: drop-shadow(0 0 6px #ffb703) drop-shadow(0 0 14px #fb8500);
+    }
+    75% {
+        transform: scale(1.04, 1.02) rotate(1deg);
+        filter: drop-shadow(0 0 10px #ffb703) drop-shadow(0 0 20px #fb8500);
+    }
+}
+
+.flame-animated {
+    animation: flameFlicker 1.4s infinite ease-in-out;
+}
+
+/* ควันลอยเมื่อเทียนดับ */
+@keyframes smokeRise {
+    0% {
+        opacity: 0.8;
+        transform: translate(0, 0) scale(0.6);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(15px, -60px) scale(2.2);
+    }
+}
+
+.smoke-puff {
+    animation: smokeRise 1.8s ease-out forwards;
+}
+
+/* เต้นตุบๆ จังหวะหัวใจ */
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14% { transform: scale(1.12); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.18); }
+    70% { transform: scale(1); }
+}
+
+.heartbeat-anim {
+    animation: heartbeat 2s infinite ease-in-out;
+}
+
+/* เด้งขึ้นมาแบบน่ารัก (Bounce In) */
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.4);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.08);
+    }
+    80% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.bounce-in {
+    animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* ประกายระยิบระยับ */
+@keyframes sparkleShine {
+    0%, 100% { opacity: 0.2; transform: scale(0.8) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.25) rotate(180deg); }
+}
+
+.sparkle-icon {
+    display: inline-block;
+    animation: sparkleShine 2.5s infinite ease-in-out;
+}

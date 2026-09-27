@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="pastelPink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffccd5" />
+      <stop offset="100%" stop-color="#ffb7b2" />
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#pastelPink)" rx="16"/>
+  <circle cx="200" cy="180" r="70" fill="#ffffff" opacity="0.85"/>
+  <text x="200" y="195" font-size="64" text-anchor="middle" font-family="sans-serif">💖</text>
+  <text x="200" y="280" font-size="20" font-weight="bold" fill="#7a3b45" text-anchor="middle" font-family="sans-serif">Our Special Memory</text>
+  <text x="200" y="310" font-size="14" fill="#a3636f" text-anchor="middle" font-family="sans-serif">(ใส่รูปจริงแทนที่ได้ใน assets/images)</text>
+</svg>

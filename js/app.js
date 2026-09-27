@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * 🌟 MAIN APP CONTROLLER & TWO-PHASE EXPERIENCE
+ * 🌟 MAIN APP CONTROLLER & 1-20 YEARS GROWTH JOURNEY
  * ====================================================================
  */
 
@@ -9,6 +9,8 @@ class BirthdayApp {
         this.currentCeremonyStep = 'scene-otp';
         this.currentHubTab = 'home';
         this.currentReasonIndex = 0;
+        this.currentTimelineAge = 1;
+        this.timelineInterval = null;
         this.canvas = null;
         this.ctx = null;
         this.particles = [];
@@ -20,8 +22,8 @@ class BirthdayApp {
         this.setupCeremonyNavigation();
         this.setupHubNavigation();
         this.setupLoveReasonsSlider();
+        this.setupTimelineJourney();
 
-        // เริ่มต้นโมดูลต่างๆ
         if (window.otpController) window.otpController.init();
         if (window.cakeController) window.cakeController.init();
         if (window.scratchController) window.scratchController.init();
@@ -32,14 +34,12 @@ class BirthdayApp {
     }
 
     populateStaticTexts() {
-        const nameEls = document.querySelectorAll('.target-name');
-        nameEls.forEach(el => el.textContent = window.HBD_CONFIG.nickname);
-
-        const ageEls = document.querySelectorAll('.target-age');
-        ageEls.forEach(el => el.textContent = window.HBD_CONFIG.age);
+        document.querySelectorAll('.target-name').forEach(el => el.textContent = window.HBD_CONFIG.fullName);
+        document.querySelectorAll('.target-shortname').forEach(el => el.textContent = window.HBD_CONFIG.nickname);
+        document.querySelectorAll('.target-engname').forEach(el => el.textContent = window.HBD_CONFIG.englishName);
+        document.querySelectorAll('.target-age').forEach(el => el.textContent = window.HBD_CONFIG.age);
     }
 
-    // Phase 1: การเปลี่ยนฉากในพิธีเซอร์ไพรส์
     goToCeremonyScene(sceneId) {
         document.querySelectorAll('.ceremony-scene').forEach(sc => sc.classList.remove('active'));
         const target = document.getElementById(sceneId);
@@ -51,10 +51,11 @@ class BirthdayApp {
     }
 
     setupCeremonyNavigation() {
-        // จาก OTP ผ่านแล้ว ให้ไปที่ Milestone Counter (7,305 วัน)
+        // จาก OTP ผ่านแล้ว ให้ไปที่ Milestone Counter (1-20 ขวบ)
         window.onOTPUnlockSuccess = () => {
             setTimeout(() => {
                 this.goToCeremonyScene('scene-milestone');
+                this.startTimelineAutoPlay();
             }, 1200);
         };
 
@@ -97,7 +98,7 @@ class BirthdayApp {
             });
         }
 
-        // เข้าสู่ Wonderland Hub เต็มตัว!
+        // เข้าสู่ Wonderland Hub เต็มตัว
         if (toHubBtn) {
             toHubBtn.addEventListener('click', () => {
                 window.soundManager.playVictory();
@@ -109,12 +110,96 @@ class BirthdayApp {
         }
     }
 
+    // ==========================================
+    // ⏳ ระบบเลื่อนนับอายุ 1-20 ขวบ และเพิ่มวัน-ชั่วโมง
+    // ==========================================
+    setupTimelineJourney() {
+        const slider = document.getElementById('timeline-age-slider');
+        const replayBtn = document.getElementById('timeline-replay-btn');
+
+        if (slider) {
+            slider.addEventListener('input', (e) => {
+                if (this.timelineInterval) clearInterval(this.timelineInterval);
+                const age = parseInt(e.target.value, 10);
+                this.updateTimelineDisplay(age);
+            });
+        }
+
+        if (replayBtn) {
+            replayBtn.addEventListener('click', () => {
+                this.startTimelineAutoPlay();
+            });
+        }
+    }
+
+    startTimelineAutoPlay() {
+        if (this.timelineInterval) clearInterval(this.timelineInterval);
+        this.currentTimelineAge = 1;
+        const slider = document.getElementById('timeline-age-slider');
+        const toCakeBtn = document.getElementById('milestone-to-cake-btn');
+        if (toCakeBtn) toCakeBtn.style.display = 'none';
+
+        this.updateTimelineDisplay(1);
+
+        this.timelineInterval = setInterval(() => {
+            this.currentTimelineAge++;
+            if (slider) slider.value = this.currentTimelineAge;
+            this.updateTimelineDisplay(this.currentTimelineAge);
+
+            if (this.currentTimelineAge >= 20) {
+                clearInterval(this.timelineInterval);
+                window.soundManager.playVictory();
+                if (window.confetti) {
+                    window.confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+                }
+                if (toCakeBtn) {
+                    toCakeBtn.style.display = 'inline-flex';
+                }
+            }
+        }, 320); // นับเพิ่มขึ้นทีละ 320ms อย่างนุ่มนวล
+    }
+
+    updateTimelineDisplay(age) {
+        const ageEl = document.getElementById('timeline-current-age');
+        const daysEl = document.getElementById('counter-days');
+        const hoursEl = document.getElementById('counter-hours');
+        const storyBox = document.getElementById('timeline-story-box');
+
+        const days = Math.round(age * 365.25);
+        const hours = days * 24;
+
+        if (ageEl) {
+            ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
+        }
+        if (daysEl) {
+            daysEl.textContent = days.toLocaleString();
+        }
+        if (hoursEl) {
+            hoursEl.textContent = hours.toLocaleString();
+        }
+
+        // ดึงข้อความตามช่วงวัย
+        if (storyBox) {
+            let story = "เด็กหญิงณัสริญ กำลังเติบโตอย่างน่ารักในทุกๆ วัน ✨";
+            if (age === 1) story = "🍼 เด็กหญิงตัวน้อย 'ณัสริญ มะสะ' ลืมตาดูโลก มอบรอยยิ้มแรกให้ทุกคน";
+            else if (age <= 4) story = "🎀 วัยเตาะแตะ เริ่มหัดพูด แก้มกลมๆ น่ารักน่าเอ็นดูที่สุด";
+            else if (age <= 7) story = "🎒 เริ่มเข้าโรงเรียน มีเพื่อนๆ และรอยยิ้มสดใสในทุกเช้า";
+            else if (age <= 12) story = "📚 วัยประถมที่เปี่ยมด้วยจินตนาการและการเรียนรู้สิ่งใหม่ๆ";
+            else if (age <= 15) story = "🌸 ก้าวสู่วัยรุ่น เปล่งประกาย อ่อนหวาน และน่ารักขึ้นทุกวัน";
+            else if (age <= 18) story = "✨ เริ่มเติบโตสู่วัยผู้ใหญ่ เข้มแข็งและมีเส้นทางของตัวเอง";
+            else if (age === 19) story = "💖 ปีสุดท้ายของวัยทีน สะสมความทรงจำและพร้อมก้าวสู่เลข 2";
+            else if (age === 20) story = "👑 วันนี้... ณัสริญ มะสะ ครบรอบ 20 ปีบริบูรณ์ คนโปรดที่มีค่าที่สุดของเค้า!";
+
+            storyBox.textContent = story;
+        }
+
+        window.soundManager.playPop(350 + age * 25);
+    }
+
     // ปลดล็อกเข้าสู่ Wonderland Hub
     enterWonderlandHub() {
-        // ซ่อน Ceremony ทั้งหมด
         document.querySelectorAll('.ceremony-scene').forEach(sc => sc.style.display = 'none');
 
-        // แสดง Hub และ Bottom Navigation Bar
         const hub = document.getElementById('wonderland-hub');
         const bottomNav = document.getElementById('bottom-nav-bar');
         const musicBar = document.getElementById('mini-music-bar');
@@ -125,19 +210,16 @@ class BirthdayApp {
 
         this.switchHubTab('home');
 
-        // เริ่มเล่นดนตรีเบาๆ อัตโนมัติ
         if (window.musicController && !window.musicController.isPlaying) {
             window.musicController.start();
         }
     }
 
-    // Phase 2: เปลี่ยนแท็บใน Wonderland Hub
     setupHubNavigation() {
         const tabBtns = document.querySelectorAll('.nav-tab-btn');
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                const targetTab = btn.dataset.tab;
-                this.switchHubTab(targetTab);
+                this.switchHubTab(btn.dataset.tab);
             });
         });
     }
@@ -145,12 +227,10 @@ class BirthdayApp {
     switchHubTab(tabName) {
         this.currentHubTab = tabName;
 
-        // อัปเดตปุ่มแท็บ
         document.querySelectorAll('.nav-tab-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.tab === tabName);
         });
 
-        // แสดงเนื้อหาแท็บ
         document.querySelectorAll('.hub-tab-content').forEach(content => {
             content.classList.toggle('active', content.id === `hub-content-${tabName}`);
         });
@@ -158,13 +238,11 @@ class BirthdayApp {
         window.soundManager.playPop(520);
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // หากเข้าแท็บคูปอง ให้คำนวณ canvas ใหม่ถ้าเพิ่งแสดง
         if (tabName === 'coupons' && window.scratchController) {
             window.scratchController.init();
         }
     }
 
-    // สไลเดอร์ 20 เหตุผลที่รักเธอ
     setupLoveReasonsSlider() {
         const cardBox = document.getElementById('love-reason-card');
         const prevBtn = document.getElementById('reason-prev-btn');
@@ -212,7 +290,6 @@ class BirthdayApp {
         }
     }
 
-    // ละอองลอยฉากหลัง (ซากุระ & หัวใจ)
     initBackgroundParticles() {
         this.canvas = document.getElementById('bg-canvas');
         if (!this.canvas) return;
@@ -226,7 +303,7 @@ class BirthdayApp {
         resize();
 
         const count = window.innerWidth > 768 ? 32 : 20;
-        const emojis = ['🌸', '✨', '💖', '🤍', '🌷'];
+        const emojis = ['🌸', '✨', '💖', '🤍', '🌷', '🎂', '⭐'];
 
         for (let i = 0; i < count; i++) {
             this.particles.push({

@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * 🎂 CAKE CONTROLLER (เป่าเทียนด้วยไมค์ + ลากมีดตัดเค้ก)
+ * 🎂 CAKE CONTROLLER (เป่าเทียน + ตัดเค้ก ฉบับแก้ปัญหาบน iPad 100%)
  * ====================================================================
  */
 
@@ -12,11 +12,6 @@ class CakeController {
         this.audioContext = null;
         this.analyser = null;
         this.micCheckInterval = null;
-
-        // Cutting swipe state
-        this.isDraggingCut = false;
-        this.cutStartX = 0;
-        this.cutStartY = 0;
     }
 
     init() {
@@ -24,25 +19,47 @@ class CakeController {
         this.isCut = false;
 
         const blowBtn = document.getElementById('cake-blow-btn');
+        const cutBtn = document.getElementById('cake-cut-action-btn');
+        const cakeStage = document.querySelector('.cake-stage');
         const cutGuide = document.getElementById('cake-cut-guide');
 
+        // 1. ปุ่มเป่าเทียน
         if (blowBtn) {
             blowBtn.addEventListener('click', () => {
                 this.extinguishCandle();
             });
         }
 
+        // 2. แตะที่ตัวเค้ก/เทียนโดยตรงเพื่อเป่า
+        if (cakeStage) {
+            cakeStage.addEventListener('click', () => {
+                if (!this.isBlown) {
+                    this.extinguishCandle();
+                } else if (!this.isCut) {
+                    this.sliceCake();
+                }
+            });
+        }
+
+        // 3. ปุ่มตัดเค้กโดยตรง (ไม่พลาดแน่นอน)
+        if (cutBtn) {
+            cutBtn.addEventListener('click', () => {
+                this.sliceCake();
+            });
+        }
+
+        // 4. ลากนิ้วตัดเค้ก (Swipe to Cut)
         if (cutGuide) {
             this.setupKnifeDrag(cutGuide);
         }
     }
 
-    // ขออนุญาตใช้ไมค์เพื่อตรวจจับลมเป่า
+    // ขออนุญาตใช้ไมค์
     async requestMicrophone() {
         const micBadge = document.getElementById('mic-status');
         try {
             if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                if (micBadge) micBadge.textContent = "💡 กดปุ่มด้านล่างเพื่อเป่าเทียนได้เลยนะ";
+                if (micBadge) micBadge.textContent = "💡 แตะปุ่ม 'เป่าเทียน' หรือแตะที่เค้กได้เลยนะ";
                 return;
             }
 
@@ -51,12 +68,16 @@ class CakeController {
 
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioContext = new AudioContext();
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+
             const source = this.audioContext.createMediaStreamSource(stream);
             this.analyser = this.audioContext.createAnalyser();
-            this.analyser.fftSize = 512;
+            this.analyser.fftSize = 256;
             source.connect(this.analyser);
 
-            if (micBadge) micBadge.textContent = "🎤 พร้อมแล้ว! ลองเป่าลมใส่ไมค์ได้เลย 💨";
+            if (micBadge) micBadge.textContent = "🎤 ไมค์พร้อมแล้ว! ลองเป่าลมใส่ไมค์ หรือแตะที่เค้กได้เลย 💨";
 
             const dataArray = new Uint8Array(this.analyser.frequencyBinCount);
 
@@ -68,21 +89,23 @@ class CakeController {
 
                 this.analyser.getByteFrequencyData(dataArray);
                 let sum = 0;
-                for (let i = 0; i < 40; i++) {
+                for (let i = 0; i < 20; i++) {
                     sum += dataArray[i];
                 }
-                const avgVolume = sum / 40;
+                const avgVolume = sum / 20;
 
-                if (avgVolume > 65) {
+                // ไวต่อลมเป่ามากขึ้น (เกณฑ์ 45)
+                if (avgVolume > 45) {
                     this.extinguishCandle();
                 }
-            }, 100);
+            }, 80);
 
         } catch (err) {
-            if (micBadge) micBadge.textContent = "💡 แตะปุ่มด้านล่างเพื่อเป่าเทียนได้เลยนะจ๊ะ";
+            if (micBadge) micBadge.textContent = "💡 แตะปุ่มสีชมพูด้านล่างเพื่อเป่าเทียนได้เลยนะจ๊ะ";
         }
     }
 
+    // ดับเทียน
     extinguishCandle() {
         if (this.isBlown) return;
         this.isBlown = true;
@@ -95,65 +118,64 @@ class CakeController {
         window.soundManager.playBlow();
         window.soundManager.playChime();
 
-        // ซ่อนเปลวไฟ
+        // ดับเปลวไฟ
         document.querySelectorAll('.candle-flame').forEach(f => f.classList.add('extinguished'));
 
         const instruction = document.getElementById('cake-instruction-text');
         const blowBtn = document.getElementById('cake-blow-btn');
+        const cutBtn = document.getElementById('cake-cut-action-btn');
         const cutGuide = document.getElementById('cake-cut-guide');
 
         if (blowBtn) blowBtn.style.display = 'none';
 
         if (instruction) {
-            instruction.textContent = "🔪 ใช้มีด (ลากนิ้วหรือเมาส์ผ่ากลางเค้ก) เพื่อตัดเค้กกัน!";
+            instruction.textContent = "🔪 พร้อมแล้ว! กดปุ่ม 'ตัดเค้ก' หรือเอานิ้วลากผ่ากลางเค้กได้เลย!";
             instruction.style.color = "#ff5277";
         }
 
-        if (cutGuide) {
-            cutGuide.style.display = 'block';
+        if (cutBtn) cutBtn.style.display = 'inline-flex';
+        if (cutGuide) cutGuide.style.display = 'block';
+
+        if (window.confetti) {
+            window.confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
         }
     }
 
+    // ลากนิ้วตัดเค้ก
     setupKnifeDrag(cutArea) {
-        const onStart = (e) => {
+        let isDragging = false;
+        let startY = 0;
+
+        const start = (e) => {
             if (!this.isBlown || this.isCut) return;
-            this.isDraggingCut = true;
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            this.cutStartX = clientX;
-            this.cutStartY = clientY;
+            isDragging = true;
+            startY = e.touches ? e.touches[0].clientY : e.clientY;
         };
 
-        const onMove = (e) => {
-            if (!this.isDraggingCut || this.isCut) return;
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-            const distanceX = Math.abs(clientX - this.cutStartX);
-            const distanceY = Math.abs(clientY - this.cutStartY);
-
-            if (distanceY > 60 || distanceX > 70) {
+        const move = (e) => {
+            if (!isDragging || this.isCut) return;
+            const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+            if (Math.abs(currentY - startY) > 35) {
                 this.sliceCake();
+                isDragging = false;
             }
         };
 
-        const onEnd = () => {
-            this.isDraggingCut = false;
-        };
+        const end = () => { isDragging = false; };
 
-        cutArea.addEventListener('mousedown', onStart);
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onEnd);
+        cutArea.addEventListener('pointerdown', start);
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', end);
 
-        cutArea.addEventListener('touchstart', onStart, { passive: true });
-        window.addEventListener('touchmove', onMove, { passive: true });
-        window.addEventListener('touchend', onEnd);
+        cutArea.addEventListener('touchstart', start, { passive: false });
+        window.addEventListener('touchmove', move, { passive: false });
+        window.addEventListener('touchend', end);
     }
 
+    // ตัดเค้กแยก 2 ซีก
     sliceCake() {
         if (this.isCut) return;
         this.isCut = true;
-        this.isDraggingCut = false;
 
         window.soundManager.playCut();
         window.soundManager.playVictory();
@@ -164,23 +186,23 @@ class CakeController {
         if (rightHalf) rightHalf.classList.add('cut-right');
 
         const instruction = document.getElementById('cake-instruction-text');
+        const cutBtn = document.getElementById('cake-cut-action-btn');
+        const cutGuide = document.getElementById('cake-cut-guide');
         const celebrationCard = document.getElementById('cake-celebration-card');
         const toLetterBtn = document.getElementById('cake-to-letter-btn');
 
+        if (cutBtn) cutBtn.style.display = 'none';
+        if (cutGuide) cutGuide.style.display = 'none';
+
         if (instruction) {
-            instruction.textContent = "🎉 สุขสันต์วันเกิดครบรอบ 20 ปีนะเนสริน! 🎂💖";
+            instruction.textContent = "🎉 สุขสันต์วันเกิดครบรอบ 20 ปีนะ ณัสริญ มะสะ! 🎂💖";
         }
 
-        if (celebrationCard) {
-            celebrationCard.style.display = 'block';
-        }
-
-        if (toLetterBtn) {
-            toLetterBtn.style.display = 'inline-flex';
-        }
+        if (celebrationCard) celebrationCard.style.display = 'block';
+        if (toLetterBtn) toLetterBtn.style.display = 'inline-flex';
 
         if (window.confetti) {
-            window.confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
+            window.confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
         }
     }
 }

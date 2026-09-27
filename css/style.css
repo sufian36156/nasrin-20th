@@ -1,25 +1,26 @@
 /* 
  * ====================================================================
- * 🌸 NASRIN'S 20TH BIRTHDAY WONDERLAND — MAIN STYLESHEET
+ * 🎂 NASRIN MASA'S 20TH BIRTHDAY WONDERLAND — THEME & STYLESHEET
  * ====================================================================
- * ออกแบบเพื่อรองรับมือถือ, iPad ทุกรุ่น (แนวตั้ง/แนวนอน) และคอมพิวเตอร์ 100%
+ * โทนสีวันเกิดหรูหรา อบอุ่น: Champagne Rose Gold, Peach Pastel & Soft Amber
  */
 
 :root {
-    --primary: #ff6584;
-    --primary-light: #ffd1dc;
-    --primary-dark: #e04868;
-    --accent: #ffb7b2;
-    --gold: #f6c90e;
-    --bg-gradient: linear-gradient(135deg, #fff2f5 0%, #ffe6eb 50%, #fbd8e4 100%);
-    --card-bg: rgba(255, 255, 255, 0.92);
-    --card-border: rgba(255, 255, 255, 0.7);
-    --text-main: #3d2b2e;
-    --text-muted: #7d686b;
-    --shadow-soft: 0 8px 24px rgba(230, 90, 120, 0.12);
-    --shadow-lg: 0 16px 36px rgba(220, 80, 110, 0.18);
+    --primary: #ff5e7e;
+    --primary-light: #ffd6df;
+    --primary-dark: #d83a56;
+    --rose-gold: #e8a598;
+    --champagne: #fae1dd;
+    --gold: #f39c12;
+    --bg-gradient: linear-gradient(135deg, #fff5f5 0%, #ffe3e8 45%, #ffd4dc 100%);
+    --card-bg: rgba(255, 255, 255, 0.94);
+    --card-border: rgba(255, 230, 235, 0.85);
+    --text-main: #3a2226;
+    --text-muted: #806066;
+    --shadow-soft: 0 10px 28px rgba(220, 80, 110, 0.12);
+    --shadow-lg: 0 18px 40px rgba(210, 60, 95, 0.2);
     --font-thai: 'Mitr', 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --bottom-nav-height: 64px;
+    --bottom-nav-height: 66px;
 }
 
 * {
@@ -44,7 +45,6 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Background floating particles */
 #bg-canvas {
     position: fixed;
     top: 0;
@@ -55,7 +55,6 @@ html, body {
     z-index: 1;
 }
 
-/* App container */
 #app-container {
     position: relative;
     z-index: 2;
@@ -67,7 +66,7 @@ html, body {
     flex-direction: column;
     padding: 16px;
     padding-top: max(16px, env(safe-area-inset-top));
-    padding-bottom: max(85px, calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 12px));
+    padding-bottom: max(88px, calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 14px));
 }
 
 /* Top bar */
@@ -80,18 +79,19 @@ html, body {
 }
 
 .brand-badge {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 7px 16px;
+    border-radius: 24px;
+    font-size: 0.88rem;
+    font-weight: 600;
     color: var(--primary-dark);
     box-shadow: var(--shadow-soft);
     display: flex;
     align-items: center;
     gap: 6px;
+    border: 1px solid rgba(255, 200, 215, 0.5);
 }
 
 .nav-controls {
@@ -101,14 +101,14 @@ html, body {
 }
 
 .icon-btn {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: none;
-    width: 38px;
-    height: 38px;
+    border: 1px solid rgba(255, 200, 215, 0.5);
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     cursor: pointer;
     box-shadow: var(--shadow-soft);
     display: flex;
@@ -124,12 +124,12 @@ html, body {
 /* Common Glass Card */
 .glass-card {
     background: var(--card-bg);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1.5px solid var(--card-border);
-    border-radius: 28px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 2px solid var(--card-border);
+    border-radius: 30px;
     box-shadow: var(--shadow-lg);
-    padding: 26px 20px;
+    padding: 28px 22px;
     width: 100%;
     text-align: center;
     position: relative;
@@ -137,16 +137,16 @@ html, body {
 
 /* Buttons */
 .btn-romantic {
-    background: linear-gradient(135deg, #ff758c 0%, #ff5277 100%);
+    background: linear-gradient(135deg, #ff5e7e 0%, #ff3b65 100%);
     color: white;
     border: none;
     border-radius: 30px;
-    padding: 13px 26px;
-    font-size: 0.98rem;
+    padding: 14px 28px;
+    font-size: 1.02rem;
     font-weight: 600;
     font-family: var(--font-thai);
     cursor: pointer;
-    box-shadow: 0 8px 20px rgba(255, 82, 119, 0.35);
+    box-shadow: 0 8px 24px rgba(255, 59, 101, 0.38);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -156,27 +156,51 @@ html, body {
 
 .btn-romantic:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(255, 82, 119, 0.45);
+    box-shadow: 0 12px 28px rgba(255, 59, 101, 0.48);
 }
 
 .btn-romantic:active {
     transform: translateY(1px) scale(0.98);
 }
 
+.btn-gold {
+    background: linear-gradient(135deg, #f6c90e 0%, #f39c12 100%);
+    color: #442a00;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 28px;
+    font-size: 1.02rem;
+    font-weight: 700;
+    font-family: var(--font-thai);
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(243, 156, 18, 0.4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(243, 156, 18, 0.4); }
+    50% { transform: scale(1.03); box-shadow: 0 12px 30px rgba(243, 156, 18, 0.65); }
+}
+
 .btn-secondary {
     background: white;
     color: var(--text-main);
-    border: 1.5px solid #ffd0d8;
+    border: 1.5px solid #ffccd5;
     border-radius: 25px;
-    padding: 10px 20px;
-    font-size: 0.88rem;
+    padding: 11px 22px;
+    font-size: 0.92rem;
     font-family: var(--font-thai);
+    font-weight: 500;
     cursor: pointer;
     box-shadow: var(--shadow-soft);
 }
 
 /* ====================================================================
-   PHASE 1: CEREMONY SCENES
+   CEREMONY SCENES
    ==================================================================== */
 .ceremony-scene {
     display: none;
@@ -199,8 +223,8 @@ html, body {
 /* OTP Lock */
 .lock-wrapper {
     position: relative;
-    width: 86px;
-    height: 86px;
+    width: 90px;
+    height: 90px;
     margin: 0 auto 16px auto;
     display: flex;
     align-items: center;
@@ -208,22 +232,23 @@ html, body {
 }
 
 .lock-icon-circle {
-    width: 80px;
-    height: 80px;
+    width: 84px;
+    height: 84px;
     background: linear-gradient(135deg, #fff0f3, #ffd6e0);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.3rem;
-    box-shadow: 0 8px 20px rgba(255, 100, 130, 0.22);
+    font-size: 2.5rem;
+    box-shadow: 0 8px 24px rgba(255, 94, 126, 0.25);
+    border: 2px solid white;
 }
 
 .lock-burst-light {
     position: absolute;
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, rgba(255,215,0,0.6) 0%, rgba(255,105,180,0) 70%);
+    width: 130px;
+    height: 130px;
+    background: radial-gradient(circle, rgba(255,215,0,0.7) 0%, rgba(255,94,126,0) 70%);
     border-radius: 50%;
     opacity: 0;
     transform: scale(0.5);
@@ -235,68 +260,203 @@ html, body {
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin: 18px 0 14px 0;
+    margin: 20px 0 16px 0;
 }
 
 .otp-group {
     display: flex;
-    gap: 5px;
+    gap: 6px;
 }
 
 .otp-separator {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: bold;
     color: var(--primary);
 }
 
 .otp-input {
-    width: 42px;
-    height: 52px;
-    border-radius: 12px;
+    width: 44px;
+    height: 56px;
+    border-radius: 14px;
     border: 2px solid #ffd0d8;
     background: white;
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--primary-dark);
-    box-shadow: 0 3px 10px rgba(255, 180, 190, 0.15);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 12px rgba(255, 180, 190, 0.15);
+    transition: all 0.2s;
     font-family: var(--font-thai);
 }
 
 .otp-input:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(255, 101, 132, 0.25);
+    box-shadow: 0 0 0 4px rgba(255, 94, 126, 0.25);
+    transform: translateY(-2px);
 }
 
-/* Milestone stats */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+/* ====================================================================
+   TIMELINE GROWTH JOURNEY (1 - 20 ขวบ)
+   ==================================================================== */
+.timeline-journey-box {
     width: 100%;
     margin: 18px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.stat-item {
+.milestone-age-display {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    background: linear-gradient(135deg, #fff0f3 0%, #ffdbe2 100%);
+    padding: 10px 24px;
+    border-radius: 30px;
+    border: 2px solid #ffccd5;
+    box-shadow: 0 6px 18px rgba(255, 94, 126, 0.2);
+    display: inline-block;
+    margin-bottom: 14px;
+    animation: bounceIn 0.3s ease;
+}
+
+.timeline-stats-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.timeline-stat-chip {
+    flex: 1;
     background: white;
     border: 1.5px solid #ffe1e8;
     border-radius: 18px;
-    padding: 16px 12px;
-    text-align: center;
+    padding: 12px 8px;
+    box-shadow: var(--shadow-soft);
 }
 
-.stat-number {
-    font-size: 1.5rem;
+.timeline-stat-val {
+    font-size: 1.35rem;
     font-weight: 700;
-    color: var(--primary-dark);
+    color: #4a252b;
 }
 
-.stat-label {
-    font-size: 0.8rem;
+.timeline-stat-lbl {
+    font-size: 0.78rem;
     color: var(--text-muted);
-    margin-top: 4px;
+    margin-top: 2px;
+}
+
+.timeline-story-card {
+    background: #fff8f9;
+    border: 1.5px dashed #ffaab8;
+    border-radius: 20px;
+    padding: 16px 18px;
+    width: 100%;
+    font-size: 0.95rem;
+    color: #4f282f;
+    line-height: 1.6;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    box-shadow: inset 0 2px 6px rgba(255, 100, 130, 0.05);
+}
+
+.timeline-slider {
+    width: 90%;
+    margin: 12px 0 16px 0;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    border-radius: 10px;
+    background: #ffd0d8;
+    outline: none;
+}
+
+.timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    border: 2px solid white;
+}
+
+/* ====================================================================
+   CAKE STAGE & CUTTING
+   ==================================================================== */
+.cake-stage {
+    position: relative;
+    width: 290px;
+    height: 260px;
+    margin: 16px auto 10px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+
+.cake-cut-guide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.cake-layer {
+    transition: transform 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cake-layer.cut-left {
+    transform: translateX(-40px) rotate(-5deg);
+}
+
+.cake-layer.cut-right {
+    transform: translateX(40px) rotate(5deg);
+}
+
+.candle-flame {
+    transition: opacity 0.5s, transform 0.5s;
+    transform-origin: center bottom;
+}
+
+.candle-flame.extinguished {
+    opacity: 0;
+    transform: scale(0.1);
+}
+
+.cake-instructions {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin: 10px 0 6px 0;
+    min-height: 24px;
+}
+
+.mic-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.85);
+    padding: 5px 14px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    border: 1px solid #ffd8e0;
 }
 
 /* Wax Seal Envelope */
@@ -304,33 +464,29 @@ html, body {
     position: relative;
     width: 280px;
     height: 180px;
-    background: #ffccd5;
-    border-radius: 16px;
+    background: #ffc4cf;
+    border-radius: 18px;
     margin: 20px auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 12px 28px rgba(255, 100, 130, 0.25);
+    box-shadow: 0 14px 30px rgba(255, 94, 126, 0.25);
     cursor: pointer;
     transition: transform 0.3s;
 }
 
-.envelope-box:active {
-    transform: scale(0.97);
-}
-
 .wax-seal {
-    width: 65px;
-    height: 65px;
-    background: radial-gradient(circle, #e63946, #b01b38);
+    width: 70px;
+    height: 70px;
+    background: radial-gradient(circle, #e63946, #a81832);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffd1dc;
-    font-size: 1.5rem;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.25), inset 0 2px 4px rgba(255,255,255,0.4);
-    border: 3px dashed #ff758c;
+    font-size: 1.6rem;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.4);
+    border: 3px dashed #ff8fab;
     transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
@@ -371,11 +527,11 @@ html, body {
     left: 0;
     width: 100%;
     height: var(--bottom-nav-height);
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(255, 200, 215, 0.6);
-    box-shadow: 0 -4px 20px rgba(230, 80, 110, 0.08);
+    box-shadow: 0 -4px 20px rgba(220, 80, 110, 0.08);
     z-index: 100;
     display: flex;
     justify-content: space-around;
@@ -397,7 +553,6 @@ html, body {
     font-size: 0.72rem;
     color: var(--text-muted);
     font-weight: 500;
-    transition: color 0.2s, transform 0.2s;
     padding: 6px 8px;
     border-radius: 12px;
 }
@@ -409,12 +564,10 @@ html, body {
 .nav-tab-btn.active {
     color: var(--primary-dark);
     font-weight: 700;
-    background: rgba(255, 101, 132, 0.1);
+    background: rgba(255, 94, 126, 0.1);
 }
 
-/* ====================================================================
-   SCRATCH-OFF CARDS (ขูดคูปอง)
-   ==================================================================== */
+/* Scratch Card */
 .coupons-container {
     width: 100%;
     display: flex;
@@ -446,7 +599,6 @@ html, body {
     justify-content: center;
     align-items: flex-start;
     text-align: left;
-    box-sizing: border-box;
 }
 
 .coupon-tag {
@@ -482,19 +634,17 @@ html, body {
     touch-action: none;
 }
 
-/* ====================================================================
-   20 LOVE REASONS SLIDER
-   ==================================================================== */
+/* 20 Love Reasons */
 .reason-card-wrapper {
     position: relative;
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     min-height: 260px;
     background: white;
     border: 2px solid #ffd6df;
-    border-radius: 24px;
+    border-radius: 26px;
     box-shadow: var(--shadow-soft);
-    padding: 24px 20px;
+    padding: 26px 22px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -506,21 +656,21 @@ html, body {
     align-self: center;
     background: linear-gradient(135deg, var(--primary), #ff758c);
     color: white;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     font-weight: 700;
-    padding: 4px 14px;
+    padding: 5px 16px;
     border-radius: 20px;
 }
 
 .reason-title {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--primary-dark);
     margin: 12px 0 6px 0;
 }
 
 .reason-desc {
-    font-size: 0.95rem;
+    font-size: 0.98rem;
     color: var(--text-main);
     line-height: 1.6;
     margin-bottom: 12px;
@@ -534,16 +684,14 @@ html, body {
     margin-top: 10px;
 }
 
-/* ====================================================================
-   KOREAN 4-CUTS PHOTO BOOTH
-   ==================================================================== */
+/* 4-Cuts Frame */
 .four-cuts-frame {
-    background: #ffe5ec;
-    border: 1px solid #ffd1dc;
-    border-radius: 12px;
+    background: #ffe3ea;
+    border: 1px solid #ffccd7;
+    border-radius: 14px;
     padding: 16px 14px 22px 14px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.12);
-    width: 270px;
+    width: 275px;
     margin: 16px auto;
     display: flex;
     flex-direction: column;
@@ -556,8 +704,6 @@ html, body {
     background: white;
     border-radius: 6px;
     overflow: hidden;
-    position: relative;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
 }
 
 .four-cuts-slot img {
@@ -583,13 +729,11 @@ html, body {
     color: #9c6c74;
 }
 
-/* ====================================================================
-   BALLOON WISH SKY
-   ==================================================================== */
+/* Balloon Wish */
 .wish-sky-box {
     position: relative;
     width: 100%;
-    height: 280px;
+    height: 290px;
     background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 60%, #415a77 100%);
     border-radius: 24px;
     overflow: hidden;
@@ -619,27 +763,23 @@ html, body {
     outline: none;
 }
 
-.wish-input:focus {
-    border-color: var(--primary);
-}
-
 /* Floating Music Bar */
 .mini-music-bar {
     position: fixed;
     top: max(14px, env(safe-area-inset-top));
     right: 16px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid #ffd4dc;
     border-radius: 30px;
-    padding: 4px 12px 4px 6px;
+    padding: 5px 14px 5px 8px;
     display: flex;
     align-items: center;
     gap: 8px;
     box-shadow: var(--shadow-soft);
     z-index: 90;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     color: var(--primary-dark);
     font-weight: 600;
     cursor: pointer;
@@ -649,7 +789,7 @@ html, body {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #ff5277;
+    background: #ff5e7e;
     display: flex;
     align-items: center;
     justify-content: center;

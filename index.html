@@ -24,6 +24,15 @@
     <!-- Background Floating Particles Canvas -->
     <canvas id="bg-canvas"></canvas>
 
+    <!-- Portal Warp Fullscreen Overlay -->
+    <div id="portal-warp-overlay" class="portal-warp-overlay">
+        <div class="portal-vortex portal-vortex-anim"></div>
+        <div style="color:white; font-size:1.3rem; font-weight:700; margin-top:24px; text-shadow:0 0 16px #ff5e7e; text-align:center; z-index:10;">
+            ✨ กำลังเปิดประตูมิติสู่โลกแห่งความสุข...<br>
+            <span style="font-size:0.95rem; color:#ffd1dc; font-weight:400;">Nasrin Masa's Wonderland 🎡</span>
+        </div>
+    </div>
+
     <!-- Mini Romantic Music Player Bar -->
     <div id="mini-music-bar" class="mini-music-bar" style="display:none;" title="แตะเพื่อเปิด/ปิดเพลง">
         <div class="cassette-disc">🎵</div>
@@ -65,19 +74,16 @@
                 </p>
 
                 <div class="otp-container">
-                    <!-- วัน (2 หลัก) -->
                     <div class="otp-group">
                         <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autofocus>
                         <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•">
                     </div>
                     <span class="otp-separator">-</span>
-                    <!-- เดือน (2 หลัก) -->
                     <div class="otp-group">
                         <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•">
                         <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•">
                     </div>
                     <span class="otp-separator">-</span>
-                    <!-- ปี (4 หลัก) -->
                     <div class="otp-group">
                         <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•">
                         <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•">
@@ -90,24 +96,51 @@
             </div>
         </section>
 
-        <!-- 1.2 Timeline Growth Journey Scene (1-20 ขวบ เพิ่มขึ้นทีละสเต็ป) -->
+        <!-- 1.2 Timeline Growth Journey Scene (นาฬิกาชีวิตเดินสด + 1-20 ขวบ) -->
         <section id="scene-milestone" class="ceremony-scene">
             <div class="glass-card">
-                <span style="font-size:2.4rem;">🌱🌸👑</span>
+                <span style="font-size:2.2rem;">⏱️🌸👑</span>
                 <h2 style="font-size:1.4rem; font-weight:700; color:var(--primary-dark); margin-top:4px;">
-                    เส้นทางการเติบโตของ ณัสริญ มะสะ ✨
+                    เวลาแห่งการเติบโตของ ณัสริญ มะสะ ✨
                 </h2>
-                <p style="font-size:0.88rem; color:var(--text-muted); margin-top:2px;">
-                    เดินทางผ่าน 20 ปีแห่งความทรงจำ จากเด็กหญิงตัวน้อยสู่คนโปรดของเค้า
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">
+                    เวลาชีวิตที่โลกใบนี้มีคนน่ารักอย่างเธอ (เดินสดแบบเรียลไทม์)
                 </p>
 
+                <!-- Live Ticking Clock (ปี : เดือน : วัน : ชม : นาที : วิ) -->
+                <div class="live-clock-container">
+                    <div class="clock-digit-box">
+                        <div id="clock-years" class="clock-digit-val">20</div>
+                        <div class="clock-digit-lbl">ปี</div>
+                    </div>
+                    <div class="clock-digit-box">
+                        <div id="clock-months" class="clock-digit-val">00</div>
+                        <div class="clock-digit-lbl">เดือน</div>
+                    </div>
+                    <div class="clock-digit-box">
+                        <div id="clock-days" class="clock-digit-val">00</div>
+                        <div class="clock-digit-lbl">วัน</div>
+                    </div>
+                    <div class="clock-digit-box">
+                        <div id="clock-hours" class="clock-digit-val">00</div>
+                        <div class="clock-digit-lbl">ชั่วโมง</div>
+                    </div>
+                    <div class="clock-digit-box">
+                        <div id="clock-minutes" class="clock-digit-val">00</div>
+                        <div class="clock-digit-lbl">นาที</div>
+                    </div>
+                    <div class="clock-digit-box" style="border-color:#ff5e7e;">
+                        <div id="clock-seconds" class="clock-digit-val" style="color:#e63946;">00</div>
+                        <div class="clock-digit-lbl">วินาที</div>
+                    </div>
+                </div>
+
+                <!-- 1-20 Years Growth Box -->
                 <div class="timeline-journey-box">
-                    <!-- แสดงอายุที่กำลังนับเพิ่มขึ้น -->
                     <div id="timeline-current-age" class="milestone-age-display">
                         อายุ 1 ขวบ 🍼
                     </div>
 
-                    <!-- แสดงจำนวนวันและชั่วโมงที่เพิ่มขึ้นตามอายุ -->
                     <div class="timeline-stats-row">
                         <div class="timeline-stat-chip">
                             <div id="counter-days" class="timeline-stat-val">365</div>
@@ -115,16 +148,14 @@
                         </div>
                         <div class="timeline-stat-chip">
                             <div id="counter-hours" class="timeline-stat-val">8,760</div>
-                            <div class="timeline-stat-lbl">⏰ ชั่วโมงแห่งความทรงจำ</div>
+                            <div class="timeline-stat-lbl">⏰ ชั่วโมงความทรงจำ</div>
                         </div>
                     </div>
 
-                    <!-- กล่องข้อความความทรงจำของแต่ละช่วงวัย -->
                     <div id="timeline-story-box" class="timeline-story-card">
                         เด็กหญิงตัวน้อย 'ณัสริญ มะสะ' ลืมตาขึ้นมามองโลก มอบความสุขแรกให้ทุกคนในครอบครัว
                     </div>
 
-                    <!-- แถบเลื่อนปรับช่วงอายุด้วยตัวเอง -->
                     <input type="range" id="timeline-age-slider" class="timeline-slider" min="1" max="20" value="1" title="ลากเพื่อดูช่วงวัย">
 
                     <div style="display:flex; justify-content:space-between; width:90%; font-size:0.75rem; color:#9e7279; margin-bottom:12px;">
@@ -145,7 +176,7 @@
             </div>
         </section>
 
-        <!-- 1.3 Interactive Birthday Cake Scene (เป่าเทียน + ตัดเค้ก) -->
+        <!-- 1.3 Interactive Birthday Cake Scene -->
         <section id="scene-cake" class="ceremony-scene">
             <div class="glass-card">
                 <h2 style="font-size:1.4rem; color:var(--primary-dark); font-weight:700;">Happy 20th Birthday, Nasrin! 🎂</h2>
@@ -158,7 +189,6 @@
                     อธิษฐานแล้วแตะปุ่มด้านล่าง (หรือเป่าลมใส่ไมค์) เพื่อดับเทียนนะ 💨
                 </div>
 
-                <!-- SVG Cake with split halves -->
                 <div class="cake-stage" title="แตะที่เค้กเพื่อเป่าหรือตัด">
                     <div id="cake-cut-guide" class="cake-cut-guide" style="display:none;" title="ลากมีดผ่ากลางเค้ก"></div>
                     
@@ -177,7 +207,6 @@
                             </filter>
                         </defs>
 
-                        <!-- Plate -->
                         <ellipse cx="150" cy="220" rx="130" ry="18" fill="#ffffff" stroke="#ffccd5" stroke-width="3" filter="url(#cakeShadow)"/>
 
                         <!-- Left Half -->
@@ -200,7 +229,6 @@
                             <circle cx="205" cy="98" r="8" fill="#e63946"/>
                         </g>
 
-                        <!-- Candles & Number 20 -->
                         <g id="cake-candles">
                             <rect x="132" y="55" width="8" height="38" rx="3" fill="#ff5e7e"/>
                             <line x1="136" y1="55" x2="136" y2="46" stroke="#4a282d" stroke-width="2"/>
@@ -216,7 +244,6 @@
                     </svg>
                 </div>
 
-                <!-- Action Buttons: Blow and Cut -->
                 <div style="margin-top:14px; display:flex; flex-direction:column; align-items:center; gap:8px;">
                     <button id="cake-blow-btn" class="btn-romantic">
                         💨 แตะเพื่อเป่าเทียน (หรือเป่าใส่ไมค์)
@@ -243,7 +270,7 @@
             </div>
         </section>
 
-        <!-- 1.4 Wax Seal Love Letter Scene -->
+        <!-- 1.4 Wax Seal Letter Scene & Golden VIP Ticket -->
         <section id="scene-letter" class="ceremony-scene">
             <div class="glass-card">
                 <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">Secret Birthday Letter ✉️</h2>
@@ -268,16 +295,23 @@
                     </div>
                 </div>
 
-                <div style="margin-top:20px;">
-                    <button id="letter-to-hub-btn" class="btn-romantic" style="display:none;">
-                        ก้าวเข้าสู่ Wonderland ของณัสริญ 🎡💖
-                    </button>
+                <!-- Golden VIP Ticket (ปรากฏขึ้นหลังอ่านจดหมาย) -->
+                <div id="golden-ticket-box" class="golden-ticket-box">
+                    <div id="golden-ticket-card" class="golden-ticket ticket-floating">
+                        <div class="ticket-header">⭐ SPECIAL VIP INVITATION ⭐</div>
+                        <div class="ticket-title">บัตรทองคำวิเศษ สู่ Wonderland 🎡✨</div>
+                        <p style="font-size:0.85rem; color:#6b4404; margin-top:6px;">
+                            ตั๋วใบนี้เป็นของ ณัสริญ มะสะ เพียงคนเดียวในโลก<br>
+                            พร้อมเปิดประตูมิติเข้าสู่ดินแดนแห่งความสุขหรือยัง?
+                        </p>
+                        <div class="ticket-btn-tag">แตะบัตรเพื่อเปิดประตูมิติ 🌌➔</div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- =======================================================
-             PHASE 2: NASRIN'S WONDERLAND HUB (โลกส่วนตัว)
+             PHASE 2: NASRIN'S WONDERLAND HUB
              ======================================================= -->
         <main id="wonderland-hub">
             <!-- TAB 1: 🏠 OVERVIEW & 4-CUTS BOOTH -->
@@ -290,7 +324,6 @@
                     </p>
                 </div>
 
-                <!-- Korean 4-Cuts Frame -->
                 <div class="glass-card">
                     <h3 style="font-size:1.15rem; color:var(--primary-dark); margin-bottom:2px;">📸 Photobooth 4-Cuts Edition</h3>
                     <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">เฟรมรูปคู่ฉลองอายุ 20 ขวบ สไตล์ตู้ถ่ายรูปเกาหลี</p>
@@ -357,24 +390,66 @@
                 </div>
             </div>
 
-            <!-- TAB 5: 🎮 ARCADE MINI GAMES -->
+            <!-- TAB 5: 🎮 ARCADE MINI GAMES (6 GAMES) -->
             <div id="hub-content-arcade" class="hub-tab-content">
                 <div class="glass-card">
-                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎮 ห้องเกมคาเฟ่</h2>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">เลือกเกมที่อยากเล่นได้เลยนะคนเก่ง</p>
+                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎮 ห้องเกมคาเฟ่ 6 ด่าน</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">มินิเกมเล่นง่าย ได้ความสุขทุกเกม 🍬</p>
 
-                    <div style="display:flex; justify-content:center; gap:8px; margin-bottom:16px;">
-                        <button class="btn-secondary arcade-subtab-btn active" data-tab="memory">🃏 จับคู่การ์ด</button>
+                    <!-- 6 Subtabs -->
+                    <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+                        <button class="btn-secondary arcade-subtab-btn active" data-tab="wheel">🎡 วงล้อรัก</button>
+                        <button class="btn-secondary arcade-subtab-btn" data-tab="balloons">🎈 จิ้มลูกโป่ง</button>
+                        <button class="btn-secondary arcade-subtab-btn" data-tab="meter">💖 ปั๊มหัวใจ</button>
+                        <button class="btn-secondary arcade-subtab-btn" data-tab="memory">🃏 จับคู่</button>
                         <button class="btn-secondary arcade-subtab-btn" data-tab="boba">🧋 รับชานม</button>
-                        <button class="btn-secondary arcade-subtab-btn" data-tab="quiz">❓ ควิซทายใจ</button>
+                        <button class="btn-secondary arcade-subtab-btn" data-tab="quiz">❓ ควิซ</button>
                     </div>
 
-                    <div id="arcade-view-memory" class="arcade-game-view">
+                    <!-- 1. Wheel -->
+                    <div id="arcade-view-wheel" class="arcade-game-view">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🎡 วงล้อเสี่ยงทายความรัก</h3>
+                        <p style="font-size:0.82rem; color:var(--text-muted);">กดปุ่มเพื่อหมุนลุ้นรางวัลหวานๆ</p>
+                        <div style="position:relative; width:260px; height:260px; margin:14px auto;">
+                            <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); font-size:1.8rem; z-index:5;">🔻</div>
+                            <canvas id="wheel-game-canvas" width="260" height="260" style="width:100%; height:100%; border-radius:50%; box-shadow:0 8px 24px rgba(255,100,130,0.3); transition:transform 4s cubic-bezier(0.17,0.67,0.12,0.99);"></canvas>
+                        </div>
+                        <button id="wheel-game-spin-btn" class="btn-romantic" style="margin-top:6px;">หมุนวงล้อเลย 🎯</button>
+                        <div id="wheel-game-result" class="quote-toast" style="margin-top:12px;"></div>
+                    </div>
+
+                    <!-- 2. Pop Balloons -->
+                    <div id="arcade-view-balloons" class="arcade-game-view" style="display:none;">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🎈 จิ้มลูกโป่งแตกรับข้อความลับ</h3>
+                        <p style="font-size:0.82rem; color:var(--text-muted);">แตะลูกโป่งให้แตกเพื่อเปิดอ่านข้อความซ่อนอยู่</p>
+                        <div id="balloon-pop-area" class="pop-balloon-area"></div>
+                        <div id="balloon-pop-msg" class="quote-toast"></div>
+                    </div>
+
+                    <!-- 3. Love Meter -->
+                    <div id="arcade-view-meter" class="arcade-game-view" style="display:none;">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">💖 100% Love Meter Pump</h3>
+                        <p style="font-size:0.82rem; color:var(--text-muted);">แตะหัวใจรัวๆ เพื่อเติมหลอดความรักให้เต็ม 100%</p>
+                        <div class="love-meter-box">
+                            <div id="love-meter-heart" class="love-meter-heart-btn">💖</div>
+                            <div class="love-meter-bar">
+                                <div id="love-meter-fill" class="love-meter-fill"></div>
+                            </div>
+                            <div id="love-meter-percent" style="font-size:1.2rem; font-weight:800; color:var(--primary);">0%</div>
+                        </div>
+                        <div id="love-meter-win" class="quote-toast"></div>
+                    </div>
+
+                    <!-- 4. Memory -->
+                    <div id="arcade-view-memory" class="arcade-game-view" style="display:none;">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🃏 การ์ดจับคู่ความทรงจำ</h3>
                         <div id="arcade-memory-grid" class="memory-grid"></div>
                         <div id="arcade-memory-quote" class="quote-toast"></div>
                     </div>
 
+                    <!-- 5. Boba Catch -->
                     <div id="arcade-view-boba" class="arcade-game-view" style="display:none;">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🧋 ตะกร้ารับชานม & หัวใจ (20 วิ)</h3>
                         <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:600; color:var(--primary-dark);">
                             <span id="boba-score-text">คะแนน: 0</span>
                             <span id="boba-timer-text">เวลา: 20s</span>
@@ -387,7 +462,9 @@
                         </div>
                     </div>
 
+                    <!-- 6. Quiz -->
                     <div id="arcade-view-quiz" class="arcade-game-view" style="display:none;">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">❓ ควิซทายใจแฟนพันธุ์แท้</h3>
                         <div class="quiz-box">
                             <div id="arcade-quiz-q" class="quiz-question">กำลังโหลดคำถาม...</div>
                             <div id="arcade-quiz-opts" class="quiz-options"></div>
@@ -439,7 +516,7 @@
             </button>
             <button class="nav-tab-btn" data-tab="arcade">
                 <span class="tab-icon">🎮</span>
-                <span>มินิเกม</span>
+                <span>6 มินิเกม</span>
             </button>
             <button class="nav-tab-btn" data-tab="wish">
                 <span class="tab-icon">🎈</span>

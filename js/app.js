@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * 🌟 MAIN APP CONTROLLER & 1-20 YEARS GROWTH JOURNEY
+ * 🌟 MAIN APP CONTROLLER — LIVE CLOCK & MAGICAL PORTAL
  * ====================================================================
  */
 
@@ -11,6 +11,7 @@ class BirthdayApp {
         this.currentReasonIndex = 0;
         this.currentTimelineAge = 1;
         this.timelineInterval = null;
+        this.clockInterval = null;
         this.canvas = null;
         this.ctx = null;
         this.particles = [];
@@ -23,6 +24,7 @@ class BirthdayApp {
         this.setupHubNavigation();
         this.setupLoveReasonsSlider();
         this.setupTimelineJourney();
+        this.startLiveTickingClock();
 
         if (window.otpController) window.otpController.init();
         if (window.cakeController) window.cakeController.init();
@@ -38,6 +40,59 @@ class BirthdayApp {
         document.querySelectorAll('.target-shortname').forEach(el => el.textContent = window.HBD_CONFIG.nickname);
         document.querySelectorAll('.target-engname').forEach(el => el.textContent = window.HBD_CONFIG.englishName);
         document.querySelectorAll('.target-age').forEach(el => el.textContent = window.HBD_CONFIG.age);
+    }
+
+    // ==========================================
+    // ⏱️ นาฬิกาเวลาชีวิตเดินสด (ปี:เดือน:วัน:ชม:นาที:วินาที)
+    // ==========================================
+    startLiveTickingClock() {
+        const updateClock = () => {
+            const birthDate = new Date(window.HBD_CONFIG.birthDateTime);
+            const now = new Date();
+
+            let diffMs = now - birthDate;
+            if (diffMs < 0) diffMs = 0;
+
+            const totalSecs = Math.floor(diffMs / 1000);
+            const totalMins = Math.floor(totalSecs / 60);
+            const totalHours = Math.floor(totalMins / 60);
+            const totalDays = Math.floor(totalHours / 24);
+
+            let years = now.getFullYear() - birthDate.getFullYear();
+            let months = now.getMonth() - birthDate.getMonth();
+            let days = now.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                const prevMonthDays = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                days += prevMonthDays;
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const yEl = document.getElementById('clock-years');
+            const mEl = document.getElementById('clock-months');
+            const dEl = document.getElementById('clock-days');
+            const hEl = document.getElementById('clock-hours');
+            const minEl = document.getElementById('clock-minutes');
+            const sEl = document.getElementById('clock-seconds');
+
+            if (yEl) yEl.textContent = String(years).padStart(2, '0');
+            if (mEl) mEl.textContent = String(months).padStart(2, '0');
+            if (dEl) dEl.textContent = String(days).padStart(2, '0');
+            if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+            if (minEl) minEl.textContent = String(minutes).padStart(2, '0');
+            if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+        };
+
+        updateClock();
+        this.clockInterval = setInterval(updateClock, 1000);
     }
 
     goToCeremonyScene(sceneId) {
@@ -81,7 +136,7 @@ class BirthdayApp {
         // แตะตราครั่งเพื่อเปิดจดหมาย
         const waxSeal = document.getElementById('wax-seal-stamp');
         const letterCard = document.getElementById('unfolded-letter');
-        const toHubBtn = document.getElementById('letter-to-hub-btn');
+        const ticketBox = document.getElementById('golden-ticket-box');
 
         if (waxSeal) {
             waxSeal.addEventListener('click', () => {
@@ -92,27 +147,45 @@ class BirthdayApp {
                 setTimeout(() => {
                     waxSeal.parentElement.style.display = 'none';
                     if (letterCard) letterCard.style.display = 'block';
-                    if (toHubBtn) toHubBtn.style.display = 'inline-flex';
+                    if (ticketBox) ticketBox.style.display = 'block';
                     if (window.confetti) window.confetti({ particleCount: 60, spread: 70 });
                 }, 500);
             });
         }
 
-        // เข้าสู่ Wonderland Hub เต็มตัว
-        if (toHubBtn) {
-            toHubBtn.addEventListener('click', () => {
-                window.soundManager.playVictory();
-                if (window.confetti) {
-                    window.confetti({ particleCount: 120, spread: 90 });
-                }
-                this.enterWonderlandHub();
+        // แตะบัตรทองคำวิเศษเพื่อเปิดประตูมิติสู่ Wonderland
+        const goldenTicket = document.getElementById('golden-ticket-card');
+        if (goldenTicket) {
+            goldenTicket.addEventListener('click', () => {
+                this.triggerMagicalPortalWarp();
             });
         }
     }
 
     // ==========================================
-    // ⏳ ระบบเลื่อนนับอายุ 1-20 ขวบ และเพิ่มวัน-ชั่วโมง
+    // 🌌 ประตูมิติเวทมนตร์สู่ Wonderland (WARP PORTAL)
     // ==========================================
+    triggerMagicalPortalWarp() {
+        window.soundManager.playVictory();
+        window.soundManager.playChime();
+
+        const portalOverlay = document.getElementById('portal-warp-overlay');
+        if (portalOverlay) {
+            portalOverlay.classList.add('active');
+        }
+
+        // เสียงกระดิ่งเวทมนตร์และวาร์ป 1.8 วินาที
+        setTimeout(() => {
+            this.enterWonderlandHub();
+            setTimeout(() => {
+                if (portalOverlay) portalOverlay.classList.remove('active');
+                if (window.confetti) {
+                    window.confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+                }
+            }, 600);
+        }, 1800);
+    }
+
     setupTimelineJourney() {
         const slider = document.getElementById('timeline-age-slider');
         const replayBtn = document.getElementById('timeline-replay-btn');
@@ -156,7 +229,7 @@ class BirthdayApp {
                     toCakeBtn.style.display = 'inline-flex';
                 }
             }
-        }, 320); // นับเพิ่มขึ้นทีละ 320ms อย่างนุ่มนวล
+        }, 300);
     }
 
     updateTimelineDisplay(age) {
@@ -168,17 +241,10 @@ class BirthdayApp {
         const days = Math.round(age * 365.25);
         const hours = days * 24;
 
-        if (ageEl) {
-            ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
-        }
-        if (daysEl) {
-            daysEl.textContent = days.toLocaleString();
-        }
-        if (hoursEl) {
-            hoursEl.textContent = hours.toLocaleString();
-        }
+        if (ageEl) ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
+        if (daysEl) daysEl.textContent = days.toLocaleString();
+        if (hoursEl) hoursEl.textContent = hours.toLocaleString();
 
-        // ดึงข้อความตามช่วงวัย
         if (storyBox) {
             let story = "เด็กหญิงณัสริญ กำลังเติบโตอย่างน่ารักในทุกๆ วัน ✨";
             if (age === 1) story = "🍼 เด็กหญิงตัวน้อย 'ณัสริญ มะสะ' ลืมตาดูโลก มอบรอยยิ้มแรกให้ทุกคน";
@@ -196,7 +262,6 @@ class BirthdayApp {
         window.soundManager.playPop(350 + age * 25);
     }
 
-    // ปลดล็อกเข้าสู่ Wonderland Hub
     enterWonderlandHub() {
         document.querySelectorAll('.ceremony-scene').forEach(sc => sc.style.display = 'none');
 
@@ -240,6 +305,9 @@ class BirthdayApp {
 
         if (tabName === 'coupons' && window.scratchController) {
             window.scratchController.init();
+        }
+        if (tabName === 'arcade' && window.arcadeController) {
+            window.arcadeController.resizeBobaCanvas();
         }
     }
 

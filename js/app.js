@@ -32,6 +32,7 @@ class BirthdayApp {
         if (window.balloonController) window.balloonController.init();
         if (window.arcadeController) window.arcadeController.init();
         if (window.musicController) window.musicController.init();
+        if (window.polaroidGallery) window.polaroidGallery.init();
         if (window.videoVault) window.videoVault.init();
     }
 
@@ -174,16 +175,20 @@ class BirthdayApp {
             portalOverlay.classList.add('active');
         }
 
-        // เสียงกระดิ่งเวทมนตร์และวาร์ป 1.8 วินาที
         setTimeout(() => {
-            this.enterWonderlandHub();
-            setTimeout(() => {
-                if (portalOverlay) portalOverlay.classList.remove('active');
-                if (window.confetti) {
-                    window.confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+            try {
+                this.enterWonderlandHub();
+            } catch (err) {
+                console.error("Error entering wonderland hub:", err);
+            } finally {
+                if (portalOverlay) {
+                    portalOverlay.classList.remove('active');
                 }
-            }, 600);
-        }, 1800);
+            }
+            if (window.confetti) {
+                window.confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+            }
+        }, 1500);
     }
 
     setupTimelineJourney() {
@@ -214,6 +219,11 @@ class BirthdayApp {
 
         this.updateTimelineDisplay(1);
 
+        // ให้ปุ่มแสดงชัวร์ๆ หลัง 2.5 วินาที เผื่อไม่อยากรอ
+        setTimeout(() => {
+            if (toCakeBtn) toCakeBtn.style.display = 'inline-flex';
+        }, 2500);
+
         this.timelineInterval = setInterval(() => {
             this.currentTimelineAge++;
             if (slider) slider.value = this.currentTimelineAge;
@@ -229,7 +239,7 @@ class BirthdayApp {
                     toCakeBtn.style.display = 'inline-flex';
                 }
             }
-        }, 300);
+        }, 220);
     }
 
     updateTimelineDisplay(age) {
@@ -237,9 +247,18 @@ class BirthdayApp {
         const daysEl = document.getElementById('counter-days');
         const hoursEl = document.getElementById('counter-hours');
         const storyBox = document.getElementById('timeline-story-box');
+        const toCakeBtn = document.getElementById('milestone-to-cake-btn');
 
         const days = Math.round(age * 365.25);
         const hours = days * 24;
+
+        if (ageEl) ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
+        if (daysEl) daysEl.textContent = days.toLocaleString();
+        if (hoursEl) hoursEl.textContent = hours.toLocaleString();
+
+        if (age >= 20 && toCakeBtn) {
+            toCakeBtn.style.display = 'inline-flex';
+        }
 
         if (ageEl) ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
         if (daysEl) daysEl.textContent = days.toLocaleString();

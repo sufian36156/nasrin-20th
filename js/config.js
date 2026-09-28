@@ -11,7 +11,7 @@ window.HBD_CONFIG = {
     englishName: "Nasrin Masa",
     age: 20,
     birthdayDateText: "10 ตุลาคม 2549",
-    birthDateTime: "2006-10-10T00:00:00", // วันและเวลาเกิดสำหรับคำนวณเคาท์ดาวน์สด
+    birthDateTime: "2006-10-10T00:00:00",
 
     // รหัสผ่านปลดล็อก (วัน - เดือน - ปี พ.ศ.)
     secretPasscode: {
@@ -83,6 +83,50 @@ window.HBD_CONFIG = {
         { no: 18, title: "พลังบวกที่เธอมอบให้", desc: "เธอคือแสงแดดอุ่นๆ ในวันที่ฟ้ามืดครึ้มของเค้าเสมอ" },
         { no: 19, title: "การเติบโตมาด้วยกัน", desc: "ขอบคุณที่ให้เค้าได้อยู่ในทุกช่วงเวลาสำคัญในชีวิตเธอ" },
         { no: 20, title: "เพราะเธอคือ 'ณัสริญ มะสะ'", desc: "ไม่มีเหตุผลไหนสำคัญไปกว่าการที่เธอเป็นตัวเธอเอง รักเธอที่สุดในโลกนะ 🤍" }
+    ],
+
+    // ==========================================
+    // 📸 รูปภาพโพลารอยด์ (POLAROIDS)
+    // ==========================================
+    polaroids: [
+        { image: "assets/images/polaroids/1.svg", caption: "วันแรกๆ ที่ได้ไปเที่ยวด้วยกัน เขินจนตาหยี", date: "Memory #01", angle: -4 },
+        { image: "assets/images/polaroids/2.svg", caption: "คาเฟ่นี้เธอบอกขนมอร่อยมาก แต่เค้ามองแต่หน้าเธอ", date: "Memory #02", angle: 5 },
+        { image: "assets/images/polaroids/3.svg", caption: "โมเมนต์หลุดๆ แต่น่ารักที่สุดในสายตาเค้า", date: "Memory #03", angle: -5 },
+        { image: "assets/images/polaroids/4.svg", caption: "ท้องฟ้าสวย แต่คนข้างๆ สวยกว่าท้องฟ้าเยอะเลย", date: "Memory #04", angle: 3 },
+        { image: "assets/images/polaroids/5.svg", caption: "ตอนเผลอยังน่ารักขนาดนี้ได้ยังไงเนี่ยยย", date: "Memory #05", angle: -3 },
+        { image: "assets/images/polaroids/6.svg", caption: "ขอบคุณที่เดินทางผ่านเรื่องราวต่างๆ มาด้วยกันนะ", date: "Memory #06", angle: 6 },
+        { image: "assets/images/polaroids/7.svg", caption: "ก้าวเข้าสู่วัย 20 ไปด้วยกันแบบสดใสนะคะ", date: "Memory #07", angle: -4 },
+        { image: "assets/images/polaroids/8.svg", caption: "เค้าจะคอยเป็นตากล้องประจำตัวเธอตลอดไป 📷", date: "Memory #08", angle: 4 }
+    ],
+
+    // ==========================================
+    // 🎬 คลังวิดีโอ (VIDEOS)
+    // ==========================================
+    videos: [
+        {
+            id: 1,
+            title: "รวมโมเมนต์น่ารักๆ ของเรา",
+            desc: "คลิปรอยยิ้มและเสียงหัวเราะ",
+            thumbnail: "assets/images/video_thumb_1.svg",
+            videoUrl: "",
+            duration: "01:20"
+        },
+        {
+            id: 2,
+            title: "ทริปเที่ยวและความทรงจำ",
+            desc: "การเดินทางที่อบอุ่นหัวใจ",
+            thumbnail: "assets/images/video_thumb_2.svg",
+            videoUrl: "",
+            duration: "02:15"
+        },
+        {
+            id: 3,
+            title: "คำอวยพรพิเศษจากเค้า",
+            desc: "อัดคลิปนี้เพื่อบอกเธอโดยเฉพาะ",
+            thumbnail: "assets/images/video_thumb_3.svg",
+            videoUrl: "",
+            duration: "00:45"
+        }
     ],
 
     // ==========================================

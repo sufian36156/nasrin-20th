@@ -44,6 +44,7 @@ class CakeController {
         // 3. ปุ่มตัดเค้กโดยตรง (ไม่พลาดแน่นอน)
         if (cutBtn) {
             cutBtn.addEventListener('click', () => {
+                if (!this.isBlown) this.extinguishCandle();
                 this.sliceCake();
             });
         }

@@ -30,6 +30,14 @@ class CakeController {
             });
         }
 
+        // 1.1 ปุ่มเปิด/ปิดไฟสร้างบรรยากาศ
+        const ambientBtn = document.getElementById('cake-ambient-toggle-btn');
+        if (ambientBtn) {
+            ambientBtn.addEventListener('click', () => {
+                this.toggleAmbientLight();
+            });
+        }
+
         // 2. แตะที่ตัวเค้ก/เทียนโดยตรงเพื่อเป่า
         if (cakeStage) {
             cakeStage.addEventListener('click', () => {
@@ -122,6 +130,19 @@ class CakeController {
         // ดับเปลวไฟ
         document.querySelectorAll('.candle-flame').forEach(f => f.classList.add('extinguished'));
 
+        // หากเปิดโหมดปิดไฟมืดอยู่ ให้ค่อยๆ สว่างขึ้นอย่างนุ่มนวล
+        const sceneCake = document.getElementById('scene-cake');
+        const ambientBtn = document.getElementById('cake-ambient-toggle-btn');
+        if (sceneCake && sceneCake.classList.contains('ambient-dark-mode')) {
+            setTimeout(() => {
+                sceneCake.classList.remove('ambient-dark-mode');
+                if (ambientBtn) {
+                    ambientBtn.innerHTML = "🕯️ ปิดไฟในห้อง (บรรยากาศเป่าเค้ก)";
+                    ambientBtn.classList.remove('active');
+                }
+            }, 700);
+        }
+
         const instruction = document.getElementById('cake-instruction-text');
         const blowBtn = document.getElementById('cake-blow-btn');
         const cutBtn = document.getElementById('cake-cut-action-btn');
@@ -171,6 +192,21 @@ class CakeController {
         cutArea.addEventListener('touchstart', start, { passive: false });
         window.addEventListener('touchmove', move, { passive: false });
         window.addEventListener('touchend', end);
+    }
+
+    // เปิด/ปิดไฟในห้องเพื่อสร้างบรรยากาศเป่าเค้ก
+    toggleAmbientLight() {
+        const sceneCake = document.getElementById('scene-cake');
+        const ambientBtn = document.getElementById('cake-ambient-toggle-btn');
+        if (!sceneCake) return;
+
+        const isDark = sceneCake.classList.toggle('ambient-dark-mode');
+        window.soundManager.playPop(isDark ? 320 : 640);
+
+        if (ambientBtn) {
+            ambientBtn.innerHTML = isDark ? "💡 เปิดไฟในห้อง" : "🕯️ ปิดไฟในห้อง (บรรยากาศเป่าเค้ก)";
+            ambientBtn.classList.toggle('active', isDark);
+        }
     }
 
     // ตัดเค้กแยก 2 ซีก

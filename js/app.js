@@ -10,7 +10,7 @@ class BirthdayApp {
         this.currentHubTab = 'home';
         this.currentReasonIndex = 0;
         this.currentTimelineAge = 1;
-        this.timelineInterval = null;
+        this.timelineAnimFrame = null;
         this.clockInterval = null;
         this.canvas = null;
         this.ctx = null;
@@ -18,6 +18,7 @@ class BirthdayApp {
     }
 
     init() {
+        this.preventIPadPinchZoom();
         this.initBackgroundParticles();
         this.populateStaticTexts();
         this.setupCeremonyNavigation();
@@ -34,6 +35,34 @@ class BirthdayApp {
         if (window.musicController) window.musicController.init();
         if (window.polaroidGallery) window.polaroidGallery.init();
         if (window.videoVault) window.videoVault.init();
+        if (window.vipCardController) window.vipCardController.init();
+        if (window.fortuneController) window.fortuneController.init();
+        if (window.doodleController) window.doodleController.init();
+        if (window.capsuleController) window.capsuleController.init();
+    }
+
+    preventIPadPinchZoom() {
+        // บล็อก Gesture Zoom บน iPad Safari
+        document.addEventListener('gesturestart', (e) => e.preventDefault());
+        document.addEventListener('gesturechange', (e) => e.preventDefault());
+        document.addEventListener('gestureend', (e) => e.preventDefault());
+
+        // บล็อกการซูมแบบ 2 นิ้ว
+        document.addEventListener('touchmove', (e) => {
+            if (e.touches && e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // บล็อกดับเบิลแท็บซูม
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (e) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
     }
 
     populateStaticTexts() {
@@ -84,12 +113,34 @@ class BirthdayApp {
             const minEl = document.getElementById('clock-minutes');
             const sEl = document.getElementById('clock-seconds');
 
-            if (yEl) yEl.textContent = String(years).padStart(2, '0');
-            if (mEl) mEl.textContent = String(months).padStart(2, '0');
-            if (dEl) dEl.textContent = String(days).padStart(2, '0');
-            if (hEl) hEl.textContent = String(hours).padStart(2, '0');
-            if (minEl) minEl.textContent = String(minutes).padStart(2, '0');
-            if (sEl) sEl.textContent = String(seconds).padStart(2, '0');
+            const sYears = String(years).padStart(2, '0');
+            const sMonths = String(months).padStart(2, '0');
+            const sDays = String(days).padStart(2, '0');
+            const sHours = String(hours).padStart(2, '0');
+            const sMins = String(minutes).padStart(2, '0');
+            const sSecs = String(seconds).padStart(2, '0');
+
+            if (yEl) yEl.textContent = sYears;
+            if (mEl) mEl.textContent = sMonths;
+            if (dEl) dEl.textContent = sDays;
+            if (hEl) hEl.textContent = sHours;
+            if (minEl) minEl.textContent = sMins;
+            if (sEl) sEl.textContent = sSecs;
+
+            // อัปเดตนาฬิกาหัวข้อในหน้า Wonderland Hub ด้วย
+            const hubY = document.getElementById('hub-clock-years');
+            const hubM = document.getElementById('hub-clock-months');
+            const hubD = document.getElementById('hub-clock-days');
+            const hubH = document.getElementById('hub-clock-hours');
+            const hubMin = document.getElementById('hub-clock-minutes');
+            const hubS = document.getElementById('hub-clock-seconds');
+
+            if (hubY) hubY.textContent = sYears;
+            if (hubM) hubM.textContent = sMonths;
+            if (hubD) hubD.textContent = sDays;
+            if (hubH) hubH.textContent = sHours;
+            if (hubMin) hubMin.textContent = sMins;
+            if (hubS) hubS.textContent = sSecs;
         };
 
         updateClock();
@@ -196,9 +247,10 @@ class BirthdayApp {
         const replayBtn = document.getElementById('timeline-replay-btn');
 
         if (slider) {
+            slider.setAttribute('step', '0.1');
             slider.addEventListener('input', (e) => {
-                if (this.timelineInterval) clearInterval(this.timelineInterval);
-                const age = parseInt(e.target.value, 10);
+                if (this.timelineAnimFrame) cancelAnimationFrame(this.timelineAnimFrame);
+                const age = parseFloat(e.target.value);
                 this.updateTimelineDisplay(age);
             });
         }
@@ -211,35 +263,59 @@ class BirthdayApp {
     }
 
     startTimelineAutoPlay() {
-        if (this.timelineInterval) clearInterval(this.timelineInterval);
-        this.currentTimelineAge = 1;
+        if (this.timelineAnimFrame) cancelAnimationFrame(this.timelineAnimFrame);
+
         const slider = document.getElementById('timeline-age-slider');
         const toCakeBtn = document.getElementById('milestone-to-cake-btn');
         if (toCakeBtn) toCakeBtn.style.display = 'none';
 
-        this.updateTimelineDisplay(1);
+        const startAge = 1.0;
+        const targetAge = 20.0;
+        const duration = 4800; // 4.8 วินาที วิ่งเนียนๆ สมูทไม่กระตุก
+        const startTime = performance.now();
+        let lastPlayedIntAge = 1;
 
-        // ให้ปุ่มแสดงชัวร์ๆ หลัง 2.5 วินาที เผื่อไม่อยากรอ
-        setTimeout(() => {
-            if (toCakeBtn) toCakeBtn.style.display = 'inline-flex';
-        }, 2500);
+        this.updateTimelineDisplay(startAge);
 
-        this.timelineInterval = setInterval(() => {
-            this.currentTimelineAge++;
-            if (slider) slider.value = this.currentTimelineAge;
-            this.updateTimelineDisplay(this.currentTimelineAge);
+        const step = (now) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1.0);
 
-            if (this.currentTimelineAge >= 20) {
-                clearInterval(this.timelineInterval);
+            // Easing curve (ease-out cubic)
+            const ease = 1 - Math.pow(1 - progress, 2.5);
+            const currentAge = startAge + (targetAge - startAge) * ease;
+
+            if (slider) slider.value = currentAge.toFixed(1);
+            this.updateTimelineDisplay(currentAge);
+
+            // ส่งเสียงน่ารักๆ เมื่อข้ามแต่ละช่วงวัย
+            const currentIntAge = Math.floor(currentAge);
+            if (currentIntAge > lastPlayedIntAge) {
+                lastPlayedIntAge = currentIntAge;
+                window.soundManager.playPop(350 + currentIntAge * 20);
+            }
+
+            if (progress < 1.0) {
+                this.timelineAnimFrame = requestAnimationFrame(step);
+            } else {
+                this.updateTimelineDisplay(20.0);
+                if (slider) slider.value = 20;
                 window.soundManager.playVictory();
                 if (window.confetti) {
-                    window.confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+                    window.confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
                 }
                 if (toCakeBtn) {
                     toCakeBtn.style.display = 'inline-flex';
                 }
             }
-        }, 220);
+        };
+
+        this.timelineAnimFrame = requestAnimationFrame(step);
+
+        // ให้ปุ่มแสดงชัวร์ๆ เผื่อไม่อยากรอ
+        setTimeout(() => {
+            if (toCakeBtn) toCakeBtn.style.display = 'inline-flex';
+        }, 3500);
     }
 
     updateTimelineDisplay(age) {
@@ -252,33 +328,43 @@ class BirthdayApp {
         const days = Math.round(age * 365.25);
         const hours = days * 24;
 
-        if (ageEl) ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
+        if (ageEl) {
+            if (age >= 19.95) {
+                ageEl.textContent = `อายุ 20 ขวบ บริบูรณ์ 👑🎂`;
+            } else {
+                const wholeYears = Math.floor(age);
+                const extraMonths = Math.floor((age % 1) * 12);
+                if (extraMonths > 0) {
+                    ageEl.textContent = `อายุ ${wholeYears} ขวบ ${extraMonths} เดือน 🌸`;
+                } else {
+                    ageEl.textContent = `อายุ ${wholeYears} ขวบ 🌸`;
+                }
+            }
+        }
+
         if (daysEl) daysEl.textContent = days.toLocaleString();
         if (hoursEl) hoursEl.textContent = hours.toLocaleString();
 
-        if (age >= 20 && toCakeBtn) {
+        if (age >= 19.9 && toCakeBtn) {
             toCakeBtn.style.display = 'inline-flex';
         }
 
-        if (ageEl) ageEl.textContent = `อายุ ${age} ขวบ ${age === 20 ? '👑🎂' : '🌸'}`;
-        if (daysEl) daysEl.textContent = days.toLocaleString();
-        if (hoursEl) hoursEl.textContent = hours.toLocaleString();
-
         if (storyBox) {
+            const intAge = Math.floor(age);
             let story = "เด็กหญิงณัสริญ กำลังเติบโตอย่างน่ารักในทุกๆ วัน ✨";
-            if (age === 1) story = "🍼 เด็กหญิงตัวน้อย 'ณัสริญ มะสะ' ลืมตาดูโลก มอบรอยยิ้มแรกให้ทุกคน";
-            else if (age <= 4) story = "🎀 วัยเตาะแตะ เริ่มหัดพูด แก้มกลมๆ น่ารักน่าเอ็นดูที่สุด";
-            else if (age <= 7) story = "🎒 เริ่มเข้าโรงเรียน มีเพื่อนๆ และรอยยิ้มสดใสในทุกเช้า";
-            else if (age <= 12) story = "📚 วัยประถมที่เปี่ยมด้วยจินตนาการและการเรียนรู้สิ่งใหม่ๆ";
-            else if (age <= 15) story = "🌸 ก้าวสู่วัยรุ่น เปล่งประกาย อ่อนหวาน และน่ารักขึ้นทุกวัน";
-            else if (age <= 18) story = "✨ เริ่มเติบโตสู่วัยผู้ใหญ่ เข้มแข็งและมีเส้นทางของตัวเอง";
-            else if (age === 19) story = "💖 ปีสุดท้ายของวัยทีน สะสมความทรงจำและพร้อมก้าวสู่เลข 2";
-            else if (age === 20) story = "👑 วันนี้... ณัสริญ มะสะ ครบรอบ 20 ปีบริบูรณ์ คนโปรดที่มีค่าที่สุดของเค้า!";
+            if (intAge <= 1) story = "🍼 เด็กหญิงตัวน้อย 'ณัสริญ มะสะ' ลืมตาดูโลก มอบรอยยิ้มแรกให้ทุกคนในครอบครัว";
+            else if (intAge <= 4) story = "🎀 วัยเตาะแตะ เริ่มหัดพูด แก้มกลมๆ น่ารักน่าเอ็นดูที่สุด";
+            else if (intAge <= 7) story = "🎒 เริ่มเข้าโรงเรียน มีเพื่อนๆ และรอยยิ้มสดใสในทุกเช้า";
+            else if (intAge <= 12) story = "📚 วัยประถมที่เปี่ยมด้วยจินตนาการและการเรียนรู้สิ่งใหม่ๆ";
+            else if (intAge <= 15) story = "🌸 ก้าวสู่วัยรุ่น เปล่งประกาย อ่อนหวาน และน่ารักขึ้นทุกวัน";
+            else if (intAge <= 18) story = "✨ เริ่มเติบโตสู่วัยผู้ใหญ่ เข้มแข็งและมีเส้นทางที่งดงามของตัวเอง";
+            else if (intAge === 19) story = "💖 ปีสุดท้ายของวัยทีน สะสมความทรงจำและพร้อมก้าวสู่เลข 2 อย่างมั่นใจ";
+            else if (intAge >= 20) story = "👑 วันนี้... ณัสริญ มะสะ ครบรอบ 20 ปีบริบูรณ์ คนโปรดที่มีค่าที่สุดของเค้า!";
 
-            storyBox.textContent = story;
+            if (storyBox.textContent !== story) {
+                storyBox.textContent = story;
+            }
         }
-
-        window.soundManager.playPop(350 + age * 25);
     }
 
     enterWonderlandHub() {
@@ -327,6 +413,9 @@ class BirthdayApp {
         }
         if (tabName === 'arcade' && window.arcadeController) {
             window.arcadeController.resizeBobaCanvas();
+        }
+        if (tabName === 'doodle' && window.doodleController) {
+            window.doodleController.resize();
         }
     }
 

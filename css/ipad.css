@@ -70,23 +70,33 @@
 
     /* Bottom Nav Bar สำหรับ iPad */
     .bottom-nav {
-        max-width: 650px;
+        max-width: 740px;
         left: 50%;
         transform: translateX(-50%);
         border-radius: 28px;
         bottom: max(16px, env(safe-area-inset-bottom));
         border: 1px solid rgba(255, 200, 215, 0.8);
-        height: 70px;
+        height: 72px;
         box-shadow: 0 10px 30px rgba(220, 80, 110, 0.15);
+        overflow: visible;
+        justify-content: space-evenly;
+        padding: 0 12px;
     }
 
     .nav-tab-btn {
-        font-size: 0.82rem;
-        padding: 8px 14px;
+        font-size: 0.76rem;
+        padding: 6px 10px;
+        min-width: auto;
+        flex-shrink: 1;
     }
 
     .nav-tab-btn .tab-icon {
-        font-size: 1.45rem;
+        font-size: 1.35rem;
+    }
+
+    /* Doodle canvas บน iPad สูงขึ้นให้วาดสะใจ */
+    .doodle-canvas-box {
+        height: 320px;
     }
 }
 

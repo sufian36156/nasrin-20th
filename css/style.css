@@ -32,6 +32,11 @@
     -webkit-user-select: none;
 }
 
+input, textarea {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+}
+
 html, body {
     width: 100%;
     min-height: 100%;
@@ -42,6 +47,7 @@ html, body {
     overflow-x: hidden;
     position: relative;
     -webkit-font-smoothing: antialiased;
+    touch-action: pan-x pan-y;
 }
 
 #bg-canvas {
@@ -631,10 +637,17 @@ html, body {
     box-shadow: 0 -4px 20px rgba(220, 80, 110, 0.08);
     z-index: 100;
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 8px;
     padding-bottom: env(safe-area-inset-bottom);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.bottom-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .nav-tab-btn {
@@ -644,14 +657,16 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
     cursor: pointer;
     font-family: var(--font-thai);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     color: var(--text-muted);
     font-weight: 500;
-    padding: 6px 8px;
+    padding: 4px 6px;
     border-radius: 12px;
+    flex-shrink: 0;
+    min-width: 54px;
 }
 
 .nav-tab-btn .tab-icon {
@@ -1290,4 +1305,466 @@ html, body {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====================================================================
+   🎂 KOREAN BENTO CAKE & AMBIENT DARK ROOM MODE
+   ==================================================================== */
+.cake-badge-top {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ff5e7e;
+    background: #fff0f3;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #ffd1dc;
+    margin-bottom: 6px;
+}
+
+.ambient-btn {
+    font-size: 0.82rem;
+    padding: 7px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.ambient-btn.active {
+    background: #2b2d42;
+    color: #ffe6a7;
+    border-color: #ffd166;
+    box-shadow: 0 0 16px rgba(255, 209, 102, 0.4);
+}
+
+.ambient-dark-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, rgba(30, 20, 40, 0.94) 0%, rgba(10, 8, 20, 0.98) 100%);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.ambient-room-msg {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffe6a7;
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-shadow: 0 0 12px rgba(255, 183, 3, 0.8);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 55;
+    transition: opacity 0.8s ease;
+    white-space: nowrap;
+}
+
+#scene-cake.ambient-dark-mode .ambient-dark-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#scene-cake.ambient-dark-mode .ambient-room-msg {
+    opacity: 1;
+}
+
+#scene-cake.ambient-dark-mode .cake-glass-card {
+    position: relative;
+    z-index: 50;
+    background: rgba(25, 20, 35, 0.85);
+    border-color: rgba(255, 180, 100, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 183, 3, 0.25);
+}
+
+#scene-cake.ambient-dark-mode h2,
+#scene-cake.ambient-dark-mode .cake-instructions {
+    color: #ffccd5 !important;
+}
+
+#scene-cake.ambient-dark-mode .mic-status-badge {
+    background: rgba(45, 30, 55, 0.85);
+    color: #ffd6e0;
+    border-color: rgba(255, 150, 180, 0.3);
+}
+
+.candle-ambient-aura {
+    transform-origin: 160px 50px;
+    animation: auraPulse 2.5s ease-in-out infinite alternate;
+    transition: opacity 0.5s ease;
+}
+
+@keyframes auraPulse {
+    0% { transform: scale(0.92); opacity: 0.5; }
+    100% { transform: scale(1.15); opacity: 0.85; }
+}
+
+/* ====================================================================
+   ⏱️ WONDERLAND HUB LIVE CLOCK HEADER
+   ==================================================================== */
+.hub-live-clock-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.95));
+    border: 1.5px solid #ffd4dc;
+    border-radius: 24px;
+    padding: 16px 14px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-soft);
+    text-align: center;
+}
+
+.hub-clock-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+}
+
+.hub-clock-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+}
+
+.hub-clock-box {
+    background: white;
+    border: 1px solid #ffe1e8;
+    border-radius: 12px;
+    padding: 6px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 6px rgba(255, 180, 200, 0.12);
+}
+
+.hub-clock-box.highlight-sec {
+    border-color: #ff5e7e;
+    background: #fff8f9;
+}
+
+.hub-clock-num {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    font-variant-numeric: tabular-nums;
+}
+
+.hub-clock-box.highlight-sec .hub-clock-num {
+    color: #e63946;
+}
+
+.hub-clock-unit {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+/* ====================================================================
+   🪪 VIP CITIZEN RESIDENT CARD
+   ==================================================================== */
+.vip-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.vip-resident-card {
+    width: 100%;
+    max-width: 380px;
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe3eb 50%, #ffd0dc 100%);
+    border: 2px solid #ffccd5;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 12px 30px rgba(255, 94, 126, 0.22);
+    position: relative;
+    overflow: hidden;
+}
+
+.vip-resident-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+    transform: rotate(25deg);
+    pointer-events: none;
+}
+
+.vip-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1.5px dashed #ffb3c1;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+.vip-card-logo {
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    letter-spacing: 0.5px;
+}
+
+.vip-card-type {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ff5e7e;
+    background: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid #ffd1dc;
+}
+
+.vip-card-body {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    text-align: left;
+}
+
+.vip-avatar-box {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 2.5px solid white;
+    box-shadow: 0 4px 12px rgba(255, 94, 126, 0.25);
+    flex-shrink: 0;
+    background: white;
+}
+
+.vip-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.vip-info-box {
+    flex: 1;
+}
+
+.vip-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+}
+
+.vip-detail-row {
+    font-size: 0.78rem;
+    color: #6b3e46;
+    margin-bottom: 2px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.vip-perks-badge {
+    margin-top: 6px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #c9184a;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 1px solid #ffccd5;
+    line-height: 1.3;
+}
+
+.vip-card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #9c5c67;
+    margin-top: 12px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 180, 195, 0.4);
+}
+
+/* ====================================================================
+   🔮 MAGIC FORTUNE BALL
+   ==================================================================== */
+.fortune-ball-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.crystal-fortune-ball {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #f7cad0 30%, #ff8fab 70%, #9d4edd 100%);
+    box-shadow: 0 10px 28px rgba(157, 78, 221, 0.35), inset 0 0 20px rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.crystal-fortune-ball:active {
+    transform: scale(0.95);
+}
+
+.crystal-fortune-ball.shake-animation {
+    animation: fortuneShake 0.6s ease-in-out infinite;
+}
+
+@keyframes fortuneShake {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    20% { transform: translate(-6px, 4px) rotate(-6deg); }
+    40% { transform: translate(6px, -4px) rotate(6deg); }
+    60% { transform: translate(-4px, -3px) rotate(-4deg); }
+    80% { transform: translate(4px, 3px) rotate(4deg); }
+}
+
+.crystal-reflection {
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    width: 32px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 50%;
+    transform: rotate(-30deg);
+}
+
+.crystal-core {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+.fortune-result-box {
+    margin-top: 14px;
+    background: #fff8f9;
+    border: 1.5px dashed #ff9ebb;
+    border-radius: 16px;
+    padding: 12px 18px;
+    font-size: 0.92rem;
+    color: #4a282f;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 380px;
+    line-height: 1.5;
+}
+
+/* ====================================================================
+   🎨 DOODLE CANVAS & COLOR PALETTE
+   ==================================================================== */
+.doodle-palette-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.doodle-color-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2.5px solid white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.doodle-color-swatch.active {
+    transform: scale(1.22);
+    border-color: #333333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.doodle-canvas-box {
+    width: 100%;
+    height: 240px;
+    border: 2px dashed #ffb3c1;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+    touch-action: none;
+}
+
+#doodle-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+/* ====================================================================
+   ⏳ TIME CAPSULE 2036
+   ==================================================================== */
+.capsule-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.capsule-textarea {
+    width: 100%;
+    border-radius: 18px;
+    border: 1.5px solid #ffd0d8;
+    padding: 14px 16px;
+    font-family: var(--font-thai);
+    font-size: 0.92rem;
+    color: var(--text-main);
+    background: #fffbfb;
+    resize: none;
+    outline: none;
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.capsule-textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(255, 94, 126, 0.2);
+}
+
+.capsule-locked {
+    background: #fff3f5;
+    border: 2px solid #ffccd5;
+    border-radius: 20px;
+    padding: 20px 18px;
+    text-align: center;
+    width: 100%;
+}
+
+.capsule-lock-badge {
+    display: inline-block;
+    background: #e63946;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.capsule-msg-preview {
+    font-style: italic;
+    font-size: 1rem;
+    color: #49282d;
+    line-height: 1.6;
+    padding: 0 10px;
 }

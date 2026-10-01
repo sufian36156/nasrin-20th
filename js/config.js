@@ -89,7 +89,7 @@ window.HBD_CONFIG = {
     // 📸 รูปภาพโพลารอยด์ (POLAROIDS)
     // ==========================================
     polaroids: [
-        { image: "assets/images/polaroids/1.svg", caption: "วันแรกๆ ที่ได้ไปเที่ยวด้วยกัน เขินจนตาหยี", date: "Memory #01", angle: -4 },
+        { image: "assets/images/polaroids/1.jpeg", caption: "วันแรกๆ ที่ได้ไปเที่ยวด้วยกัน เขินจนตาหยี", date: "Memory #01", angle: -4 },
         { image: "assets/images/polaroids/2.svg", caption: "คาเฟ่นี้เธอบอกขนมอร่อยมาก แต่เค้ามองแต่หน้าเธอ", date: "Memory #02", angle: 5 },
         { image: "assets/images/polaroids/3.svg", caption: "โมเมนต์หลุดๆ แต่น่ารักที่สุดในสายตาเค้า", date: "Memory #03", angle: -5 },
         { image: "assets/images/polaroids/4.svg", caption: "ท้องฟ้าสวย แต่คนข้างๆ สวยกว่าท้องฟ้าเยอะเลย", date: "Memory #04", angle: 3 },
@@ -107,9 +107,9 @@ window.HBD_CONFIG = {
             id: 1,
             title: "รวมโมเมนต์น่ารักๆ ของเรา",
             desc: "คลิปรอยยิ้มและเสียงหัวเราะ",
-            thumbnail: "assets/images/video_thumb_1.svg",
-            videoUrl: "",
-            duration: "01:20"
+            thumbnail: "assets/images/video_thumb_1.MP4",
+            videoUrl: "assets/images/video_thumb_1.MP4",
+            duration: "00:03"
         },
         {
             id: 2,

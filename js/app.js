@@ -39,6 +39,7 @@ class BirthdayApp {
         if (window.fortuneController) window.fortuneController.init();
         if (window.doodleController) window.doodleController.init();
         if (window.capsuleController) window.capsuleController.init();
+        if (window.realGiftController) window.realGiftController.init();
     }
 
     preventIPadPinchZoom() {
@@ -408,14 +409,15 @@ class BirthdayApp {
         window.soundManager.playPop(520);
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        if (tabName === 'coupons' && window.scratchController) {
-            window.scratchController.init();
+        if (tabName === 'coupons') {
+            if (window.scratchController) window.scratchController.init();
+            if (window.doodleController) window.doodleController.resize();
         }
         if (tabName === 'arcade' && window.arcadeController) {
             window.arcadeController.resizeBobaCanvas();
         }
-        if (tabName === 'doodle' && window.doodleController) {
-            window.doodleController.resize();
+        if (tabName === 'gift' && window.balloonController) {
+            window.balloonController.init();
         }
     }
 

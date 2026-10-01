@@ -557,21 +557,10 @@
                 </div>
             </div>
 
-            <!-- TAB 2: 🎫 SCRATCH-OFF COUPONS -->
-            <div id="hub-content-coupons" class="hub-tab-content">
-                <div class="glass-card">
-                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎫 กระเป๋าคูปองตามใจแฟน</h2>
-                    <p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">
-                        ใช้นิ้วขูดฟอยล์สีชมพูเพื่อเปิดรับสิทธิ์พิเศษ แคปหน้าจอเก็บไว้ทวงใช้กับเค้าได้ตลอดทั้งปีนะ! 🪙
-                    </p>
-
-                    <div id="coupons-list" class="coupons-container"></div>
-                </div>
-            </div>
-
-            <!-- TAB 3: 💌 20 REASONS WHY I LOVE YOU -->
-            <div id="hub-content-reasons" class="hub-tab-content">
-                <div class="glass-card">
+            <!-- TAB 2: 💌 ความในใจ (OUR STORY & LOVE) -->
+            <div id="hub-content-story" class="hub-tab-content">
+                <!-- 20 Reasons -->
+                <div class="glass-card" style="margin-bottom:18px;">
                     <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">💌 20 เหตุผลที่รักเธอ</h2>
                     <p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">
                         ในวัย 20 ขวบ มี 20 เรื่องราวในตัวเธอที่ทำให้เค้าตกหลุมรักซ้ำๆ
@@ -583,6 +572,85 @@
                         <button id="reason-prev-btn" class="btn-secondary">◀ ย้อนกลับ</button>
                         <span id="reason-counter" style="font-weight:700; color:var(--primary);">1 / 20</span>
                         <button id="reason-next-btn" class="btn-romantic">ข้อถัดไป ▶</button>
+                    </div>
+                </div>
+
+                <!-- Re-read Secret Letter -->
+                <div class="glass-card" style="margin-bottom:18px;">
+                    <span style="font-size:2rem;">✉️🌸</span>
+                    <h3 style="font-size:1.2rem; color:var(--primary-dark); margin-top:4px;">จดหมายวันเกิดจากเค้า</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">
+                        จดหมายฉบับพิเศษที่เค้าเขียนให้เธอจากใจ
+                    </p>
+                    <div style="text-align:left; margin-top:14px; background:#fffbfb; border:1.5px solid #ffe1e8; border-radius:20px; padding:18px;">
+                        <h4 style="color:#d83a56; font-size:1.05rem; margin-bottom:8px;">แด่... ณัสริญ มะสะ (Nasrin Masa) 🌸</h4>
+                        <p style="font-size:0.9rem; line-height:1.7; color:#4a2f33;">
+                            สุขสันต์วันเกิดครบรอบ 20 ปีนะ ณัสริญ ✨ ขอบคุณสำหรับทุกความทรงจำ ทุกรอยยิ้ม และทุกการเดินทางที่เราได้จับมือกัน ขอให้ในวัย 20 นี้ เป็นปีที่ใจดีกับเธอที่สุด ได้กินของอร่อย นอนหลับฝันดี และจำไว้เสมอนะว่าจะมีเค้าคอยอยู่ข้างๆ เธอเสมอ 💖
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Time Capsule 2036 -->
+                <div class="glass-card">
+                    <span style="font-size:2rem;">⏳🔒</span>
+                    <h3 style="font-size:1.2rem; color:var(--primary-dark); margin-top:4px;">ไทม์แคปซูลถึงวัย 30 (ปี 2036)</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px; margin-bottom:12px;">
+                        ข้อความลับจากวัย 20 ส่งถึงตัวเองในอีก 10 ปีข้างหน้า จะถูกเก็บล็อกไว้ที่นี่
+                    </p>
+
+                    <div id="capsule-form-box" class="capsule-form">
+                        <textarea id="capsule-input-text" class="capsule-textarea" rows="4" placeholder="เขียนความฝัน คำสัญญา หรือสิ่งที่อยากบอกตัวเองในวัย 30 ปี..."></textarea>
+                        <div style="margin-top:10px;">
+                            <button id="capsule-seal-btn" class="btn-romantic">🔒 ปิดผนึกไทม์แคปซูล</button>
+                        </div>
+                    </div>
+
+                    <div id="capsule-locked-card" class="capsule-locked" style="display:none;">
+                        <div class="capsule-lock-badge">🔒 SEALED UNTIL 10 OCT 2036</div>
+                        <p id="capsule-saved-msg" class="capsule-msg-preview"></p>
+                        <p style="font-size:0.82rem; color:#7d535b; margin-top:8px;">
+                            ไทม์แคปซูลถูกปิดผนึกไว้อย่างปลอดภัยแล้ว อีก 10 ปีข้างหน้าเราจะมาเปิดอ่านด้วยกันนะ 🤍✨
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: 🎫 ตามใจแฟน (COUPONS & DOODLE) -->
+            <div id="hub-content-coupons" class="hub-tab-content">
+                <!-- Scratch-off Coupons -->
+                <div class="glass-card" style="margin-bottom:18px;">
+                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎫 กระเป๋าคูปองตามใจแฟน</h2>
+                    <p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">
+                        ใช้นิ้วขูดฟอยล์สีชมพูเพื่อเปิดรับสิทธิ์พิเศษ แคปหน้าจอเก็บไว้ทวงใช้กับเค้าได้ตลอดทั้งปีนะ! 🪙
+                    </p>
+
+                    <div id="coupons-list" class="coupons-container"></div>
+                </div>
+
+                <!-- Apple Pencil & Touch Doodle Drawing Canvas -->
+                <div class="glass-card">
+                    <h3 style="font-size:1.25rem; color:var(--primary-dark); font-weight:700;">🎨 วาดรูป & เขียนการ์ดลายมือ</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px; margin-bottom:12px;">
+                        ใช้ Apple Pencil หรือนิ้วมือวาดรูปเล่น หรือเขียนการ์ดน่ารักๆ ได้เลยนะ 🌸
+                    </p>
+
+                    <div class="doodle-palette-row">
+                        <span class="doodle-color-swatch active" style="background:#ff5e7e;" data-color="#ff5e7e"></span>
+                        <span class="doodle-color-swatch" style="background:#ff85a1;" data-color="#ff85a1"></span>
+                        <span class="doodle-color-swatch" style="background:#b5179e;" data-color="#b5179e"></span>
+                        <span class="doodle-color-swatch" style="background:#4ea8de;" data-color="#4ea8de"></span>
+                        <span class="doodle-color-swatch" style="background:#52b788;" data-color="#52b788"></span>
+                        <span class="doodle-color-swatch" style="background:#ffb703;" data-color="#ffb703"></span>
+                        <span class="doodle-color-swatch" style="background:#2b2d42;" data-color="#2b2d42"></span>
+                    </div>
+
+                    <div class="doodle-canvas-box">
+                        <canvas id="doodle-canvas"></canvas>
+                    </div>
+
+                    <div style="display:flex; justify-content:center; gap:10px; margin-top:12px; flex-wrap:wrap;">
+                        <button id="doodle-clear-btn" class="btn-secondary">🗑️ ล้างกระดาน</button>
+                        <button id="doodle-save-btn" class="btn-romantic">💌 บันทึกการ์ดใบนี้ 💖</button>
                     </div>
                 </div>
             </div>
@@ -686,8 +754,51 @@
                 </div>
             </div>
 
-            <!-- TAB 6: 🎈 MAKE A WISH (BALLOON SKY) -->
-            <div id="hub-content-wish" class="hub-tab-content">
+            <!-- TAB 6: 🎁 ของขวัญ & ปล่อยลูกโป่ง (GIFT & WISH) -->
+            <div id="hub-content-gift" class="hub-tab-content">
+                <!-- 1. 3D Real Gift Box Reveal -->
+                <div class="glass-card" style="margin-bottom:18px;">
+                    <span style="font-size:2.2rem;">🎁✨💖</span>
+                    <h2 style="font-size:1.4rem; color:var(--primary-dark); font-weight:700; margin-top:4px;">
+                        ของขวัญวันเกิดชิ้นจริงสำหรับเธอ 🎁
+                    </h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">
+                        ของขวัญพิเศษที่เค้าตั้งใจเตรียมให้เธอ แตะที่กล่องเพื่อเปิดดูนะ
+                    </p>
+
+                    <!-- 3D Gift Box Interactive -->
+                    <div class="gift-box-wrapper">
+                        <div id="real-gift-box" class="gift-box-3d" title="แตะเพื่อเปิดของขวัญ">
+                            <div class="gift-box-lid">
+                                <div class="gift-ribbon-bow">🎀</div>
+                            </div>
+                            <div class="gift-box-body">
+                                <div class="gift-ribbon-vertical"></div>
+                                <div class="gift-ribbon-horizontal"></div>
+                            </div>
+                        </div>
+                        <div id="gift-box-tap-hint" class="gift-tap-hint">👆 แตะที่กล่องเพื่อเปิดดูของขวัญ 🎁</div>
+                    </div>
+
+                    <!-- Revealed Secret Card -->
+                    <div id="real-gift-card" class="real-gift-revealed" style="display:none;">
+                        <div class="real-gift-sparkle">✨ ⭐ ✨</div>
+                        <h3 id="real-gift-title" style="color:#d83a56; font-size:1.25rem; font-weight:700; margin-bottom:8px;">
+                            ของขวัญวันเกิดชิ้นจริงสำหรับ ณัสริญ 🎁✨
+                        </h3>
+                        <div id="real-gift-clue" class="real-gift-clue-box">
+                            ของขวัญตัวจริงไม่ได้อยู่ในหน้าจอนะครับ... ลองหันมามองคนข้างๆ แล้วกอดหนึ่งทีสิ! 💖
+                        </div>
+                        <p id="real-gift-subclue" style="font-size:0.82rem; color:#7d535b; margin-top:10px;">
+                            (ของขวัญชิ้นจริงถูกเตรียมไว้ให้เธอเรียบร้อยแล้วนะคนเก่ง 🤍)
+                        </p>
+                        <button id="real-gift-replay-btn" class="btn-secondary" style="font-size:0.82rem; margin-top:14px; padding:6px 16px;">
+                            ↺ ปิดกล่องไว้เปิดใหม่อีกครั้ง
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Make a Wish Balloon Sky -->
                 <div class="glass-card">
                     <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎈 ปล่อยลูกโป่งคำอธิษฐาน</h2>
                     <p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">
@@ -704,98 +815,35 @@
                     </div>
                 </div>
             </div>
-
-            <!-- TAB 7: 🎨 DOODLE & DRAWING (FOR IPAD & APPLE PENCIL) -->
-            <div id="hub-content-doodle" class="hub-tab-content">
-                <div class="glass-card">
-                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎨 วาดรูป & เขียนการ์ดลายมือ</h2>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px; margin-bottom:12px;">
-                        ใช้ Apple Pencil หรือนิ้วมือวาดรูปเล่น หรือเขียนการ์ดน่ารักๆ ได้เลยนะ 🌸
-                    </p>
-
-                    <div class="doodle-palette-row">
-                        <span class="doodle-color-swatch active" style="background:#ff5e7e;" data-color="#ff5e7e"></span>
-                        <span class="doodle-color-swatch" style="background:#ff85a1;" data-color="#ff85a1"></span>
-                        <span class="doodle-color-swatch" style="background:#b5179e;" data-color="#b5179e"></span>
-                        <span class="doodle-color-swatch" style="background:#4ea8de;" data-color="#4ea8de"></span>
-                        <span class="doodle-color-swatch" style="background:#52b788;" data-color="#52b788"></span>
-                        <span class="doodle-color-swatch" style="background:#ffb703;" data-color="#ffb703"></span>
-                        <span class="doodle-color-swatch" style="background:#2b2d42;" data-color="#2b2d42"></span>
-                    </div>
-
-                    <div class="doodle-canvas-box">
-                        <canvas id="doodle-canvas"></canvas>
-                    </div>
-
-                    <div style="display:flex; justify-content:center; gap:10px; margin-top:12px; flex-wrap:wrap;">
-                        <button id="doodle-clear-btn" class="btn-secondary">🗑️ ล้างกระดาน</button>
-                        <button id="doodle-save-btn" class="btn-romantic">💌 บันทึกการ์ดใบนี้ 💖</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 8: ⏳ TIME CAPSULE 2036 -->
-            <div id="hub-content-capsule" class="hub-tab-content">
-                <div class="glass-card">
-                    <span style="font-size:2.2rem;">⏳✉️🔒</span>
-                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700; margin-top:4px;">ไทม์แคปซูลถึงวัย 30 (ปี 2036)</h2>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:4px; margin-bottom:14px;">
-                        ข้อความลับจากวัย 20 ส่งถึงตัวเองในอีก 10 ปีข้างหน้า จะถูกเก็บล็อกไว้ที่นี่
-                    </p>
-
-                    <div id="capsule-form-box" class="capsule-form">
-                        <textarea id="capsule-input-text" class="capsule-textarea" rows="4" placeholder="เขียนความฝัน คำสัญญา หรือสิ่งที่อยากบอกตัวเองในวัย 30 ปี..."></textarea>
-                        <div style="margin-top:10px;">
-                            <button id="capsule-seal-btn" class="btn-romantic">🔒 ปิดผนึกไทม์แคปซูล</button>
-                        </div>
-                    </div>
-
-                    <div id="capsule-locked-card" class="capsule-locked" style="display:none;">
-                        <div class="capsule-lock-badge">🔒 SEALED UNTIL 10 OCT 2036</div>
-                        <p id="capsule-saved-msg" class="capsule-msg-preview"></p>
-                        <p style="font-size:0.82rem; color:#7d535b; margin-top:8px;">
-                            ไทม์แคปซูลถูกปิดผนึกไว้อย่างปลอดภัยแล้ว อีก 10 ปีข้างหน้าเราจะมาเปิดอ่านด้วยกันนะ 🤍✨
-                        </p>
-                    </div>
-                </div>
-            </div>
         </main>
 
         <!-- =======================================================
-             BOTTOM NAVIGATION BAR
+             BOTTOM NAVIGATION BAR (6 STREAMLINED TABS)
              ======================================================= -->
         <nav id="bottom-nav-bar" class="bottom-nav" style="display:none;">
             <button class="nav-tab-btn active" data-tab="home">
                 <span class="tab-icon">🏠</span>
                 <span>หน้าแรก</span>
             </button>
-            <button class="nav-tab-btn" data-tab="doodle">
-                <span class="tab-icon">🎨</span>
-                <span>วาดการ์ด</span>
+            <button class="nav-tab-btn" data-tab="story">
+                <span class="tab-icon">💌</span>
+                <span>ความในใจ</span>
             </button>
             <button class="nav-tab-btn" data-tab="coupons">
                 <span class="tab-icon">🎫</span>
-                <span>คูปอง</span>
-            </button>
-            <button class="nav-tab-btn" data-tab="capsule">
-                <span class="tab-icon">⏳</span>
-                <span>แคปซูล</span>
-            </button>
-            <button class="nav-tab-btn" data-tab="reasons">
-                <span class="tab-icon">💌</span>
-                <span>20 ข้อ</span>
+                <span>ตามใจแฟน</span>
             </button>
             <button class="nav-tab-btn" data-tab="gallery">
                 <span class="tab-icon">📸</span>
-                <span>รูป&คลิป</span>
+                <span>ความทรงจำ</span>
             </button>
             <button class="nav-tab-btn" data-tab="arcade">
                 <span class="tab-icon">🎮</span>
-                <span>6 เกม</span>
+                <span>ห้องเกม</span>
             </button>
-            <button class="nav-tab-btn" data-tab="wish">
-                <span class="tab-icon">🎈</span>
-                <span>อธิษฐาน</span>
+            <button class="nav-tab-btn" data-tab="gift">
+                <span class="tab-icon">🎁</span>
+                <span>ของขวัญ</span>
             </button>
         </nav>
     </div>
@@ -823,6 +871,7 @@
     <script src="js/fortune.js"></script>
     <script src="js/doodle.js"></script>
     <script src="js/capsule.js"></script>
+    <script src="js/gift.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

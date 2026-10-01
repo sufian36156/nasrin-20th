@@ -1768,3 +1768,142 @@ html, body {
     line-height: 1.6;
     padding: 0 10px;
 }
+
+/* ====================================================================
+   🎁 3D REAL GIFT BOX REVEAL
+   ==================================================================== */
+.gift-box-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0 10px 0;
+}
+
+.gift-box-3d {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    perspective: 400px;
+    transition: transform 0.3s ease;
+    animation: giftFloat 3s ease-in-out infinite;
+}
+
+.gift-box-3d:hover {
+    transform: scale(1.05);
+}
+
+@keyframes giftFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.gift-box-lid {
+    position: absolute;
+    top: 0;
+    left: -5px;
+    width: 110px;
+    height: 30px;
+    background: linear-gradient(135deg, #ff4d6d, #c9184a);
+    border-radius: 8px;
+    box-shadow: 0 4px 14px rgba(201, 24, 74, 0.4);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: left top;
+}
+
+.gift-ribbon-bow {
+    font-size: 1.8rem;
+    position: absolute;
+    top: -20px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.gift-box-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100px;
+    height: 80px;
+    background: linear-gradient(135deg, #ff758f, #e63946);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 24px rgba(230, 57, 70, 0.3);
+    overflow: hidden;
+}
+
+.gift-ribbon-vertical {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 100%;
+    background: linear-gradient(to right, #ffd166, #ffb703);
+}
+
+.gift-ribbon-horizontal {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 16px;
+    background: linear-gradient(to bottom, #ffd166, #ffb703);
+}
+
+/* Open State */
+.gift-box-3d.opened .gift-box-lid {
+    transform: translateY(-42px) rotate(-28deg);
+}
+
+.gift-tap-hint {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-top: 10px;
+    animation: pulseHint 1.8s infinite;
+}
+
+@keyframes pulseHint {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+}
+
+.real-gift-revealed {
+    margin-top: 18px;
+    background: linear-gradient(135deg, #fff9fa 0%, #fff0f3 100%);
+    border: 2px dashed #ff758f;
+    border-radius: 24px;
+    padding: 22px 18px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(255, 94, 126, 0.18);
+}
+
+.card-revealed-anim {
+    animation: revealCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes revealCard {
+    from { opacity: 0; transform: scale(0.85) translateY(16px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.real-gift-sparkle {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+}
+
+.real-gift-clue-box {
+    background: white;
+    border: 1.5px solid #ffccd5;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a2027;
+    line-height: 1.6;
+    box-shadow: inset 0 2px 6px rgba(255, 100, 130, 0.05);
+}

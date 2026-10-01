@@ -36,7 +36,6 @@ class BirthdayApp {
         if (window.polaroidGallery) window.polaroidGallery.init();
         if (window.videoVault) window.videoVault.init();
         if (window.vipCardController) window.vipCardController.init();
-        if (window.fortuneController) window.fortuneController.init();
         if (window.doodleController) window.doodleController.init();
         if (window.capsuleController) window.capsuleController.init();
         if (window.realGiftController) window.realGiftController.init();
@@ -71,6 +70,18 @@ class BirthdayApp {
         document.querySelectorAll('.target-shortname').forEach(el => el.textContent = window.HBD_CONFIG.nickname);
         document.querySelectorAll('.target-engname').forEach(el => el.textContent = window.HBD_CONFIG.englishName);
         document.querySelectorAll('.target-age').forEach(el => el.textContent = window.HBD_CONFIG.age);
+
+        // Easter Egg: แตะโลโก้ด้านบนเพื่อโปรยหัวใจและเสียงกรุ๊งกริ๊ง
+        const badge = document.querySelector('.brand-badge');
+        if (badge) {
+            badge.style.cursor = 'pointer';
+            badge.addEventListener('click', () => {
+                window.soundManager.playChime();
+                if (window.confetti) {
+                    window.confetti({ particleCount: 30, spread: 60, origin: { y: 0.1 } });
+                }
+            });
+        }
     }
 
     // ==========================================

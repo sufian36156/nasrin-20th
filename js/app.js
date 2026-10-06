@@ -28,6 +28,12 @@ class BirthdayApp {
         this.startLiveTickingClock();
 
         if (window.otpController) window.otpController.init();
+        if (window.faceKYC) window.faceKYC.init();
+        if (window.warpController) window.warpController.init();
+        if (window.fireworksShow) window.fireworksShow.init();
+        if (window.heart3D) window.heart3D.init();
+        if (window.balloons3D) window.balloons3D.init();
+        if (window.cinematicLetter) window.cinematicLetter.init();
         if (window.cakeController) window.cakeController.init();
         if (window.scratchController) window.scratchController.init();
         if (window.balloonController) window.balloonController.init();
@@ -178,50 +184,13 @@ class BirthdayApp {
             }, 1200);
         };
 
-        // จาก Milestone ไปที่ เค้กวันเกิด
-        const toCakeBtn = document.getElementById('milestone-to-cake-btn');
-        if (toCakeBtn) {
-            toCakeBtn.addEventListener('click', () => {
+        // จาก Milestone ไปที่ สแกนหน้ายืนยันตัวตน
+        const toScanBtn = document.getElementById('milestone-to-scan-btn');
+        if (toScanBtn) {
+            toScanBtn.addEventListener('click', () => {
                 window.soundManager.playSwoosh();
-                this.goToCeremonyScene('scene-cake');
-                if (window.cakeController) window.cakeController.requestMicrophone();
-            });
-        }
-
-        // จาก เค้ก ไปที่ จดหมาย Wax Seal
-        const toLetterBtn = document.getElementById('cake-to-letter-btn');
-        if (toLetterBtn) {
-            toLetterBtn.addEventListener('click', () => {
-                window.soundManager.playSwoosh();
-                this.goToCeremonyScene('scene-letter');
-            });
-        }
-
-        // แตะตราครั่งเพื่อเปิดจดหมาย
-        const waxSeal = document.getElementById('wax-seal-stamp');
-        const letterCard = document.getElementById('unfolded-letter');
-        const ticketBox = document.getElementById('golden-ticket-box');
-
-        if (waxSeal) {
-            waxSeal.addEventListener('click', () => {
-                window.soundManager.playPop(800);
-                window.soundManager.playVictory();
-                waxSeal.classList.add('broken');
-
-                setTimeout(() => {
-                    waxSeal.parentElement.style.display = 'none';
-                    if (letterCard) letterCard.style.display = 'block';
-                    if (ticketBox) ticketBox.style.display = 'block';
-                    if (window.confetti) window.confetti({ particleCount: 60, spread: 70 });
-                }, 500);
-            });
-        }
-
-        // แตะบัตรทองคำวิเศษเพื่อเปิดประตูมิติสู่ Wonderland
-        const goldenTicket = document.getElementById('golden-ticket-card');
-        if (goldenTicket) {
-            goldenTicket.addEventListener('click', () => {
-                this.triggerMagicalPortalWarp();
+                this.goToCeremonyScene('scene-scan');
+                if (window.faceKYC) window.faceKYC.start();
             });
         }
     }
@@ -278,8 +247,8 @@ class BirthdayApp {
         if (this.timelineAnimFrame) cancelAnimationFrame(this.timelineAnimFrame);
 
         const slider = document.getElementById('timeline-age-slider');
-        const toCakeBtn = document.getElementById('milestone-to-cake-btn');
-        if (toCakeBtn) toCakeBtn.style.display = 'none';
+        const toScanBtn = document.getElementById('milestone-to-scan-btn');
+        if (toScanBtn) toScanBtn.style.display = 'none';
 
         const startAge = 1.0;
         const targetAge = 20.0;
@@ -316,8 +285,8 @@ class BirthdayApp {
                 if (window.confetti) {
                     window.confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
                 }
-                if (toCakeBtn) {
-                    toCakeBtn.style.display = 'inline-flex';
+                if (toScanBtn) {
+                    toScanBtn.style.display = 'inline-flex';
                 }
             }
         };
@@ -326,7 +295,7 @@ class BirthdayApp {
 
         // ให้ปุ่มแสดงชัวร์ๆ เผื่อไม่อยากรอ
         setTimeout(() => {
-            if (toCakeBtn) toCakeBtn.style.display = 'inline-flex';
+            if (toScanBtn) toScanBtn.style.display = 'inline-flex';
         }, 3500);
     }
 
@@ -335,7 +304,7 @@ class BirthdayApp {
         const daysEl = document.getElementById('counter-days');
         const hoursEl = document.getElementById('counter-hours');
         const storyBox = document.getElementById('timeline-story-box');
-        const toCakeBtn = document.getElementById('milestone-to-cake-btn');
+        const toScanBtn = document.getElementById('milestone-to-scan-btn');
 
         const days = Math.round(age * 365.25);
         const hours = days * 24;
@@ -357,8 +326,8 @@ class BirthdayApp {
         if (daysEl) daysEl.textContent = days.toLocaleString();
         if (hoursEl) hoursEl.textContent = hours.toLocaleString();
 
-        if (age >= 19.9 && toCakeBtn) {
-            toCakeBtn.style.display = 'inline-flex';
+        if (age >= 19.9 && toScanBtn) {
+            toScanBtn.style.display = 'inline-flex';
         }
 
         if (storyBox) {

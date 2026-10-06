@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/ipad.css">
+    <link rel="stylesheet" href="css/journey.css">
 
     <!-- Canvas Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
@@ -174,9 +175,140 @@
                         <button id="timeline-replay-btn" class="btn-secondary" style="font-size:0.85rem; padding:8px 16px;">
                             ↺ ดูการเติบโตใหม่อีกครั้ง
                         </button>
-                        <button id="milestone-to-cake-btn" class="btn-romantic" style="display:none;">
-                            ไปเป่าเค้กวันเกิด 20 ขวบกัน! 🎂✨
+                        <button id="milestone-to-scan-btn" class="btn-romantic" style="display:none;">
+                            ไปยืนยันตัวตนเจ้าของวันเกิด 📸✨
                         </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1.3 Face KYC Verification & Childhood Morph Scene -->
+        <section id="scene-scan" class="ceremony-scene">
+            <div class="glass-card">
+                <span style="font-size:2rem;">📸👑✨</span>
+                <h2 style="font-size:1.45rem; font-weight:700; color:var(--primary-dark); margin-top:4px;">
+                    ยืนยันตัวตนเจ้าของวันเกิด (Face Verification) 🌸
+                </h2>
+                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:2px;">
+                    ระบบตรวจจับความน่ารักเพื่อเข้าสู่งานฉลองวันเกิด 20 ขวบ
+                </p>
+
+                <div class="kyc-container" style="margin-top:14px;">
+                    <div id="kyc-step-pill" class="kyc-step-pill">
+                        <span>👤</span> <span>ท่าที่ 1/7: มองตรงเข้าหากรอบกล้องนะคนเก่ง</span>
+                    </div>
+
+                    <div class="kyc-progress-bar-wrap">
+                        <div id="kyc-progress-fill" class="kyc-progress-fill"></div>
+                    </div>
+
+                    <div class="kyc-scanner-frame">
+                        <div class="kyc-corner tl"></div>
+                        <div class="kyc-corner tr"></div>
+                        <div class="kyc-corner bl"></div>
+                        <div class="kyc-corner br"></div>
+                        <div class="kyc-laser"></div>
+
+                        <!-- Live camera feed -->
+                        <video id="kyc-video-feed" class="kyc-video-feed" autoplay playsinline muted></video>
+
+                        <!-- Mock photo feed if webcam is not enabled -->
+                        <img id="kyc-mock-feed" class="kyc-mock-feed" src="assets/images/kyc/current_photo.jpg" alt="Nasrin Photo" style="display:none;" onerror="this.onerror=null; this.src='assets/images/polaroids/1.jpeg';">
+
+                        <!-- Childhood Photo (morphs in after stamp) -->
+                        <img id="kyc-childhood-img" class="kyc-childhood-img" src="assets/images/kyc/childhood.jpg" alt="Nasrin Childhood" onerror="this.onerror=null; this.src='assets/images/nasrin_childhood.jpg';">
+
+                        <!-- Approved Stamp -->
+                        <div id="kyc-stamp-overlay" class="kyc-stamp-overlay">
+                            <div>สำเนาถูกต้อง ✅</div>
+                            <div style="font-size:0.85rem; font-weight:600; color:#c9184a; margin-top:2px;">ความน่ารักผ่านเกณฑ์ 100% 💕</div>
+                        </div>
+                    </div>
+
+                    <div id="kyc-hint-text" style="font-size:0.9rem; color:#854d56; text-align:center; min-height:44px;">
+                        ทำตามคำสั่งน่ารักๆ หรือแตะปุ่มด้านล่างเพื่อบันทึกท่า ✨
+                    </div>
+
+                    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:4px;">
+                        <button id="kyc-action-btn" class="btn-secondary" style="font-size:0.95rem; padding:10px 22px;">
+                            📸 บันทึกท่านี้ ✨
+                        </button>
+                        <button id="kyc-proceed-btn" class="btn-romantic" style="display:none;">
+                            วาร์ปสู่มิติความรัก 🌌💖
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1.4 Dimensional Warp & Giant Pulsing Heart Scene -->
+        <section id="scene-warp" class="ceremony-scene">
+            <div class="warp-sky-stage">
+                <span style="font-size:2.2rem; filter:drop-shadow(0 0 16px #ff758f);">🌌💫</span>
+                <h2 style="font-size:1.5rem; font-weight:700; color:#ffe3e8; margin-top:6px; text-shadow:0 0 12px #ff4d6d;">
+                    จุดศูนย์กลางแห่งความรัก 🤍
+                </h2>
+                <p style="font-size:0.9rem; color:#f8edeb; margin-top:2px; text-align:center;">
+                    ส่งพลังรักเพื่อจุดประกายค่ำคืนวันเกิดครบรอบ 20 ปี
+                </p>
+
+                <div id="giant-heart-wrapper" class="giant-heart-wrapper" title="กดค้าง 3 วินาที">
+                    <svg class="charge-ring-svg" viewBox="0 0 160 160">
+                        <circle class="charge-ring-bg" cx="80" cy="80" r="70"></circle>
+                        <circle id="charge-ring-fill" class="charge-ring-fill" cx="80" cy="80" r="70"></circle>
+                    </svg>
+                    <div class="giant-heart-btn">💖</div>
+                </div>
+
+                <div id="warp-heart-hint" style="font-size:0.95rem; color:#ffd1dc; text-align:center; margin-top:12px; font-weight:500;">
+                    แตะหัวใจค้างไว้ 3 วินาที เพื่อปลดล็อกพลังแห่งความรัก 💖
+                </div>
+            </div>
+        </section>
+
+        <!-- 1.5 Night Sky Fireworks Display Scene -->
+        <section id="scene-fireworks" class="ceremony-scene">
+            <div class="fireworks-canvas-container">
+                <canvas id="fireworks-canvas"></canvas>
+                <div id="fireworks-status-badge" class="fireworks-status-badge">
+                    🎆 กำลังเตรียมยิงพลุอวยพรขึ้นสู่ท้องฟ้า...
+                </div>
+            </div>
+        </section>
+
+        <!-- 1.6 3D Photo Heart Cloud Scene -->
+        <section id="scene-heart3d" class="ceremony-scene">
+            <div class="glass-card" style="padding:16px;">
+                <h2 style="font-size:1.35rem; font-weight:700; color:var(--primary-dark);">
+                    หัวใจแห่งความทรงจำ 3D 💎✨
+                </h2>
+                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:2px;">
+                    รวมช่วงเวลาดีๆ ของ ณัสริญ ไว้ในหัวใจดวงเดียว (หมุนเลื่อนรอบทิศได้)
+                </p>
+
+                <div id="heart3d-stage" class="heart3d-stage">
+                    <div id="heart3d-pivot" class="heart3d-pivot"></div>
+                    <div id="heart3d-hint" class="heart3d-hint-box">
+                        👆 ปัดเลื่อนเพื่อหมุน 3D • 💥 ดับเบิลแท็บ 2 ครั้งเพื่อให้หัวใจแตกกระจาย!
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 1.7 20 Floating 3D Balloons Scene -->
+        <section id="scene-balloons" class="ceremony-scene">
+            <div class="glass-card" style="padding:16px;">
+                <h2 style="font-size:1.35rem; font-weight:700; color:var(--primary-dark);">
+                    20 ความทรงจำลอยฟ้า 🎈✨
+                </h2>
+                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:2px;">
+                    ฉลอง 20 ขวบด้วย 20 ภาพความสุข ลอยขึ้นมาทีละ 5 ลูก
+                </p>
+
+                <div id="balloons-stage" class="balloons-stage">
+                    <div class="balloon-hud">
+                        <span id="balloons-counter-text">ลูกโป่งความทรงจำ: 0 / 20</span>
                     </div>
                 </div>
             </div>
@@ -398,48 +530,56 @@
                 </div>
 
                 <div style="margin-top:18px;">
-                    <button id="cake-to-letter-btn" class="btn-romantic" style="display:none;">
-                        เปิดอ่านจดหมายลับ 💌
+                    <button id="cake-to-letter-btn" class="btn-romantic" style="display:none;" onclick="window.app.enterWonderlandHub();">
+                        เข้าสู่ Wonderland 🎡✨
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- 1.4 Wax Seal Letter Scene & Golden VIP Ticket -->
+        <!-- 1.8 Cinematic Wax Seal Letter Scene & Golden VIP Ticket -->
         <section id="scene-letter" class="ceremony-scene">
-            <div class="glass-card">
-                <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">Secret Birthday Letter ✉️</h2>
-                <p style="font-size:0.88rem; color:var(--text-muted); margin-top:2px;">แตะที่ตราประทับสีแดงเพื่อเปิดผนึกจดหมาย</p>
+            <div class="glass-card letter-experience-wrap">
+                <span style="font-size:2rem;">💌✨</span>
+                <h2 style="font-size:1.4rem; color:var(--primary-dark); font-weight:700; margin-top:4px;">
+                    จดหมายฉลองวันเกิด 20 ขวบ ✉️
+                </h2>
+                <p style="font-size:0.88rem; color:var(--text-muted); margin-top:2px;">
+                    แตะที่ตราประทับสีแดงเพื่อเปิดผนึกจดหมายจากใจเฟียน
+                </p>
 
-                <div class="envelope-box">
-                    <div id="wax-seal-stamp" class="wax-seal" title="แตะเพื่อเปิดผนึก">
+                <!-- Vintage Wax Seal Envelope -->
+                <div id="vintage-envelope-box" class="vintage-envelope" title="แตะตราประทับเพื่อเปิดจดหมาย">
+                    <div id="wax-seal-btn" class="wax-seal-btn" title="แตะเพื่อเปิดผนึก">
                         <span>💌</span>
                     </div>
-                </div>
-
-                <div id="unfolded-letter" style="display:none; text-align:left; margin-top:16px; background:#fffbfb; border:1.5px solid #ffe1e8; border-radius:20px; padding:22px;">
-                    <h3 style="color:#d83a56; font-size:1.2rem; margin-bottom:12px;">แด่... ณัสริญ มะสะ (Nasrin Masa) 🌸</h3>
-                    <p style="font-size:0.95rem; line-height:1.8; color:#4a2f33; margin-bottom:12px;">
-                        สุขสันต์วันเกิดครบรอบ 20 ปีนะ ณัสริญ ✨<br><br>
-                        เลข 20 อาจจะดูเหมือนตัวเลขที่โตขึ้นอีกก้าว มีเรื่องราวใหม่ๆ ให้เรียนรู้ แต่ไม่ว่าจะผ่านไปกี่ปี เธอก็ยังเป็นคนน่ารัก สดใส และเป็นรอยยิ้มที่พิเศษที่สุดในสายตาเค้าเสมอไม่เคยเปลี่ยน<br><br>
-                        ขอบคุณสำหรับทุกความทรงจำ ทุกการเดินทาง และทุกช่วงเวลาที่เราได้อยู่ข้างๆ กัน ขอบคุณที่โลกนี้ส่งเธอมาเป็นของขวัญที่ดีที่สุดให้เค้า<br><br>
-                        ขอให้ในวัย 20 ขวบนี้ เป็นปีที่ใจดีกับณัสริญที่สุด ขอให้สิ่งที่เธอตั้งใจสำเร็จทุกอย่าง ได้กินของอร่อยๆ นอนหลับฝันดีในทุกคืน และจำไว้เสมอนะว่า ไม่ว่าเธอจะเจออะไร จะมีเค้าคอยจับมือและอยู่ตรงนี้ข้างๆ เธอตลอดไป
-                    </p>
-                    <div style="text-align:right; font-weight:600; color:#ff5e7e; margin-top:14px;">
-                        จากคนที่รักเธอที่สุดในจักรวาล 💖
+                    <div style="position:absolute; bottom:18px; font-size:0.85rem; color:#854d56; font-weight:500;">
+                        FOR NASRIN MASA ONLY 💖
                     </div>
                 </div>
 
-                <!-- Golden VIP Ticket (ปรากฏขึ้นหลังอ่านจดหมาย) -->
-                <div id="golden-ticket-box" class="golden-ticket-box">
-                    <div id="golden-ticket-card" class="golden-ticket ticket-floating">
-                        <div class="ticket-header">⭐ SPECIAL VIP INVITATION ⭐</div>
-                        <div class="ticket-title">บัตรทองคำวิเศษ สู่ Wonderland 🎡✨</div>
-                        <p style="font-size:0.85rem; color:#6b4404; margin-top:6px;">
-                            ตั๋วใบนี้เป็นของ ณัสริญ มะสะ เพียงคนเดียวในโลก<br>
-                            พร้อมเปิดประตูมิติเข้าสู่ดินแดนแห่งความสุขหรือยัง?
+                <!-- Unfolded Parchment Letter -->
+                <div id="parchment-letter" class="parchment-letter">
+                    <div id="letter-paragraphs-container"></div>
+                </div>
+
+                <!-- Golden VIP Ticket (ปรากฏหลังอ่านจดหมายจบ) -->
+                <div id="golden-pass-box" class="golden-pass-box">
+                    <div id="golden-ticket-vip" class="golden-ticket-vip" title="แตะเพื่อเข้าสู่ Wonderland">
+                        <div class="golden-shimmer-sweep"></div>
+                        <div style="font-size:0.85rem; font-weight:700; letter-spacing:1px; color:#b7791f; text-transform:uppercase;">
+                            ⭐ OFFICIAL VIP GOLDEN PASS ⭐
+                        </div>
+                        <h3 style="font-size:1.3rem; font-weight:800; color:#5c3800; margin:6px 0;">
+                            บัตรทองคำวิเศษ สู่ WONDERLAND 🎡✨
+                        </h3>
+                        <p style="font-size:0.88rem; color:#744210; line-height:1.5;">
+                            ยินดีต้อนรับ <strong>ณัสริญ มะสะ</strong> เข้าสู่ดินแดนแห่งความสุข<br>
+                            ของขวัญ มินิเกม คูปอง และความทรงจำรอเธออยู่ด้านในนะ!
                         </p>
-                        <div class="ticket-btn-tag">แตะบัตรเพื่อเปิดประตูมิติ 🌌➔</div>
+                        <div style="display:inline-block; margin-top:10px; background:#fff; color:#b7791f; padding:8px 20px; border-radius:24px; font-weight:700; font-size:0.9rem; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                            แตะบัตรเพื่อเปิดประตูมิติ 🌌➔
+                        </div>
                     </div>
                 </div>
             </div>
@@ -488,6 +628,18 @@
                     <p style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">
                         ยินดีต้อนรับสู่โลกวันเกิด 20 ขวบของ ณัสริญ มีคูปอง เกม วาดรูป และความทรงจำรอให้เธอเล่นเพลินๆ ได้ตลอดเวลาเลยนะ!
                     </p>
+                </div>
+
+                <!-- 🎂 Bento Birthday Cake Card -->
+                <div class="glass-card" style="margin-bottom:18px; text-align:center;">
+                    <span style="font-size:2.2rem;">🎂🕯️✨</span>
+                    <h3 style="font-size:1.15rem; color:var(--primary-dark); font-weight:700; margin-top:4px;">เค้กวันเกิด Bento Cake เกาหลี 20 ขวบ</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin:4px 0 12px 0;">
+                        อธิษฐาน เป่าเทียน หรือตัดเค้กวันเกิดเล่นได้ตลอดเวลาเลยนะ
+                    </p>
+                    <button class="btn-romantic" onclick="window.app.goToCeremonyScene('scene-cake'); if(window.cakeController) window.cakeController.requestMicrophone();">
+                        🎂 ไปเป่าเค้กวันเกิด 20 ขวบ
+                    </button>
                 </div>
 
                 <!-- 🪪 VIP Citizen Resident Card -->
@@ -862,6 +1014,12 @@
     <script src="js/doodle.js"></script>
     <script src="js/capsule.js"></script>
     <script src="js/gift.js"></script>
+    <script src="js/scan.js"></script>
+    <script src="js/warp.js"></script>
+    <script src="js/fireworks.js"></script>
+    <script src="js/heart3d.js"></script>
+    <script src="js/balloons3d.js"></script>
+    <script src="js/letter.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

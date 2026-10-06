@@ -192,5 +192,83 @@ window.HBD_CONFIG = {
         hintClue: "ของขวัญตัวจริงไม่ได้อยู่ในหน้าจอนะครับ... ลองหันมามองคนข้างๆ แล้วกอดหนึ่งทีสิ! 💖",
         secondaryClue: "(ของขวัญชิ้นจริงถูกเตรียมไว้ให้เธอเรียบร้อยแล้วนะคนเก่ง 🤍)",
         icon: "🎁"
+    },
+
+    // ==========================================
+    // 📸 ระบบสแกนหน้ายืนยันตัวตน (FACE KYC & MORPH)
+    // ==========================================
+    kyc: {
+        currentPhoto: "assets/images/kyc/current_photo.jpg",
+        childhoodPhoto: "assets/images/kyc/childhood.jpg",
+        steps: [
+            { id: "straight", icon: "👤", text: "มองตรงเข้าหากรอบกล้องนะคนเก่ง", actionName: "มองตรง" },
+            { id: "left", icon: "👈", text: "เอียงแก้มซ้ายหน่อยน้า", actionName: "หันซ้าย" },
+            { id: "right", icon: "👉", text: "เอียงแก้มขวาโชว์มุมสวย", actionName: "หันขวา" },
+            { id: "updown", icon: "↕️", text: "เงยหน้าแล้วก้มยิ้มหวาน", actionName: "ก้ม/เงย" },
+            { id: "mouth_open", icon: "😮", text: "อ้าปากกว้างงง น่าร้ากก", actionName: "อ้าปาก" },
+            { id: "mouth_close", icon: "🤐", text: "ปิดปากยิ้มหวานๆ ให้เค้าหน่อย", actionName: "ปิดปาก" },
+            { id: "blink", icon: "😉", text: "กะพริบตาปิ๊งๆ 2 ที มองตรง!", actionName: "กะพริบตา" }
+        ],
+        stampTitle: "สำเนาถูกต้อง",
+        stampSubtitle: "ยืนยันตัวตนสำเร็จ • น่ารัก 100% 💕"
+    },
+
+    // ==========================================
+    // 💎 รูปภาพหัวใจ 3D (3D PHOTO HEART - 12 รูป)
+    // ==========================================
+    heart3dPhotos: [
+        "assets/images/heart3d/heart_1.jpg",
+        "assets/images/heart3d/heart_2.jpg",
+        "assets/images/heart3d/heart_3.jpg",
+        "assets/images/heart3d/heart_4.jpg",
+        "assets/images/heart3d/heart_5.jpg",
+        "assets/images/heart3d/heart_6.jpg",
+        "assets/images/heart3d/heart_7.jpg",
+        "assets/images/heart3d/heart_8.jpg",
+        "assets/images/heart3d/heart_9.jpg",
+        "assets/images/heart3d/heart_10.jpg",
+        "assets/images/heart3d/heart_11.jpg",
+        "assets/images/heart3d/heart_12.jpg"
+    ],
+
+    // ==========================================
+    // 🎈 รูปภาพลูกโป่ง 3D ลอยฟ้า (20 FLOATING BALLOONS - 20 รูป)
+    // ==========================================
+    balloonPhotos: [
+        "assets/images/balloons/balloon_1.jpg",
+        "assets/images/balloons/balloon_2.jpg",
+        "assets/images/balloons/balloon_3.jpg",
+        "assets/images/balloons/balloon_4.jpg",
+        "assets/images/balloons/balloon_5.jpg",
+        "assets/images/balloons/balloon_6.jpg",
+        "assets/images/balloons/balloon_7.jpg",
+        "assets/images/balloons/balloon_8.jpg",
+        "assets/images/balloons/balloon_9.jpg",
+        "assets/images/balloons/balloon_10.jpg",
+        "assets/images/balloons/balloon_11.jpg",
+        "assets/images/balloons/balloon_12.jpg",
+        "assets/images/balloons/balloon_13.jpg",
+        "assets/images/balloons/balloon_14.jpg",
+        "assets/images/balloons/balloon_15.jpg",
+        "assets/images/balloons/balloon_16.jpg",
+        "assets/images/balloons/balloon_17.jpg",
+        "assets/images/balloons/balloon_18.jpg",
+        "assets/images/balloons/balloon_19.jpg",
+        "assets/images/balloons/balloon_20.jpg"
+    ],
+
+    // ==========================================
+    // 💌 ข้อความจดหมายจริงจากใจเฟียน (LETTER CONTENT)
+    // ==========================================
+    letterContent: {
+        to: "แด่ ณัสริญ มะสะ (Nasrin Masa)",
+        paragraphs: [
+            "Happy 20th Birthday น่ะคนเก่ง\nในที่สุดรินก็เดินทางมา 20 ปีแล้วน่ะ ว่าไปก็เร็วเหมือนกันน้าา",
+            "เฟียนอยากขอบคุณรินมากๆ รินเก่งมากเลยน่ะรู้มั้ยถึงจะชมไม่เก่ง แต่ภูมิใจในตัวรินอยู๋ตลอดน่ะ\nรินผ่านอะไรมาเยอะ มีท้อ มีเศร้า มีทุกข์ มีสุข ตลอดที่ผ่านมา รินผ่านมาได้ รินเก่งมากๆแล้วน่ะ\nตลอดที่ผ่าน รินอาจจะเจออะไรที่หนักหน่วงมา เฟียนไม่รู้ แต่เฟียนพร้อมให้รินระบายตลอดน้าา",
+            "ตลอดที่ผ่านมา ตั้งแต่เฟียนคบกับริน เฟียนรู้สึกโชคดีมากเลยน่ะ ที่รินทำให้เฟียนกล้าแสดงออก\nกล้าทำในสิ่งที่ไม่เคยทำ ขอบคุณรินมากๆน้าที่ ทำให้เฟียนเปลี่ยนเป็นคนล่ะคน ภูมิใจมั๊กๆๆๆๆๆๆ\nอาจจะมีทะเลาะกัน ไม่เข้าใจกัน หนักสุดคืออีโก้สูง ต้องขอโทษษมากกกกกๆเย้ยน้าาาาาาาาาาๆ",
+            "วันนี้รินก็ อายุครบ 20 ปีแล้วน่ะ เฟียนอยากจะขอให้ริน มีสุขภาพที่แข็งแรง ไม่มีเข้าโรงบาล\nหากไกลจากโรค หากไกลกับสิ่งที่ไม่ดี ขอให้รินเจอสังคมที่ดี มีเพื่อนที่ไม่หักลังกัน มีชีวิตที่\nสดใจ มีการมีงาน มีเงิน สุดท้ายแล้วขอให้ริน ดูแลแม่ ดูแลครอบครัวให้ดีน้าาา รักน่ะ"
+        ],
+        highlight: "More than words can say",
+        closing: "Happy Birthday, my love...."
     }
 };

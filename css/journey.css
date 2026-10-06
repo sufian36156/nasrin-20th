@@ -1,0 +1,582 @@
+/* ==========================================================================
+   ✨ NASRIN 20TH BIRTHDAY — NEW INTERACTIVE JOURNEY STYLES
+   ========================================================================== */
+
+/* -------------------------------------------------------------
+   1. FACE KYC VERIFICATION (สแกนหน้ายืนยันตัวตน)
+   ------------------------------------------------------------- */
+.kyc-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.kyc-scanner-frame {
+    position: relative;
+    width: 280px;
+    height: 340px;
+    border-radius: 40px;
+    background: linear-gradient(145deg, #1f1218, #2a1520);
+    box-shadow: 0 16px 40px rgba(255, 94, 126, 0.25), inset 0 0 20px rgba(255, 94, 126, 0.3);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgba(255, 182, 193, 0.6);
+}
+
+.kyc-video-feed, .kyc-mock-feed, .kyc-childhood-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.kyc-childhood-img {
+    opacity: 0;
+    z-index: 4;
+}
+
+/* Cyber-cute scanning corner brackets */
+.kyc-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #ff758f;
+    z-index: 5;
+    pointer-events: none;
+}
+.kyc-corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; border-top-left-radius: 12px; }
+.kyc-corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; border-top-right-radius: 12px; }
+.kyc-corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; border-bottom-left-radius: 12px; }
+.kyc-corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; border-bottom-right-radius: 12px; }
+
+/* Laser Scanner Bar */
+.kyc-laser {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #ff3366, #ff758f, transparent);
+    box-shadow: 0 0 16px #ff3366, 0 0 8px #ff758f;
+    z-index: 6;
+    animation: laserScan 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes laserScan {
+    0% { top: 5%; opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { top: 92%; opacity: 0.3; }
+}
+
+/* KYC Step Indicator Pill */
+.kyc-step-pill {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 2px solid #ffb3c1;
+    border-radius: 24px;
+    padding: 8px 18px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #c9184a;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 18px rgba(255, 94, 126, 0.2);
+    animation: pulseSoft 2s infinite ease-in-out;
+}
+
+.kyc-progress-bar-wrap {
+    width: 280px;
+    height: 8px;
+    background: #ffe3e8;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.kyc-progress-fill {
+    height: 100%;
+    width: 14%;
+    background: linear-gradient(90deg, #ff758f, #ff4d6d);
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+/* Stamp Modal / Overlay */
+.kyc-stamp-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0) rotate(-15deg);
+    border: 4px dashed #ff2a6d;
+    background: rgba(255, 240, 243, 0.96);
+    color: #d90429;
+    padding: 12px 24px;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 1.3rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(217, 4, 41, 0.4);
+    z-index: 10;
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.kyc-stamp-overlay.active {
+    transform: translate(-50%, -50%) scale(1) rotate(-8deg);
+}
+
+/* -------------------------------------------------------------
+   2. DIMENSIONAL WARP & GIANT PULSING HEART (วาร์ปมิติ & หัวใจยักษ์)
+   ------------------------------------------------------------- */
+.warp-sky-stage {
+    position: relative;
+    width: 100%;
+    min-height: 480px;
+    background: radial-gradient(ellipse at center, #2b1055 0%, #0d061a 100%);
+    border-radius: 28px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    color: white;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.giant-heart-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 24px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+.giant-heart-btn {
+    font-size: 5rem;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 24px #ff3366);
+    animation: heartPulseRhythm 1.4s infinite ease-in-out;
+}
+.giant-heart-wrapper.holding .giant-heart-btn {
+    transform: scale(1.18);
+    animation: none;
+}
+
+@keyframes heartPulseRhythm {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+    60% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* Circular Charge Progress Ring */
+.charge-ring-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+    z-index: 1;
+}
+.charge-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.15);
+    stroke-width: 6;
+}
+.charge-ring-fill {
+    fill: none;
+    stroke: #ff4d6d;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    transition: stroke-dashoffset 0.1s linear;
+    filter: drop-shadow(0 0 8px #ff4d6d);
+}
+
+/* -------------------------------------------------------------
+   3. NIGHT SKY FIREWORKS (พลุไฟกลางฟ้าราตรี 3 นัด)
+   ------------------------------------------------------------- */
+.fireworks-canvas-container {
+    position: relative;
+    width: 100%;
+    height: 480px;
+    border-radius: 28px;
+    background: radial-gradient(circle at 50% 20%, #1a0826 0%, #080312 100%);
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+}
+
+#fireworks-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.fireworks-status-badge {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* -------------------------------------------------------------
+   4. 3D PHOTO HEART (หัวใจ 3D มวลรวมภาพ)
+   ------------------------------------------------------------- */
+.heart3d-stage {
+    position: relative;
+    width: 100%;
+    height: 460px;
+    perspective: 1000px;
+    background: radial-gradient(circle at center, #fff0f3 0%, #ffe3e8 100%);
+    border-radius: 28px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    box-shadow: 0 12px 36px rgba(255, 94, 126, 0.15);
+}
+
+.heart3d-pivot {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+.heart3d-card {
+    position: absolute;
+    width: 60px;
+    height: 75px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    border: 2px solid #ffffff;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.6s ease;
+    user-select: none;
+}
+
+.heart3d-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.heart3d-hint-box {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(6px);
+    border: 1px solid #ffccd5;
+    color: #c9184a;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(255, 94, 126, 0.15);
+    white-space: nowrap;
+}
+
+/* -------------------------------------------------------------
+   5. 20 FLOATING 3D BALLOONS (ลูกโป่ง 3D 20 ลูก)
+   ------------------------------------------------------------- */
+.balloons-stage {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    background: linear-gradient(180deg, #d8f3dc 0%, #e8f5e9 30%, #fff0f3 100%);
+    border-radius: 28px;
+    overflow: hidden;
+    touch-action: none;
+    box-shadow: 0 16px 40px rgba(82, 183, 136, 0.15);
+}
+
+.balloon-item {
+    position: absolute;
+    width: 80px;
+    height: 100px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    z-index: 10;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.15));
+    transition: transform 0.1s ease-out;
+}
+.balloon-item:active {
+    cursor: grabbing;
+}
+
+.balloon-body {
+    position: relative;
+    width: 80px;
+    height: 95px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    background: #ffffff;
+    border: 2px solid #ffffff;
+    box-shadow: inset -6px -6px 14px rgba(0, 0, 0, 0.12), inset 6px 6px 14px rgba(255, 255, 255, 0.8);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.balloon-body img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+/* 3D Balloon Specular Highlight */
+.balloon-highlight {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    width: 18px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.65);
+    transform: rotate(-25deg);
+    pointer-events: none;
+}
+
+/* Balloon Knot and String */
+.balloon-knot {
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 6px;
+    background: #ff758f;
+    border-radius: 2px;
+}
+.balloon-string {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    width: 1.5px;
+    height: 40px;
+    background: rgba(150, 150, 150, 0.5);
+    transform-origin: top center;
+    animation: stringWave 2s infinite ease-in-out alternate;
+}
+@keyframes stringWave {
+    0% { transform: rotate(-5deg); }
+    100% { transform: rotate(5deg); }
+}
+
+.balloon-hud {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid #b7e4c7;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2d6a4f;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(45, 106, 79, 0.12);
+}
+
+/* -------------------------------------------------------------
+   6. CINEMATIC LETTER & WAX SEAL (ซองจดหมายเปิดผนึก)
+   ------------------------------------------------------------- */
+.letter-experience-wrap {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.vintage-envelope {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: 240px;
+    margin: 20px auto;
+    background: linear-gradient(135deg, #f7ede2, #f5cac3);
+    border-radius: 18px;
+    box-shadow: 0 16px 40px rgba(245, 202, 195, 0.4), 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    perspective: 800px;
+    transition: transform 0.4s ease;
+}
+.vintage-envelope:hover {
+    transform: translateY(-4px);
+}
+
+.wax-seal-btn {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #e63946, #9d0208);
+    box-shadow: 0 8px 24px rgba(157, 2, 8, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10;
+    border: 2px solid #ffccd5;
+    animation: pulseSoft 2.2s infinite ease-in-out;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+.wax-seal-btn:hover {
+    transform: scale(1.08);
+    filter: brightness(1.1);
+}
+
+/* Parchment Letter Paper */
+.parchment-letter {
+    display: none;
+    background: #fffdfa;
+    border: 1px solid #f3d5b5;
+    border-radius: 24px;
+    padding: 30px 24px;
+    box-shadow: 0 16px 48px rgba(184, 115, 51, 0.15);
+    text-align: left;
+    margin-top: 16px;
+    animation: unfoldPaper 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+@keyframes unfoldPaper {
+    0% { opacity: 0; transform: scaleY(0.4) translateY(-30px); }
+    100% { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+.letter-recipient-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #9d0208;
+    margin-bottom: 18px;
+    border-bottom: 2px dashed #f5cac3;
+    padding-bottom: 10px;
+}
+
+.letter-para {
+    font-size: 0.98rem;
+    line-height: 1.85;
+    color: #4a3538;
+    margin-bottom: 16px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.letter-para.shown {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.letter-highlight-text {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-style: italic;
+    color: #e63946;
+    margin: 20px 0 10px 0;
+    text-align: center;
+}
+
+.letter-closing-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #d90429;
+    text-align: right;
+    margin-top: 16px;
+}
+
+/* Golden VIP Ticket Card */
+.golden-pass-box {
+    display: none;
+    margin-top: 28px;
+    text-align: center;
+    animation: goldGlowIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes goldGlowIn {
+    0% { opacity: 0; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.golden-ticket-vip {
+    position: relative;
+    background: linear-gradient(135deg, #ffe57f 0%, #ffc107 40%, #ff9800 80%, #ffd54f 100%);
+    border: 2px solid #fff;
+    border-radius: 20px;
+    padding: 22px 20px;
+    color: #5c3800;
+    box-shadow: 0 16px 40px rgba(255, 193, 7, 0.4), inset 0 2px 8px rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.golden-ticket-vip:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 48px rgba(255, 193, 7, 0.55);
+}
+
+.golden-shimmer-sweep {
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transform: rotate(25deg);
+    animation: shimmerSweep 2.8s infinite;
+    pointer-events: none;
+}
+@keyframes shimmerSweep {
+    0% { left: -70%; }
+    100% { left: 160%; }
+}

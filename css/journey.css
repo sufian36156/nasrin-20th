@@ -107,16 +107,16 @@
 
 .kyc-scanner-frame {
     position: relative;
-    width: 280px;
-    height: 340px;
-    border-radius: 40px;
-    background: linear-gradient(145deg, #1f1218, #2a1520);
-    box-shadow: 0 16px 40px rgba(255, 94, 126, 0.25), inset 0 0 20px rgba(255, 94, 126, 0.3);
+    width: 290px;
+    height: 360px;
+    border-radius: 44px;
+    background: radial-gradient(circle at 50% 50%, #1a0b16 0%, #0d050c 100%);
+    box-shadow: 0 20px 50px rgba(255, 42, 109, 0.3), inset 0 0 25px rgba(255, 75, 140, 0.25);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid rgba(255, 182, 193, 0.6);
+    border: 2px solid rgba(255, 130, 180, 0.45);
 }
 
 .kyc-video-feed, .kyc-mock-feed, .kyc-childhood-img {
@@ -126,7 +126,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    transition: opacity 1.2s ease, transform 1.2s ease;
+    transition: opacity 1.2s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .kyc-childhood-img {
@@ -134,35 +134,54 @@
     z-index: 4;
 }
 
-.kyc-corner {
+/* Face ID Animated Mesh Reticle Overlay */
+.kyc-reticle-mesh {
     position: absolute;
-    width: 24px;
-    height: 24px;
-    border: 3px solid #ff758f;
+    width: 210px;
+    height: 250px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    border: 1.5px dashed rgba(255, 105, 180, 0.55);
     z-index: 5;
     pointer-events: none;
+    box-shadow: 0 0 25px rgba(255, 51, 102, 0.2);
+    animation: reticlePulse 3s infinite ease-in-out;
 }
-.kyc-corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; border-top-left-radius: 12px; }
-.kyc-corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; border-top-right-radius: 12px; }
-.kyc-corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; border-bottom-left-radius: 12px; }
-.kyc-corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; border-bottom-right-radius: 12px; }
+
+@keyframes reticlePulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.03); opacity: 1; border-color: #ff3366; }
+}
+
+.kyc-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 3px solid #ff4d6d;
+    z-index: 5;
+    pointer-events: none;
+    filter: drop-shadow(0 0 6px #ff4d6d);
+}
+.kyc-corner.tl { top: 16px; left: 16px; border-right: none; border-bottom: none; border-top-left-radius: 16px; }
+.kyc-corner.tr { top: 16px; right: 16px; border-left: none; border-bottom: none; border-top-right-radius: 16px; }
+.kyc-corner.bl { bottom: 16px; left: 16px; border-right: none; border-top: none; border-bottom-left-radius: 16px; }
+.kyc-corner.br { bottom: 16px; right: 16px; border-left: none; border-top: none; border-bottom-right-radius: 16px; }
 
 .kyc-laser {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent, #ff3366, #ff758f, transparent);
-    box-shadow: 0 0 16px #ff3366, 0 0 8px #ff758f;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ff0844, #ff758f, #ffffff, #ff758f, #ff0844, transparent);
+    box-shadow: 0 0 20px #ff0844, 0 0 10px #ffffff;
     z-index: 6;
-    animation: laserScan 2.4s ease-in-out infinite alternate;
+    animation: laserScan 2.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
 }
 
 @keyframes laserScan {
-    0% { top: 5%; opacity: 0.3; }
+    0% { top: 6%; opacity: 0.4; }
     50% { opacity: 1; }
-    100% { top: 92%; opacity: 0.3; }
+    100% { top: 92%; opacity: 0.4; }
 }
 
 .kyc-step-pill {
@@ -468,91 +487,263 @@
 }
 
 /* -------------------------------------------------------------
-   6. LUXURY MATURE LETTER & WIDE PARCHMENT (จดหมายหรูหรา กว้างสมส่วน)
+   6. CUTE DEEP-PINK INTERACTIVE ENVELOPE & WIDE PARCHMENT
    ------------------------------------------------------------- */
 .letter-experience-wrap {
     width: 96vw;
-    max-width: 860px; /* กว้างสมส่วนสำหรับ iPad & คอมพิวเตอร์ */
+    width: 96dvw;
+    max-width: 920px; /* กว้างเต็มอิ่มบน iPad และ PC */
     margin: 0 auto;
     position: relative;
-    padding: 24px 20px;
+    padding: 20px 14px;
+    box-sizing: border-box;
 }
 
-/* Royal Envelope */
-.royal-envelope {
-    position: relative;
-    width: 100%;
-    max-width: 520px;
-    height: 300px;
-    margin: 24px auto;
-    background: linear-gradient(145deg, #1f1d24, #121017);
-    border: 2px solid #d4af37;
-    border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 25px rgba(212, 175, 55, 0.15);
+/* Cute Deep Pink Interactive Envelope Stage */
+.cute-envelope-stage {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 440px;
+    padding: 20px 0;
+}
+
+.cute-pink-envelope {
+    position: relative;
+    width: 94%;
+    max-width: 480px;
+    height: 310px;
+    background: linear-gradient(145deg, #c9184a, #800f2f);
+    border-radius: 24px;
+    box-shadow: 0 24px 60px rgba(128, 15, 47, 0.45), 0 6px 18px rgba(0, 0, 0, 0.3);
+    border: 3px solid #ff758f;
+    overflow: visible;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Envelope Top Flap */
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 145px;
+    background: linear-gradient(180deg, #ff4d6d, #a4133c);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 5;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+.cute-pink-envelope.opened .envelope-flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+/* Inside Letter Insert that peeks and slides up */
+.envelope-letter-insert {
+    position: absolute;
+    top: 25px;
+    left: 5%;
+    width: 90%;
+    height: 250px;
+    background: #fffdfa;
+    border: 2px solid #ffd1dc;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+    text-align: center;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s ease;
 }
-.royal-envelope:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 60px rgba(212, 175, 55, 0.25);
+.cute-pink-envelope.opened .envelope-letter-insert {
+    transform: translateY(-90px);
+    box-shadow: 0 25px 50px rgba(255, 77, 109, 0.35);
 }
-
-.envelope-crest {
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 2.5px;
-    color: #d4af37;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.4);
-    padding-bottom: 4px;
+.cute-pink-envelope.opened .envelope-letter-insert:hover {
+    transform: translateY(-110px) scale(1.02);
 }
 
-.royal-wax-seal {
-    width: 80px;
-    height: 80px;
+.letter-insert-head {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #a4133c;
+    border-bottom: 1.5px dashed #ffb3c1;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+}
+
+.letter-insert-preview {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #590d22;
+    margin: 10px 0;
+}
+
+.letter-insert-pull-tab {
+    background: linear-gradient(135deg, #ff4d6d, #c9184a);
+    color: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 30px;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(201, 24, 74, 0.4);
+    animation: pulseSoft 2s infinite ease-in-out;
+}
+
+/* Front Pocket */
+.envelope-pocket {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    pointer-events: none;
+}
+.envelope-pocket-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    background: linear-gradient(0deg, #800f2f, #a4133c);
+    clip-path: polygon(0 100%, 100% 100%, 50% 15%);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+.envelope-pocket-left {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 52%;
+    height: 100%;
+    background: linear-gradient(135deg, #a4133c, #800f2f);
+    clip-path: polygon(0 0, 0 100%, 100% 100%);
+    border-bottom-left-radius: 20px;
+}
+.envelope-pocket-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 52%;
+    height: 100%;
+    background: linear-gradient(-135deg, #a4133c, #800f2f);
+    clip-path: polygon(100% 0, 0 100%, 100% 100%);
+    border-bottom-right-radius: 20px;
+}
+
+/* Cute Long Tearable Sticker Strip (สติกเกอร์ยาวเลื่อนฉีก) */
+.envelope-sticker-strip {
+    position: absolute;
+    top: 125px;
+    left: 5%;
+    width: 90%;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 2px dashed #ff4d6d;
+    border-radius: 30px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+}
+.envelope-sticker-strip.torn {
+    display: none;
+}
+
+.sticker-track-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff758f, #ff4d6d);
+    border-radius: 30px;
+    pointer-events: none;
+    transition: width 0.05s linear;
+}
+
+.sticker-strip-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #a4133c;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.sticker-slider-thumb {
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #9d0208, #6a040f, #370617);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3);
-    border: 3px solid #d4af37;
+    background: linear-gradient(135deg, #ff0844, #ff4e50);
+    box-shadow: 0 4px 12px rgba(255, 8, 68, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.2rem;
-    color: #ffd700;
-    cursor: pointer;
-    transition: transform 0.3s ease, filter 0.3s ease;
-    animation: pulseSoft 2.5s infinite ease-in-out;
+    font-size: 1.15rem;
+    cursor: grab;
+    z-index: 3;
+    transition: transform 0.1s ease;
 }
-.royal-wax-seal:hover {
-    transform: scale(1.08);
-    filter: brightness(1.15);
+.sticker-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.12);
 }
 
-.envelope-footer-text {
+.envelope-guide-pill {
     position: absolute;
-    bottom: 20px;
-    font-size: 0.82rem;
-    color: #e5b869;
-    letter-spacing: 1px;
+    bottom: -46px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1.5px solid #ffb3c1;
+    color: #c9184a;
+    padding: 8px 20px;
+    border-radius: 30px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
 }
 
-/* Wide Royal Parchment Letter Paper */
+/* Wide Parchment Letter Paper */
 .royal-parchment {
     display: none;
     width: 100%;
-    background: #fdfcf7;
-    border: 2px solid #d4af37;
-    border-radius: 20px;
-    padding: 40px 36px;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), inset 0 0 30px rgba(212, 175, 55, 0.08);
+    box-sizing: border-box;
+    background: #fffdf9;
+    border: 2.5px solid #ff758f;
+    border-radius: 28px;
+    padding: 44px 38px;
+    box-shadow: 0 24px 60px rgba(128, 15, 47, 0.2), inset 0 0 35px rgba(255, 182, 193, 0.15);
     text-align: left;
-    margin-top: 20px;
-    animation: unfoldLetter 0.9s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    margin-top: 10px;
+    animation: unfoldLetter 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
 
 @keyframes unfoldLetter {
@@ -643,13 +834,30 @@
 }
 
 /* Responsive adjustments for iPad & Mobile */
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1024px) {
     .letter-experience-wrap {
-        width: 95vw;
-        padding: 16px 10px;
+        width: 94vw;
+        max-width: 900px;
+        padding: 24px 16px;
     }
     .royal-parchment {
-        padding: 28px 18px;
+        padding: 38px 32px;
+        border-radius: 24px;
+    }
+    .letter-para {
+        font-size: 1.05rem;
+        line-height: 1.95;
+    }
+}
+
+@media (max-width: 767px) {
+    .letter-experience-wrap {
+        width: 96vw;
+        padding: 12px 6px;
+    }
+    .royal-parchment {
+        padding: 24px 16px;
+        border-radius: 20px;
     }
     .letter-header-band {
         flex-direction: column;
@@ -657,11 +865,11 @@
         gap: 6px;
     }
     .letter-header-to {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
     }
     .letter-para {
-        font-size: 0.98rem;
-        line-height: 1.85;
+        font-size: 0.95rem;
+        line-height: 1.8;
     }
     .sky-title {
         font-size: 1.45rem;

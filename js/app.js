@@ -361,8 +361,8 @@ class BirthdayApp {
 
         this.switchHubTab('home');
 
-        if (window.musicController && !window.musicController.isPlaying) {
-            window.musicController.start();
+        if (window.musicController) {
+            window.musicController.startWonderland(0.65);
         }
     }
 

@@ -150,25 +150,29 @@ class FireworksShowController {
     }
 
     createTextExplosion(centerX, centerY, text, color) {
-        // สร้าง Canvas ชั่วคราวขนาดใหญ่ เพื่อให้อ่านฟอนต์ขนาดใหญ่พิเศษได้คมชัด (800x160)
+        // คำนวณขนาดตามหน้าจอจริง (Dynamic Responsive Font & Canvas)
+        const screenW = window.innerWidth;
+        const cW = Math.min(840, Math.max(340, screenW * 0.92));
+        const cH = 150;
+
         const offscreen = document.createElement('canvas');
         const offCtx = offscreen.getContext('2d');
-        const cW = 800;
-        const cH = 160;
         offscreen.width = cW;
         offscreen.height = cH;
 
         offCtx.fillStyle = '#ffffff';
-        // ขยายขนาดตัวหนังสือให้ใหญ่สะใจ (font-size 58px-64px บนจอใหญ่, 42px บนจอมือถือ)
-        const isSmallScreen = window.innerWidth < 600;
-        const fontSize = isSmallScreen ? 46 : 64;
+        // คำนวณขนาดตัวอักษรให้พอดีกับความกว้างหน้าจอเสมอ ไม่ตกขอบ
+        // บนมือถือ ~32px-38px, บนไอแพด ~48px-56px, บนคอม ~62px
+        let fontSize = Math.floor(cW / (text.length > 12 ? 14 : 10));
+        fontSize = Math.max(28, Math.min(64, fontSize));
+
         offCtx.font = `900 ${fontSize}px 'Prompt', 'Kanit', sans-serif`;
         offCtx.textAlign = 'center';
         offCtx.textBaseline = 'middle';
         offCtx.fillText(text, cW / 2, cH / 2);
 
         const imgData = offCtx.getImageData(0, 0, cW, cH);
-        const step = isSmallScreen ? 4 : 5; // ความละเอียดพิกเซล
+        const step = screenW < 600 ? 4 : 5; // ความละเอียดพิกเซล
 
         for (let y = 0; y < cH; y += step) {
             for (let x = 0; x < cW; x += step) {
@@ -182,12 +186,12 @@ class FireworksShowController {
                         y: centerY,
                         tx: targetX,
                         ty: targetY,
-                        vx: (Math.random() - 0.5) * 5,
-                        vy: (Math.random() - 0.5) * 5,
+                        vx: (Math.random() - 0.5) * 4.5,
+                        vy: (Math.random() - 0.5) * 4.5,
                         color: color,
                         alpha: 1,
                         life: 160, // อยู่ได้นานขึ้นให้อ่านชัดเจน
-                        size: isSmallScreen ? 2.8 : 3.4
+                        size: screenW < 600 ? 2.6 : 3.2
                     });
                 }
             }

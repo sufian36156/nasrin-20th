@@ -15,7 +15,7 @@ class Balloons3DController {
         this.activeBalloons = [];
         this.totalLaunched = 0;
         this.totalTarget = 20;
-        this.waveSize = 5;
+        this.waveSize = 3; // ปล่อยทีละ 3 ลูกตามที่ขอ
         this.waveTimer = null;
         this.animFrame = null;
         this.isFinished = false;
@@ -123,13 +123,9 @@ class Balloons3DController {
         if (this.totalLaunched < this.totalTarget) {
             this.waveTimer = setTimeout(() => {
                 this.launchNextWave();
-            }, 6500);
-        } else {
-            // ปล่อยครบ 20 ลูกแล้ว รอให้ลอยลับขอบฟ้า แล้วไปฉากถัดไป
-            setTimeout(() => {
-                this.finishAndProceed();
-            }, 9500);
+            }, 5500);
         }
+        // ไม่ใช้จับเวลาตัดฉากเด็ดขาด! รอให้ลูกโป่งทุกลูกถูกจิ้มแตกหรือลอยลับพ้นจอไปทั้งหมดจริงๆ
     }
 
     preloadAndCreateBalloon(index, imgSrc, delay) {
@@ -174,9 +170,9 @@ class Balloons3DController {
             el: balloon,
             x: startX,
             y: startY,
-            speedY: 1.1 + Math.random() * 0.7,
-            wobbleSpeed: 0.03 + Math.random() * 0.02,
-            wobbleAmp: 10 + Math.random() * 8,
+            speedY: 0.65 + Math.random() * 0.45, // ลอยช้าๆ นุ่มนวล ละมุนสายตา
+            wobbleSpeed: 0.025 + Math.random() * 0.015,
+            wobbleAmp: 12 + Math.random() * 8,
             angle: Math.random() * Math.PI * 2,
             isHeld: false,
             isPopped: false

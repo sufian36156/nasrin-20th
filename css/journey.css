@@ -256,6 +256,7 @@
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none !important; /* ปิดเมนูค้างบน iOS Safari / Chrome เด็ดขาด */
     touch-action: none;
 }
 
@@ -761,24 +762,28 @@
 }
 
 .letter-header-to {
-    font-size: 1.55rem;
+    font-family: 'Sriracha', 'Prompt', cursive, sans-serif;
+    font-size: 1.7rem;
     font-weight: 700;
     color: #6a040f;
     letter-spacing: 0.5px;
 }
 
 .letter-header-date {
-    font-size: 0.88rem;
+    font-family: 'Sriracha', 'Prompt', cursive, sans-serif;
+    font-size: 1.05rem;
     font-weight: 600;
     color: #8c6d33;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
 }
 
 .letter-para {
-    font-size: 1.05rem;
-    line-height: 2.0;
-    color: #2b211b;
-    margin-bottom: 18px;
+    font-family: 'Sriracha', 'Itim', cursive, sans-serif;
+    font-size: 1.22rem;
+    line-height: 2.1;
+    color: #2b1e17;
+    margin-bottom: 22px;
+    letter-spacing: 0.3px;
     opacity: 0;
     transform: translateY(12px);
     transition: opacity 0.8s ease, transform 0.8s ease;
@@ -789,21 +794,23 @@
 }
 
 .letter-highlight-text {
-    font-size: 1.25rem;
+    font-family: 'Sriracha', 'Prompt', cursive, sans-serif;
+    font-size: 1.45rem;
     font-weight: 700;
     font-style: italic;
     color: #9d0208;
-    margin: 28px 0 16px 0;
+    margin: 32px 0 20px 0;
     text-align: center;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
 .letter-closing-text {
-    font-size: 1.2rem;
+    font-family: 'Sriracha', 'Prompt', cursive, sans-serif;
+    font-size: 1.4rem;
     font-weight: 700;
     color: #6a040f;
     text-align: right;
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 /* Wide Metallic Golden VIP Pass */
@@ -841,12 +848,15 @@
         padding: 24px 16px;
     }
     .royal-parchment {
-        padding: 38px 32px;
+        padding: 40px 34px;
         border-radius: 24px;
     }
+    .letter-header-to {
+        font-size: 1.6rem;
+    }
     .letter-para {
-        font-size: 1.05rem;
-        line-height: 1.95;
+        font-size: 1.25rem;
+        line-height: 2.15;
     }
 }
 
@@ -856,7 +866,7 @@
         padding: 12px 6px;
     }
     .royal-parchment {
-        padding: 24px 16px;
+        padding: 26px 18px;
         border-radius: 20px;
     }
     .letter-header-band {
@@ -865,11 +875,11 @@
         gap: 6px;
     }
     .letter-header-to {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
     }
     .letter-para {
-        font-size: 0.95rem;
-        line-height: 1.8;
+        font-size: 1.12rem;
+        line-height: 2.0;
     }
     .sky-title {
         font-size: 1.45rem;

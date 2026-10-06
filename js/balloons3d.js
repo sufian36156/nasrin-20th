@@ -181,12 +181,18 @@ class Balloons3DController {
         balloon.setAttribute('data-balloon-id', index);
         balloon._balloonData = balloonData;
 
+        // รับประกันการแตะ/คลิกให้แตกได้ 100% ทั้งบนมือถือและคอมพิวเตอร์
+        balloon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.popBalloon(balloonData);
+        });
+
         this.stage.appendChild(balloon);
         this.activeBalloons.push(balloonData);
     }
 
     setupPointerEvents() {
-        // ใช้ระบบจับการแตะแบบ Centralized เดียว ไม่สร้างซ้ำซ้อน
+        // ใช้ระบบจับการแตะลากแบบ Centralized
         window.addEventListener('pointerdown', (e) => {
             const item = e.target.closest('.balloon-item');
             if (item && item._balloonData && !item._balloonData.isPopped) {
@@ -205,7 +211,13 @@ class Balloons3DController {
 
         window.addEventListener('pointermove', (e) => {
             if (this.activeDragBalloon && this.activeDragBalloon.isHeld) {
-                this.hasMoved = true;
+                const dist = Math.hypot(
+                    e.clientX - (this.activeDragBalloon.x + this.dragOffset.x),
+                    e.clientY - (this.activeDragBalloon.y + this.dragOffset.y)
+                );
+                if (dist > 8) {
+                    this.hasMoved = true;
+                }
                 this.activeDragBalloon.x = e.clientX - this.dragOffset.x;
                 this.activeDragBalloon.y = e.clientY - this.dragOffset.y;
             }
@@ -218,8 +230,8 @@ class Balloons3DController {
                 if (b.el) b.el.classList.remove('held');
 
                 const tapDuration = Date.now() - this.dragStartTime;
-                if (!this.hasMoved && tapDuration < 300) {
-                    // แตะเพื่อทำให้แตก (Pop!)
+                if (!this.hasMoved || tapDuration < 250) {
+                    // แตะเพื่อทำให้แตก (Pop!) ทันที
                     this.popBalloon(b);
                 }
                 this.activeDragBalloon = null;

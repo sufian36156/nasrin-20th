@@ -331,29 +331,42 @@ class SoundManager {
         } catch (e) {}
     }
 
-    // เสียงพิมพ์ดีดสัมผัสนุ่มนวล (Typewriter Soft Click)
+    // เสียงปลายปากกาหมึกซึมตวัดเขียนบนกระดาษสา (Vintage Fountain Pen on Parchment Paper)
     playTypewriterClick() {
         if (this.isMuted) return;
         this.init();
         if (!this.ctx) return;
 
         try {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-
-            osc.type = 'sine';
-            const freq = 600 + Math.random() * 150;
             const now = this.ctx.currentTime;
-            osc.frequency.setValueAtTime(freq, now);
 
-            gain.gain.setValueAtTime(0.04, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+            // 1. White Noise Scratch: สัมผัสคมของหัวปากกากับเนื้อกระดาษ
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.05);
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.12;
+            }
 
-            osc.connect(gain);
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            // กรองความถี่เลียนแบบเสียงขีดเขียน (Bandpass 1800Hz - 3200Hz)
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2200 + Math.random() * 800, now);
+            filter.Q.setValueAtTime(3.0, now);
+
+            const gain = this.ctx.createGain();
+            gain.gain.setValueAtTime(0.045, now);
+            gain.gain.exponentialRampToValueAtTime(0.0005, now + 0.045);
+
+            noise.connect(filter);
+            filter.connect(gain);
             gain.connect(this.ctx.destination);
 
-            osc.start(now);
-            osc.stop(now + 0.035);
+            noise.start(now);
+            noise.stop(now + 0.045);
         } catch (e) {}
     }
 

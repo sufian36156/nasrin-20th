@@ -32,7 +32,11 @@ class WarpHeartController {
         this.hintTextEl = document.getElementById('warp-heart-hint');
         this.starsCanvas = document.getElementById('warp-stars-canvas');
 
-        if (!this.heartWrapper) return;
+        // ป้องกัน Context Menu ของเบราว์เซอร์เด้งเวลาแตะค้าง
+        this.heartWrapper.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            return false;
+        });
 
         // Interaction: Pointer Events
         const startHold = (e) => {
@@ -41,13 +45,18 @@ class WarpHeartController {
         };
 
         const stopHold = (e) => {
-            e.preventDefault();
+            if (e) e.preventDefault();
             this.onHoldEnd();
         };
 
         this.heartWrapper.addEventListener('pointerdown', startHold);
         window.addEventListener('pointerup', stopHold);
         window.addEventListener('pointercancel', stopHold);
+        window.addEventListener('contextmenu', (e) => {
+            if (this.heartWrapper && this.heartWrapper.contains(e.target)) {
+                e.preventDefault();
+            }
+        });
 
         this.initStars();
     }

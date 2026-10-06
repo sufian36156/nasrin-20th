@@ -112,11 +112,9 @@ class Balloons3DController {
         const endIdx = Math.min(startIdx + this.waveSize, this.totalTarget);
 
         for (let i = startIdx; i < endIdx; i++) {
-            setTimeout(() => {
-                if (!this.isFinished) {
-                    this.createBalloon(i, photos[i]);
-                }
-            }, (i - startIdx) * 550);
+            const photoSrc = photos[i] || `assets/images/balloons/balloon_${(i % 20) + 1}.jpg`;
+            // รอพรีโหลดรูปให้เสร็จก่อนปล่อยลูกโป่ง
+            this.preloadAndCreateBalloon(i, photoSrc, (i - startIdx) * 650);
         }
 
         this.totalLaunched = endIdx;
@@ -125,7 +123,7 @@ class Balloons3DController {
         if (this.totalLaunched < this.totalTarget) {
             this.waveTimer = setTimeout(() => {
                 this.launchNextWave();
-            }, 6000);
+            }, 6500);
         } else {
             // ปล่อยครบ 20 ลูกแล้ว รอให้ลอยลับขอบฟ้า แล้วไปฉากถัดไป
             setTimeout(() => {
@@ -134,34 +132,49 @@ class Balloons3DController {
         }
     }
 
-    createBalloon(index, imgSrc) {
-        if (!this.stage) return;
+    preloadAndCreateBalloon(index, imgSrc, delay) {
+        setTimeout(() => {
+            if (this.isFinished || !this.stage) return;
+
+            const img = new Image();
+            img.onload = () => {
+                this.spawnBalloonElement(index, imgSrc);
+            };
+            img.onerror = () => {
+                this.spawnBalloonElement(index, 'assets/images/polaroids/1.jpeg');
+            };
+            img.src = imgSrc;
+        }, delay);
+    }
+
+    spawnBalloonElement(index, imgSrc) {
+        if (!this.stage || this.isFinished) return;
         const stageW = window.innerWidth;
         const stageH = window.innerHeight;
 
         const balloon = document.createElement('div');
         balloon.className = 'balloon-item';
 
-        const safeImg = imgSrc || `assets/images/balloons/balloon_${(index % 20) + 1}.jpg`;
+        // วางพิกัดเริ่มต้นอยู่นอกจอใต้ขอบล่าง 160px ชัดเจน เพื่อไม่ให้เห็นลูกโป่งวาป
+        const startX = 20 + Math.random() * (stageW - 130);
+        const startY = stageH + 160;
+
+        balloon.style.transform = `translate3d(${startX}px, ${startY}px, 0)`;
 
         balloon.innerHTML = `
             <div class="balloon-body">
-                <img src="${safeImg}" alt="Balloon Photo ${index + 1}" onerror="this.onerror=null; this.src='assets/images/polaroids/1.jpeg';">
+                <img src="${imgSrc}" alt="Balloon Photo ${index + 1}" onerror="this.onerror=null; this.src='assets/images/polaroids/1.jpeg';">
                 <div class="balloon-highlight"></div>
             </div>
             <div class="balloon-knot"></div>
             <div class="balloon-string"></div>
         `;
 
-        // สุ่มตำแหน่งเริ่มต้นที่ด้านล่างจอ
-        const startX = 20 + Math.random() * (stageW - 120);
-        const startY = stageH + 30;
-
         const balloonData = {
             el: balloon,
             x: startX,
             y: startY,
-            speedY: 1.2 + Math.random() * 0.7,
+            speedY: 1.1 + Math.random() * 0.7,
             wobbleSpeed: 0.03 + Math.random() * 0.02,
             wobbleAmp: 10 + Math.random() * 8,
             angle: Math.random() * Math.PI * 2,

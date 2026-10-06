@@ -154,6 +154,7 @@ class FaceKYCController {
 
         // ประทับตรา "สำเนาถูกต้อง"
         if (this.stampEl) {
+            this.stampEl.classList.remove('fade-out');
             this.stampEl.classList.add('active');
         }
 
@@ -161,10 +162,18 @@ class FaceKYCController {
             window.confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
         }
 
-        // ค้างไว้ 1.5 วินาที แล้วทำการ Morphing กลายเป็นรูปตอนเด็ก!
+        // ค้างตราประทับไว้แค่ 2 วินาทีพอดี แล้วค่อยๆ จางหายไป เพื่อไม่ให้บังรูปตอนเด็ก
         setTimeout(() => {
+            if (this.stampEl) {
+                this.stampEl.classList.add('fade-out');
+                setTimeout(() => {
+                    this.stampEl.classList.remove('active');
+                    this.stampEl.classList.remove('fade-out');
+                }, 600);
+            }
+            // Morphing สู่รูปตอนเด็กอย่างโปร่งใสชัดเจน
             this.performChildhoodMorph();
-        }, 1500);
+        }, 2000);
     }
 
     performChildhoodMorph() {
@@ -173,17 +182,17 @@ class FaceKYCController {
         // Cross-fade สู่รูปตอนเด็ก
         if (this.childhoodImgEl) {
             const kycCfg = window.HBD_CONFIG.kyc || {};
-            this.childhoodImgEl.src = kycCfg.childhoodPhoto || 'assets/images/nasrin_childhood.jpg';
+            this.childhoodImgEl.src = kycCfg.childhoodPhoto || 'assets/images/kyc/childhood.jpg';
             this.childhoodImgEl.style.opacity = '1';
             this.childhoodImgEl.style.transform = 'scale(1)';
         }
 
         if (this.hintTextEl) {
             this.hintTextEl.innerHTML = `
-                <div style="color:#d90429; font-weight:700; font-size:1.05rem; margin-top:8px;">
+                <div style="color:#d90429; font-weight:700; font-size:1.08rem; margin-top:8px;">
                     🌸 จากเด็กน้อยแก้มกลมในวันนั้น... สู่คนเก่งวัย 20 ในวันนี้ ✨
                 </div>
-                <div style="color:#666; font-size:0.85rem; margin-top:4px;">
+                <div style="color:#666; font-size:0.88rem; margin-top:4px;">
                     (ยืนยันแล้ว: ความน่ารักคงเดิมไม่เคยเปลี่ยน 🤍)
                 </div>
             `;

@@ -89,58 +89,88 @@ class CinematicLetterController {
         `;
         this.paragraphsContainer.appendChild(headerBand);
 
-        let delay = 500;
+        // แสดงเนื้อความทีละตัวอักษร (Typewriter Effect) แบบเป็นจังหวะ
+        let chain = Promise.resolve();
 
-        // แสดงเนื้อความทีละวรรคอย่างนุ่มนวล
         paras.forEach((paraText, idx) => {
-            setTimeout(() => {
-                const pEl = document.createElement('div');
-                pEl.className = 'letter-para';
-                pEl.innerHTML = paraText.replace(/\n/g, '<br>');
-                this.paragraphsContainer.appendChild(pEl);
+            chain = chain.then(() => {
+                return new Promise((resolve) => {
+                    const pEl = document.createElement('div');
+                    pEl.className = 'letter-para shown';
+                    this.paragraphsContainer.appendChild(pEl);
 
-                window.soundManager.playPop(420 + idx * 35);
-
-                setTimeout(() => {
-                    pEl.classList.add('shown');
-                }, 50);
-            }, delay);
-
-            delay += 2300;
+                    this.typewriterParagraph(pEl, paraText, () => {
+                        setTimeout(resolve, 600); // หยุดพักหายใจ 0.6 วินาทีระหว่างย่อหน้า
+                    });
+                });
+            });
         });
 
-        // แสดงไฮไลท์ "More than words can say"
-        setTimeout(() => {
-            const hlEl = document.createElement('div');
-            hlEl.className = 'letter-highlight-text';
-            hlEl.textContent = letterData.highlight || 'More than words can say';
-            this.paragraphsContainer.appendChild(hlEl);
-            window.soundManager.playChime();
-        }, delay);
-
-        delay += 1900;
-
-        // แสดงคำลงท้าย "Happy Birthday, my love...."
-        setTimeout(() => {
-            const closeEl = document.createElement('div');
-            closeEl.className = 'letter-closing-text';
-            closeEl.textContent = letterData.closing || 'Happy Birthday, my love....';
-            this.paragraphsContainer.appendChild(closeEl);
-            window.soundManager.playChime();
-        }, delay);
-
-        delay += 2100;
-
-        // เผยบัตรทองคำ VIP สู่ Wonderland
-        setTimeout(() => {
-            if (this.goldenPassBox) {
-                this.goldenPassBox.style.display = 'block';
-                window.soundManager.playVictory();
-                if (window.confetti) {
-                    window.confetti({ particleCount: 100, spread: 85, origin: { y: 0.7 } });
+        // หลังจากพิมพ์ครบทุกย่อหน้า แสดงไฮไลท์และคำลงท้าย
+        chain.then(() => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const hlEl = document.createElement('div');
+                    hlEl.className = 'letter-highlight-text';
+                    this.paragraphsContainer.appendChild(hlEl);
+                    this.typewriterParagraph(hlEl, letterData.highlight || 'More than words can say', () => {
+                        window.soundManager.playChime();
+                        setTimeout(resolve, 800);
+                    });
+                }, 400);
+            });
+        }).then(() => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const closeEl = document.createElement('div');
+                    closeEl.className = 'letter-closing-text';
+                    this.paragraphsContainer.appendChild(closeEl);
+                    this.typewriterParagraph(closeEl, letterData.closing || 'Happy Birthday, my love....', () => {
+                        window.soundManager.playChime();
+                        setTimeout(resolve, 1000);
+                    });
+                }, 300);
+            });
+        }).then(() => {
+            // เผยบัตรทองคำ VIP สู่ Wonderland
+            setTimeout(() => {
+                if (this.goldenPassBox) {
+                    this.goldenPassBox.style.display = 'block';
+                    window.soundManager.playVictory();
+                    if (window.confetti) {
+                        window.confetti({ particleCount: 100, spread: 85, origin: { y: 0.7 } });
+                    }
                 }
+            }, 500);
+        });
+    }
+
+    typewriterParagraph(el, fullText, onDone) {
+        let charIndex = 0;
+        const speed = 28; // มิลลิวินาทีต่อตัวอักษร
+
+        const typeNext = () => {
+            if (charIndex < fullText.length) {
+                const char = fullText.charAt(charIndex);
+                if (char === '\n') {
+                    el.innerHTML += '<br>';
+                } else {
+                    el.innerHTML += char;
+                }
+
+                // เล่นเสียงเคาะแป้นพิมพ์เบาๆ ทุกๆ 2-3 ตัวอักษร
+                if (charIndex % 3 === 0 && window.soundManager.playTypewriterClick) {
+                    window.soundManager.playTypewriterClick();
+                }
+
+                charIndex++;
+                setTimeout(typeNext, speed);
+            } else {
+                if (onDone) onDone();
             }
-        }, delay);
+        };
+
+        typeNext();
     }
 
     enterWonderland() {

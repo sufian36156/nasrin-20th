@@ -224,6 +224,150 @@ class SoundManager {
     playTick() {
         this.playPop(850);
     }
+
+    // เสียงจรวดพลุพุ่งขึ้นฟ้าหวีดหวิว (Realistic Firework Whistle/Whoosh)
+    playFireworkWhistle() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sine';
+            const now = this.ctx.currentTime;
+            osc.frequency.setValueAtTime(350, now);
+            osc.frequency.exponentialRampToValueAtTime(1400, now + 0.6);
+
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.6);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.6);
+        } catch (e) {}
+    }
+
+    // เสียงพลุระเบิดกระหึ่มสมจริง ตูมมมม! (Realistic Low-end Firework Boom with Reverb)
+    playFireworkBoom() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const now = this.ctx.currentTime;
+
+            // 1. Sub-bass punch (60Hz -> 30Hz)
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(75, now);
+            osc.frequency.exponentialRampToValueAtTime(30, now + 0.7);
+
+            oscGain.gain.setValueAtTime(0.7, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+
+            osc.connect(oscGain);
+            oscGain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.8);
+
+            // 2. White noise explosive burst with low-pass filter
+            const bufferSize = this.ctx.sampleRate * 0.9;
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.75;
+            }
+
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(320, now);
+            filter.frequency.exponentialRampToValueAtTime(80, now + 0.9);
+
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.85, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+            noise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(this.ctx.destination);
+
+            noise.start(now);
+        } catch (e) {}
+    }
+
+    // เสียงประกายไฟแตกเปรี๊ยะๆ หลังพลุระเบิด (Crackling Sparkles)
+    playFireworkCrackle() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const now = this.ctx.currentTime;
+            for (let i = 0; i < 6; i++) {
+                const burstTime = now + (i * 0.08) + (Math.random() * 0.04);
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'highpass' ? 'square' : 'triangle';
+                osc.frequency.setValueAtTime(1200 + Math.random() * 800, burstTime);
+
+                gain.gain.setValueAtTime(0.06, burstTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, burstTime + 0.04);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                osc.start(burstTime);
+                osc.stop(burstTime + 0.04);
+            }
+        } catch (e) {}
+    }
+
+    // เสียงพิมพ์ดีดสัมผัสนุ่มนวล (Typewriter Soft Click)
+    playTypewriterClick() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sine';
+            const freq = 600 + Math.random() * 150;
+            const now = this.ctx.currentTime;
+            osc.frequency.setValueAtTime(freq, now);
+
+            gain.gain.setValueAtTime(0.04, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.035);
+        } catch (e) {}
+    }
+
+    // เสียงตราครั่งขี้ผึ้งแตกเป๊าะ (Wax Seal Snap)
+    playWaxBreak() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            this.playPop(320);
+            setTimeout(() => this.playPop(620), 40);
+        } catch (e) {}
+    }
 }
 
 window.soundManager = new SoundManager();

@@ -77,6 +77,12 @@ class WarpHeartController {
     start() {
         this.isCompleted = false;
         this.resetProgress();
+
+        // 🎵 เริ่มเปิดดนตรีเบาๆ กลมกลืนตั้งแต่หน้านี้เป็นต้นไปจนถึงจดหมาย
+        if (window.musicController) {
+            window.musicController.startSoft(0.35);
+        }
+
         if (this.hintTextEl) {
             this.hintTextEl.textContent = 'แตะหัวใจค้างไว้ 3 วินาที เพื่อเติมเต็มพลังรัก 💖';
         }
@@ -101,6 +107,12 @@ class WarpHeartController {
 
     onHoldStart() {
         if (this.isCompleted) return;
+
+        // Make sure audio context is active
+        if (window.soundManager) window.soundManager.init();
+        if (window.musicController && !window.musicController.isPlaying) {
+            window.musicController.startSoft(0.35);
+        }
 
         this.heartWrapper.classList.add('holding');
         this.startTime = performance.now();

@@ -50,17 +50,26 @@ class MusicController {
     }
 
     start() {
+        this.startSoft(0.65);
+    }
+
+    startSoft(volume = 0.35) {
         window.soundManager.init();
+        if (this.isPlaying) return;
         this.isPlaying = true;
         this.step = 0;
 
         const bar = document.getElementById('mini-music-bar');
         const text = document.getElementById('music-title-text');
-        if (bar) bar.classList.add('playing');
-        if (text) text.textContent = "กำลังเล่น: เพลงรักของเรา 🎵";
+        if (bar) {
+            bar.style.display = 'flex';
+            bar.classList.add('playing');
+        }
+        if (text) text.textContent = "เพลงรักคลอเบาๆ 🎵";
 
         // เล่นไฟล์จริง หรือ เล่นดนตรีสังเคราะห์
-        if (this.audioEl && this.hasRealAudio) {
+        if (this.audioEl) {
+            this.audioEl.volume = volume;
             this.audioEl.play().catch(() => {
                 this.startSynthFallback();
             });

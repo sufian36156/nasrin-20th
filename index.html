@@ -242,75 +242,81 @@
             </div>
         </section>
 
-        <!-- 1.4 Dimensional Warp & Giant Pulsing Heart Scene -->
-        <section id="scene-warp" class="ceremony-scene">
-            <div class="warp-sky-stage">
-                <span style="font-size:2.2rem; filter:drop-shadow(0 0 16px #ff758f);">🌌💫</span>
-                <h2 style="font-size:1.5rem; font-weight:700; color:#ffe3e8; margin-top:6px; text-shadow:0 0 12px #ff4d6d;">
-                    จุดศูนย์กลางแห่งความรัก 🤍
-                </h2>
-                <p style="font-size:0.9rem; color:#f8edeb; margin-top:2px; text-align:center;">
-                    ส่งพลังรักเพื่อจุดประกายค่ำคืนวันเกิดครบรอบ 20 ปี
-                </p>
+        <!-- 1.4 Dimensional Warp & Giant Pulsing Heart Scene (Fullscreen Night Sky) -->
+        <section id="scene-warp" class="ceremony-scene fullscreen-sky">
+            <canvas id="warp-stars-canvas" class="fullscreen-sky-canvas"></canvas>
+            <div class="sky-scene-content">
+                <div class="sky-header-badge">🌌💫 ค่ำคืนแห่งดวงดาว 💫🌌</div>
+                <h2 class="sky-title">จุดศูนย์กลางแห่งความรัก 🤍</h2>
+                <p class="sky-subtitle">ส่งพลังรักเพื่อจุดประกายค่ำคืนวันเกิดครบรอบ 20 ปี</p>
 
                 <div id="giant-heart-wrapper" class="giant-heart-wrapper" title="กดค้าง 3 วินาที">
-                    <svg class="charge-ring-svg" viewBox="0 0 160 160">
-                        <circle class="charge-ring-bg" cx="80" cy="80" r="70"></circle>
-                        <circle id="charge-ring-fill" class="charge-ring-fill" cx="80" cy="80" r="70"></circle>
+                    <!-- Circular Charge Progress Ring -->
+                    <svg class="charge-ring-svg" viewBox="0 0 200 200">
+                        <circle class="charge-ring-bg" cx="100" cy="100" r="88"></circle>
+                        <circle id="charge-ring-fill" class="charge-ring-fill" cx="100" cy="100" r="88"></circle>
                     </svg>
-                    <div class="giant-heart-btn">💖</div>
+
+                    <!-- SVG Heart with Liquid Color Fill -->
+                    <svg id="giant-heart-svg" class="giant-heart-svg" viewBox="0 0 120 120">
+                        <defs>
+                            <linearGradient id="heartGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%" stop-color="#ff0844"/>
+                                <stop offset="50%" stop-color="#ff4e50"/>
+                                <stop offset="100%" stop-color="#ffd166"/>
+                            </linearGradient>
+                            <clipPath id="heartFillClip">
+                                <rect id="heart-clip-rect" x="0" y="120" width="120" height="120" />
+                            </clipPath>
+                            <filter id="heartGlow" x="-30%" y="-30%" width="160%" height="160%">
+                                <feGaussianBlur stdDeviation="5" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                            </filter>
+                        </defs>
+                        <!-- Unfilled Translucent Glass Heart Outline -->
+                        <path class="heart-base-outline" d="M60,105 C20,75 5,50 5,28 C5,12 18,3 34,3 C46,3 55,10 60,18 C65,10 74,3 86,3 C102,3 115,12 115,28 C115,50 100,75 60,105 Z" />
+                        
+                        <!-- Color Filled Heart Clipped from Bottom to Top -->
+                        <g clip-path="url(#heartFillClip)">
+                            <path class="heart-filled-path" d="M60,105 C20,75 5,50 5,28 C5,12 18,3 34,3 C46,3 55,10 60,18 C65,10 74,3 86,3 C102,3 115,12 115,28 C115,50 100,75 60,105 Z" fill="url(#heartGradient)" filter="url(#heartGlow)"/>
+                            <line id="heart-fill-line" x1="0" y1="120" x2="120" y2="120" stroke="#ffffff" stroke-width="2.5" opacity="0.9"/>
+                        </g>
+                    </svg>
                 </div>
 
-                <div id="warp-heart-hint" style="font-size:0.95rem; color:#ffd1dc; text-align:center; margin-top:12px; font-weight:500;">
-                    แตะหัวใจค้างไว้ 3 วินาที เพื่อปลดล็อกพลังแห่งความรัก 💖
-                </div>
-            </div>
-        </section>
-
-        <!-- 1.5 Night Sky Fireworks Display Scene -->
-        <section id="scene-fireworks" class="ceremony-scene">
-            <div class="fireworks-canvas-container">
-                <canvas id="fireworks-canvas"></canvas>
-                <div id="fireworks-status-badge" class="fireworks-status-badge">
-                    🎆 กำลังเตรียมยิงพลุอวยพรขึ้นสู่ท้องฟ้า...
-                </div>
-            </div>
-        </section>
-
-        <!-- 1.6 3D Photo Heart Cloud Scene -->
-        <section id="scene-heart3d" class="ceremony-scene">
-            <div class="glass-card" style="padding:16px;">
-                <h2 style="font-size:1.35rem; font-weight:700; color:var(--primary-dark);">
-                    หัวใจแห่งความทรงจำ 3D 💎✨
-                </h2>
-                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:2px;">
-                    รวมช่วงเวลาดีๆ ของ ณัสริญ ไว้ในหัวใจดวงเดียว (หมุนเลื่อนรอบทิศได้)
-                </p>
-
-                <div id="heart3d-stage" class="heart3d-stage">
-                    <div id="heart3d-pivot" class="heart3d-pivot"></div>
-                    <div id="heart3d-hint" class="heart3d-hint-box">
-                        👆 ปัดเลื่อนเพื่อหมุน 3D • 💥 ดับเบิลแท็บ 2 ครั้งเพื่อให้หัวใจแตกกระจาย!
-                    </div>
+                <div id="warp-heart-hint" class="sky-hint-box">
+                    แตะหัวใจค้างไว้ 3 วินาที เพื่อเติมเต็มพลังรัก 💖
                 </div>
             </div>
         </section>
 
-        <!-- 1.7 20 Floating 3D Balloons Scene -->
-        <section id="scene-balloons" class="ceremony-scene">
-            <div class="glass-card" style="padding:16px;">
-                <h2 style="font-size:1.35rem; font-weight:700; color:var(--primary-dark);">
-                    20 ความทรงจำลอยฟ้า 🎈✨
-                </h2>
-                <p style="font-size:0.86rem; color:var(--text-muted); margin-top:2px;">
-                    ฉลอง 20 ขวบด้วย 20 ภาพความสุข ลอยขึ้นมาทีละ 5 ลูก
-                </p>
+        <!-- 1.5 Night Sky Fireworks Display Scene (Fullscreen Night Sky) -->
+        <section id="scene-fireworks" class="ceremony-scene fullscreen-sky">
+            <canvas id="fireworks-canvas" class="fullscreen-sky-canvas"></canvas>
+            <div id="fireworks-status-badge" class="fireworks-status-badge">
+                🎆 กำลังเตรียมยิงพลุอวยพรขึ้นสู่ท้องฟ้า...
+            </div>
+        </section>
 
-                <div id="balloons-stage" class="balloons-stage">
-                    <div class="balloon-hud">
-                        <span id="balloons-counter-text">ลูกโป่งความทรงจำ: 0 / 20</span>
-                    </div>
-                </div>
+        <!-- 1.6 3D Photo Heart Cloud Scene (Fullscreen Night Sky) -->
+        <section id="scene-heart3d" class="ceremony-scene fullscreen-sky">
+            <div id="heart3d-webgl-container" class="fullscreen-webgl-container"></div>
+            <div class="sky-scene-overlay-header">
+                <h2 class="sky-title">หัวใจแห่งความทรงจำ 3D 💎✨</h2>
+                <p class="sky-subtitle">หมุนดูความทรงจำรอบทิศ 360°</p>
+            </div>
+            <div id="heart3d-hint" class="heart3d-hint-box">
+                👆 ปัดเพื่อหมุน 3D • 💥 ดับเบิลแท็บ 2 ครั้งเพื่อให้หัวใจแตกกระจาย!
+            </div>
+        </section>
+
+        <!-- 1.7 20 Floating 3D Balloons Scene (Fullscreen Night Sky) -->
+        <section id="scene-balloons" class="ceremony-scene fullscreen-sky">
+            <canvas id="balloons-stars-canvas" class="fullscreen-sky-canvas"></canvas>
+            <div id="balloons-stage" class="balloons-stage-fullscreen"></div>
+            <div class="balloon-hud-fullscreen">
+                <span id="balloons-counter-text">ลูกโป่งความทรงจำ: 0 / 20</span>
+                <div style="font-size:0.75rem; color:#ffd1dc; margin-top:2px;">(จิ้มให้แตก หรือแตะลากตรึงไว้ดูรูปได้ ✨)</div>
             </div>
         </section>
 
@@ -537,47 +543,40 @@
             </div>
         </section>
 
-        <!-- 1.8 Cinematic Wax Seal Letter Scene & Golden VIP Ticket -->
+        <!-- 1.8 Wide Luxury Royal Letter Scene & Golden VIP Ticket -->
         <section id="scene-letter" class="ceremony-scene">
-            <div class="glass-card letter-experience-wrap">
-                <span style="font-size:2rem;">💌✨</span>
-                <h2 style="font-size:1.4rem; color:var(--primary-dark); font-weight:700; margin-top:4px;">
-                    จดหมายฉลองวันเกิด 20 ขวบ ✉️
-                </h2>
-                <p style="font-size:0.88rem; color:var(--text-muted); margin-top:2px;">
-                    แตะที่ตราประทับสีแดงเพื่อเปิดผนึกจดหมายจากใจเฟียน
-                </p>
-
-                <!-- Vintage Wax Seal Envelope -->
-                <div id="vintage-envelope-box" class="vintage-envelope" title="แตะตราประทับเพื่อเปิดจดหมาย">
-                    <div id="wax-seal-btn" class="wax-seal-btn" title="แตะเพื่อเปิดผนึก">
+            <div class="letter-experience-wrap">
+                <!-- Royal Luxury Stationery Envelope -->
+                <div id="royal-envelope-box" class="royal-envelope" title="แตะตราประทับขี้ผึ้งเพื่อเปิดจดหมาย">
+                    <div class="envelope-crest">ROYAL PRIVATE CORRESPONDENCE</div>
+                    <div id="wax-seal-btn" class="royal-wax-seal" title="แตะเพื่อเปิดผนึก">
                         <span>💌</span>
                     </div>
-                    <div style="position:absolute; bottom:18px; font-size:0.85rem; color:#854d56; font-weight:500;">
-                        FOR NASRIN MASA ONLY 💖
+                    <div class="envelope-footer-text">
+                        EXCLUSIVE FOR NASRIN MASA • 20TH BIRTHDAY
                     </div>
                 </div>
 
-                <!-- Unfolded Parchment Letter -->
-                <div id="parchment-letter" class="parchment-letter">
+                <!-- Wide Luxury Parchment Letter Paper -->
+                <div id="royal-parchment" class="royal-parchment">
                     <div id="letter-paragraphs-container"></div>
                 </div>
 
-                <!-- Golden VIP Ticket (ปรากฏหลังอ่านจดหมายจบ) -->
+                <!-- Wide Metallic Golden VIP Pass -->
                 <div id="golden-pass-box" class="golden-pass-box">
                     <div id="golden-ticket-vip" class="golden-ticket-vip" title="แตะเพื่อเข้าสู่ Wonderland">
                         <div class="golden-shimmer-sweep"></div>
-                        <div style="font-size:0.85rem; font-weight:700; letter-spacing:1px; color:#b7791f; text-transform:uppercase;">
-                            ⭐ OFFICIAL VIP GOLDEN PASS ⭐
+                        <div style="font-size:0.85rem; font-weight:700; letter-spacing:2px; color:#744210; text-transform:uppercase;">
+                            ⭐ OFFICIAL VIP GOLDEN PASS • 20TH ANNIVERSARY ⭐
                         </div>
-                        <h3 style="font-size:1.3rem; font-weight:800; color:#5c3800; margin:6px 0;">
+                        <h3 style="font-size:1.4rem; font-weight:800; color:#4a2800; margin:8px 0;">
                             บัตรทองคำวิเศษ สู่ WONDERLAND 🎡✨
                         </h3>
-                        <p style="font-size:0.88rem; color:#744210; line-height:1.5;">
+                        <p style="font-size:0.92rem; color:#5c3800; line-height:1.6; margin:8px 0 16px 0;">
                             ยินดีต้อนรับ <strong>ณัสริญ มะสะ</strong> เข้าสู่ดินแดนแห่งความสุข<br>
                             ของขวัญ มินิเกม คูปอง และความทรงจำรอเธออยู่ด้านในนะ!
                         </p>
-                        <div style="display:inline-block; margin-top:10px; background:#fff; color:#b7791f; padding:8px 20px; border-radius:24px; font-weight:700; font-size:0.9rem; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                        <div style="display:inline-block; background:#ffffff; color:#8c5300; padding:10px 28px; border-radius:30px; font-weight:700; font-size:0.95rem; box-shadow:0 6px 18px rgba(0,0,0,0.12);">
                             แตะบัตรเพื่อเปิดประตูมิติ 🌌➔
                         </div>
                     </div>
@@ -1017,6 +1016,7 @@
     <script src="js/scan.js"></script>
     <script src="js/warp.js"></script>
     <script src="js/fireworks.js"></script>
+    <script src="js/libs/three.min.js"></script>
     <script src="js/heart3d.js"></script>
     <script src="js/balloons3d.js"></script>
     <script src="js/letter.js"></script>

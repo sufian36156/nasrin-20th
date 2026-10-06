@@ -1,6 +1,6 @@
 /**
  * ====================================================================
- * 💌 CINEMATIC LETTER & GOLDEN TICKET CONTROLLER (จดหมายเปิดผนึก & บัตรทอง)
+ * 💌 CINEMATIC ROYAL LETTER CONTROLLER (จดหมายหรูหรา กว้างสมส่วน & บัตรทอง VIP)
  * ====================================================================
  */
 
@@ -17,8 +17,8 @@ class CinematicLetterController {
 
     init() {
         this.waxSealBtn = document.getElementById('wax-seal-btn');
-        this.envelopeBox = document.getElementById('vintage-envelope-box');
-        this.parchmentLetter = document.getElementById('parchment-letter');
+        this.envelopeBox = document.getElementById('royal-envelope-box');
+        this.parchmentLetter = document.getElementById('royal-parchment');
         this.paragraphsContainer = document.getElementById('letter-paragraphs-container');
         this.goldenPassBox = document.getElementById('golden-pass-box');
         this.goldenTicketBtn = document.getElementById('golden-ticket-vip');
@@ -42,22 +42,27 @@ class CinematicLetterController {
         if (this.parchmentLetter) this.parchmentLetter.style.display = 'none';
         if (this.goldenPassBox) this.goldenPassBox.style.display = 'none';
         if (this.paragraphsContainer) this.paragraphsContainer.innerHTML = '';
+
+        if (this.waxSealBtn) {
+            this.waxSealBtn.style.transform = 'scale(1)';
+            this.waxSealBtn.style.opacity = '1';
+        }
     }
 
     openEnvelope() {
         if (this.isOpen) return;
         this.isOpen = true;
 
-        window.soundManager.playPop(800);
+        window.soundManager.playPop(820);
         window.soundManager.playVictory();
 
         if (window.confetti) {
-            window.confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 } });
+            window.confetti({ particleCount: 60, spread: 70, origin: { y: 0.5 } });
         }
 
-        // เอฟเฟกต์ครั่งแตก
+        // เอฟเฟกต์ตราครั่งขี้ผึ้งแตกออก
         if (this.waxSealBtn) {
-            this.waxSealBtn.style.transform = 'scale(0.3) rotate(30deg)';
+            this.waxSealBtn.style.transform = 'scale(0.3) rotate(35deg)';
             this.waxSealBtn.style.opacity = '0';
         }
 
@@ -66,7 +71,7 @@ class CinematicLetterController {
             if (this.parchmentLetter) this.parchmentLetter.style.display = 'block';
 
             this.renderLetterContent();
-        }, 600);
+        }, 550);
     }
 
     renderLetterContent() {
@@ -75,15 +80,18 @@ class CinematicLetterController {
 
         this.paragraphsContainer.innerHTML = '';
 
-        // แสดงหัวจดหมาย
-        const headerEl = document.createElement('div');
-        headerEl.className = 'letter-recipient-title';
-        headerEl.textContent = letterData.to || 'แด่ ณัสริญ มะสะ (Nasrin Masa)';
-        this.paragraphsContainer.appendChild(headerEl);
+        // แถบหัวจดหมายหรูหรา
+        const headerBand = document.createElement('div');
+        headerBand.className = 'letter-header-band';
+        headerBand.innerHTML = `
+            <div class="letter-header-to">${letterData.to || 'แด่ ณัสริญ มะสะ (Nasrin Masa)'}</div>
+            <div class="letter-header-date">10 ตุลาคม 2026 • 20th Anniversary</div>
+        `;
+        this.paragraphsContainer.appendChild(headerBand);
 
-        let delay = 600;
+        let delay = 500;
 
-        // แสดงทีละวรรคอย่างนุ่มนวล
+        // แสดงเนื้อความทีละวรรคอย่างนุ่มนวล
         paras.forEach((paraText, idx) => {
             setTimeout(() => {
                 const pEl = document.createElement('div');
@@ -91,14 +99,14 @@ class CinematicLetterController {
                 pEl.innerHTML = paraText.replace(/\n/g, '<br>');
                 this.paragraphsContainer.appendChild(pEl);
 
-                window.soundManager.playPop(450 + idx * 40);
+                window.soundManager.playPop(420 + idx * 35);
 
                 setTimeout(() => {
                     pEl.classList.add('shown');
                 }, 50);
             }, delay);
 
-            delay += 2200; // จังหวะเว้นวรรคให้อ่านอย่างซึ้งใจ
+            delay += 2300;
         });
 
         // แสดงไฮไลท์ "More than words can say"
@@ -110,7 +118,7 @@ class CinematicLetterController {
             window.soundManager.playChime();
         }, delay);
 
-        delay += 1800;
+        delay += 1900;
 
         // แสดงคำลงท้าย "Happy Birthday, my love...."
         setTimeout(() => {
@@ -121,7 +129,7 @@ class CinematicLetterController {
             window.soundManager.playChime();
         }, delay);
 
-        delay += 2000;
+        delay += 2100;
 
         // เผยบัตรทองคำ VIP สู่ Wonderland
         setTimeout(() => {
@@ -129,7 +137,7 @@ class CinematicLetterController {
                 this.goldenPassBox.style.display = 'block';
                 window.soundManager.playVictory();
                 if (window.confetti) {
-                    window.confetti({ particleCount: 90, spread: 80, origin: { y: 0.7 } });
+                    window.confetti({ particleCount: 100, spread: 85, origin: { y: 0.7 } });
                 }
             }
         }, delay);

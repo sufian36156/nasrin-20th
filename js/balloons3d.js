@@ -1,12 +1,16 @@
 /**
  * ====================================================================
- * 🎈 20 FLOATING 3D BALLOONS CONTROLLER (ลูกโป่ง 3D ลอยฟ้า 20 รูป)
+ * 🎈 20 FLOATING 3D BALLOONS CONTROLLER (ลูกโป่ง 3D กลางคืน ไร้บั๊ก)
  * ====================================================================
  */
 
 class Balloons3DController {
     constructor() {
         this.stage = null;
+        this.starsCanvas = null;
+        this.starsCtx = null;
+        this.stars = [];
+        this.starsAnimFrame = null;
         this.counterEl = null;
         this.activeBalloons = [];
         this.totalLaunched = 0;
@@ -15,23 +19,77 @@ class Balloons3DController {
         this.waveTimer = null;
         this.animFrame = null;
         this.isFinished = false;
+        this.activeDragBalloon = null;
+        this.dragOffset = { x: 0, y: 0 };
+        this.dragStartTime = 0;
+        this.hasMoved = false;
     }
 
     init() {
         this.stage = document.getElementById('balloons-stage');
         this.counterEl = document.getElementById('balloons-counter-text');
+        this.starsCanvas = document.getElementById('balloons-stars-canvas');
+
+        if (this.starsCanvas) {
+            this.initStars();
+        }
+
+        this.setupPointerEvents();
+    }
+
+    initStars() {
+        if (!this.starsCanvas) return;
+        this.starsCtx = this.starsCanvas.getContext('2d');
+        const resize = () => {
+            if (!this.starsCanvas) return;
+            this.starsCanvas.width = window.innerWidth;
+            this.starsCanvas.height = window.innerHeight;
+            this.stars = [];
+            for (let i = 0; i < 90; i++) {
+                this.stars.push({
+                    x: Math.random() * this.starsCanvas.width,
+                    y: Math.random() * this.starsCanvas.height,
+                    r: Math.random() * 1.5 + 0.5,
+                    alpha: Math.random() * 0.8 + 0.2,
+                    speed: Math.random() * 0.02 + 0.01
+                });
+            }
+        };
+        resize();
+        window.addEventListener('resize', resize);
+    }
+
+    loopStars() {
+        if (!this.starsCtx || !this.starsCanvas) return;
+        this.starsCtx.clearRect(0, 0, this.starsCanvas.width, this.starsCanvas.height);
+
+        this.stars.forEach(s => {
+            s.alpha += s.speed;
+            if (s.alpha > 0.95 || s.alpha < 0.2) s.speed = -s.speed;
+            this.starsCtx.beginPath();
+            this.starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+            this.starsCtx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+            this.starsCtx.fill();
+        });
+
+        this.starsAnimFrame = requestAnimationFrame(() => this.loopStars());
     }
 
     start() {
         this.stage = document.getElementById('balloons-stage');
         this.counterEl = document.getElementById('balloons-counter-text');
+        this.starsCanvas = document.getElementById('balloons-stars-canvas');
         if (!this.stage) return;
 
         this.stage.innerHTML = '';
         this.activeBalloons = [];
         this.totalLaunched = 0;
         this.isFinished = false;
-        if (this.waveTimer) clearInterval(this.waveTimer);
+        this.activeDragBalloon = null;
+
+        if (this.waveTimer) clearTimeout(this.waveTimer);
+        if (this.starsAnimFrame) cancelAnimationFrame(this.starsAnimFrame);
+        this.loopStars();
 
         this.updateHUD();
         this.launchNextWave();
@@ -42,12 +100,12 @@ class Balloons3DController {
 
     updateHUD() {
         if (this.counterEl) {
-            this.counterEl.textContent = `ลูกโป่งความทรงจำ: ${this.totalLaunched} / ${this.totalTarget} (จิ้มให้แตก หรือลากตรึงไว้ดูได้ ✨)`;
+            this.counterEl.textContent = `ลูกโป่งความทรงจำ: ${this.totalLaunched} / ${this.totalTarget}`;
         }
     }
 
     launchNextWave() {
-        if (this.totalLaunched >= this.totalTarget) return;
+        if (this.totalLaunched >= this.totalTarget || this.isFinished) return;
 
         const photos = window.HBD_CONFIG.balloonPhotos || [];
         const startIdx = this.totalLaunched;
@@ -55,29 +113,31 @@ class Balloons3DController {
 
         for (let i = startIdx; i < endIdx; i++) {
             setTimeout(() => {
-                this.createBalloon(i, photos[i]);
-            }, (i - startIdx) * 600);
+                if (!this.isFinished) {
+                    this.createBalloon(i, photos[i]);
+                }
+            }, (i - startIdx) * 550);
         }
 
         this.totalLaunched = endIdx;
         this.updateHUD();
 
-        // ระลอกถัดไปปล่อยหลังจากนี้ 6.5 วินาที
         if (this.totalLaunched < this.totalTarget) {
             this.waveTimer = setTimeout(() => {
                 this.launchNextWave();
-            }, 6500);
+            }, 6000);
         } else {
-            // เมื่อปล่อยครบ 20 ลูกแล้ว รอให้ลอยพ้นจอ แล้วเปลี่ยนฉาก
+            // ปล่อยครบ 20 ลูกแล้ว รอให้ลอยลับขอบฟ้า แล้วไปฉากถัดไป
             setTimeout(() => {
                 this.finishAndProceed();
-            }, 9000);
+            }, 9500);
         }
     }
 
     createBalloon(index, imgSrc) {
         if (!this.stage) return;
-        const stageW = this.stage.clientWidth || 360;
+        const stageW = window.innerWidth;
+        const stageH = window.innerHeight;
 
         const balloon = document.createElement('div');
         balloon.className = 'balloon-item';
@@ -93,57 +153,72 @@ class Balloons3DController {
             <div class="balloon-string"></div>
         `;
 
+        // สุ่มตำแหน่งเริ่มต้นที่ด้านล่างจอ
         const startX = 20 + Math.random() * (stageW - 120);
-        const startY = (this.stage.clientHeight || 500) + 20;
+        const startY = stageH + 30;
 
         const balloonData = {
             el: balloon,
             x: startX,
             y: startY,
-            speedY: 1.1 + Math.random() * 0.7,
+            speedY: 1.2 + Math.random() * 0.7,
             wobbleSpeed: 0.03 + Math.random() * 0.02,
-            wobbleAmp: 12 + Math.random() * 10,
+            wobbleAmp: 10 + Math.random() * 8,
             angle: Math.random() * Math.PI * 2,
             isHeld: false,
             isPopped: false
         };
 
-        // การควบคุม: แตะลาก (Drag & Hold) และ จิ้มแตก (Tap to pop)
-        let tapStartTime = 0;
-        let didMove = false;
-
-        const onPointerDown = (e) => {
-            e.stopPropagation();
-            balloonData.isHeld = true;
-            tapStartTime = Date.now();
-            didMove = false;
-        };
-
-        const onPointerMove = (e) => {
-            if (!balloonData.isHeld) return;
-            didMove = true;
-            const rect = this.stage.getBoundingClientRect();
-            balloonData.x = (e.clientX - rect.left) - 40;
-            balloonData.y = (e.clientY - rect.top) - 50;
-        };
-
-        const onPointerUp = (e) => {
-            if (!balloonData.isHeld) return;
-            balloonData.isHeld = false;
-
-            const tapDuration = Date.now() - tapStartTime;
-            if (!didMove && tapDuration < 300) {
-                // จิ้มให้แตก (Pop!)
-                this.popBalloon(balloonData);
-            }
-        };
-
-        balloon.addEventListener('pointerdown', onPointerDown);
-        window.addEventListener('pointermove', onPointerMove);
-        window.addEventListener('pointerup', onPointerUp);
+        balloon.setAttribute('data-balloon-id', index);
+        balloon._balloonData = balloonData;
 
         this.stage.appendChild(balloon);
         this.activeBalloons.push(balloonData);
+    }
+
+    setupPointerEvents() {
+        // ใช้ระบบจับการแตะแบบ Centralized เดียว ไม่สร้างซ้ำซ้อน
+        window.addEventListener('pointerdown', (e) => {
+            const item = e.target.closest('.balloon-item');
+            if (item && item._balloonData && !item._balloonData.isPopped) {
+                const b = item._balloonData;
+                this.activeDragBalloon = b;
+                b.isHeld = true;
+                item.classList.add('held');
+                this.dragStartTime = Date.now();
+                this.hasMoved = false;
+
+                const rect = item.getBoundingClientRect();
+                this.dragOffset.x = e.clientX - rect.left;
+                this.dragOffset.y = e.clientY - rect.top;
+            }
+        });
+
+        window.addEventListener('pointermove', (e) => {
+            if (this.activeDragBalloon && this.activeDragBalloon.isHeld) {
+                this.hasMoved = true;
+                this.activeDragBalloon.x = e.clientX - this.dragOffset.x;
+                this.activeDragBalloon.y = e.clientY - this.dragOffset.y;
+            }
+        });
+
+        const handleRelease = (e) => {
+            if (this.activeDragBalloon) {
+                const b = this.activeDragBalloon;
+                b.isHeld = false;
+                if (b.el) b.el.classList.remove('held');
+
+                const tapDuration = Date.now() - this.dragStartTime;
+                if (!this.hasMoved && tapDuration < 300) {
+                    // แตะเพื่อทำให้แตก (Pop!)
+                    this.popBalloon(b);
+                }
+                this.activeDragBalloon = null;
+            }
+        };
+
+        window.addEventListener('pointerup', handleRelease);
+        window.addEventListener('pointercancel', handleRelease);
     }
 
     popBalloon(b) {
@@ -155,13 +230,13 @@ class Balloons3DController {
         if (window.confetti) {
             const rect = b.el.getBoundingClientRect();
             window.confetti({
-                particleCount: 25,
-                spread: 45,
-                origin: { x: (rect.left + 40) / window.innerWidth, y: (rect.top + 45) / window.innerHeight }
+                particleCount: 30,
+                spread: 50,
+                origin: { x: (rect.left + 42) / window.innerWidth, y: (rect.top + 45) / window.innerHeight }
             });
         }
 
-        b.el.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+        b.el.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
         b.el.style.transform = 'scale(1.4)';
         b.el.style.opacity = '0';
 
@@ -187,11 +262,11 @@ class Balloons3DController {
 
                 b.el.style.transform = `translate3d(${b.x + offsetX}px, ${b.y}px, 0)`;
             } else {
-                b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0) scale(1.08)`;
+                b.el.style.transform = `translate3d(${b.x}px, ${b.y}px, 0) scale(1.12)`;
             }
 
-            // หากลอยพ้นขอบบน
-            if (b.y < -140) {
+            // หากลอยพ้นขอบบนจอ
+            if (b.y < -160) {
                 if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
                 this.activeBalloons.splice(i, 1);
                 this.checkIfAllCleared();
@@ -211,11 +286,12 @@ class Balloons3DController {
         if (this.isFinished) return;
         this.isFinished = true;
 
+        if (this.waveTimer) clearTimeout(this.waveTimer);
         if (this.counterEl) {
-            this.counterEl.textContent = '✨ ลูกโป่ง 20 ปีลอยลับขอบฟ้า... มีจดหมายลับกำลังเปิดออก 💌';
+            this.counterEl.textContent = '✨ ลูกโป่ง 20 ปีลอยลับขอบฟ้า... จดหมายรักกำลังคลี่ออก 💌';
         }
 
-        // เคลียร์ลูกโป่งที่เหลืออย่างนุ่มนวล
+        // ค่อยๆ เฟดลูกโป่งที่เหลือ
         this.activeBalloons.forEach(b => {
             if (b.el) {
                 b.el.style.transition = 'opacity 1s ease';
@@ -224,6 +300,7 @@ class Balloons3DController {
         });
 
         setTimeout(() => {
+            if (this.starsAnimFrame) cancelAnimationFrame(this.starsAnimFrame);
             if (window.app) window.app.goToCeremonyScene('scene-letter');
             if (window.cinematicLetter) window.cinematicLetter.start();
         }, 1800);

@@ -572,30 +572,426 @@ html, body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
+/* ====================================================================
+   🌌 CINEMATIC MULTI-THEME WARP OVERLAY (8 ธีมเฉพาะตัว ไม่ซ้ำกัน)
+   ==================================================================== */
 .portal-warp-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle, #ffe3e8 0%, #2b0914 85%);
-    z-index: 9999;
-    display: none;
+    z-index: 99999;
+    display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s ease;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: radial-gradient(circle at center, rgba(38, 12, 28, 0.96) 0%, rgba(10, 4, 12, 0.98) 100%);
 }
 
 .portal-warp-overlay.active {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
-.portal-vortex {
+/* 🎨 พื้นหลังและแสงสะท้อนเฉพาะแต่ละธีม */
+.portal-warp-overlay.warp-chrono {
+    background: radial-gradient(ellipse at center, rgba(70, 24, 38, 0.97) 0%, rgba(18, 6, 12, 0.98) 100%);
+}
+.portal-warp-overlay.warp-biometric {
+    background: radial-gradient(ellipse at center, rgba(8, 30, 54, 0.97) 0%, rgba(3, 8, 18, 0.98) 100%);
+}
+.portal-warp-overlay.warp-hyperspace {
+    background: radial-gradient(ellipse at center, rgba(48, 12, 68, 0.97) 0%, rgba(8, 2, 16, 0.98) 100%);
+}
+.portal-warp-overlay.warp-supernova {
+    background: radial-gradient(ellipse at center, rgba(76, 14, 38, 0.97) 0%, rgba(14, 2, 10, 0.98) 100%);
+}
+.portal-warp-overlay.warp-crystal {
+    background: radial-gradient(ellipse at center, rgba(58, 18, 54, 0.97) 0%, rgba(12, 4, 18, 0.98) 100%);
+}
+.portal-warp-overlay.warp-aurora {
+    background: linear-gradient(135deg, rgba(25, 28, 64, 0.97) 0%, rgba(12, 16, 40, 0.97) 50%, rgba(30, 14, 40, 0.98) 100%);
+}
+.portal-warp-overlay.warp-parchment {
+    background: radial-gradient(ellipse at center, rgba(64, 18, 30, 0.97) 0%, rgba(16, 4, 8, 0.98) 100%);
+}
+.portal-warp-overlay.warp-wonderland {
+    background: radial-gradient(ellipse at center, rgba(84, 45, 8, 0.97) 0%, rgba(20, 8, 2, 0.98) 100%);
+}
+
+/* 🎭 เวทีแสดงกราฟิกตรงกลาง */
+.warp-stage {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.warp-theme-visual {
+    display: none;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+/* เปิดแสดงเฉพาะ Visual ของธีมที่ตรงกับคลาสของ Overlay */
+.portal-warp-overlay.warp-chrono .theme-chrono { display: flex; }
+.portal-warp-overlay.warp-biometric .theme-biometric { display: flex; }
+.portal-warp-overlay.warp-hyperspace .theme-hyperspace { display: flex; }
+.portal-warp-overlay.warp-supernova .theme-supernova { display: flex; }
+.portal-warp-overlay.warp-crystal .theme-crystal { display: flex; }
+.portal-warp-overlay.warp-aurora .theme-aurora { display: flex; }
+.portal-warp-overlay.warp-parchment .theme-parchment { display: flex; }
+.portal-warp-overlay.warp-wonderland .theme-wonderland { display: flex; }
+
+/* ⏳ 1. CHRONO VISUAL */
+.chrono-clock-ring {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px dashed rgba(255, 215, 0, 0.8);
+    box-shadow: 0 0 35px rgba(255, 215, 0, 0.4), inset 0 0 25px rgba(255, 215, 0, 0.2);
+    animation: chronoClockSpin 14s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.chrono-marker {
+    position: absolute;
+    color: #ffd700;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-shadow: 0 0 10px #ffd700;
+}
+.chrono-marker.m-1 { top: 8px; }
+.chrono-marker.m-2 { right: 12px; }
+.chrono-marker.m-3 { bottom: 8px; }
+.chrono-needle-hour {
+    position: absolute;
+    width: 4px;
+    height: 48px;
+    background: #ffd700;
+    top: 32px;
+    transform-origin: bottom center;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #ffd700;
+    animation: chronoClockSpin 4s linear infinite;
+}
+.chrono-needle-minute {
+    position: absolute;
+    width: 3px;
+    height: 65px;
+    background: #ffffff;
+    top: 15px;
+    transform-origin: bottom center;
+    border-radius: 3px;
+    box-shadow: 0 0 14px #ffffff;
+    animation: chronoNeedleFast 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.chrono-stardust-glow {
+    position: absolute;
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.25) 0%, transparent 70%);
+    animation: chronoGlowPulse 2s ease-in-out infinite;
+}
+
+/* 🔍 2. BIOMETRIC VISUAL */
+.biometric-hud-box {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    border-radius: 18px;
+    border: 2px solid rgba(0, 240, 255, 0.5);
+    background: rgba(0, 240, 255, 0.04);
+    animation: biometricHudPulse 1.6s ease-in-out infinite;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hud-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: #00f0ff;
+    border-style: solid;
+}
+.hud-corner.top-left { top: 6px; left: 6px; border-width: 3px 0 0 3px; }
+.hud-corner.top-right { top: 6px; right: 6px; border-width: 3px 3px 0 0; }
+.hud-corner.bottom-left { bottom: 6px; left: 6px; border-width: 0 0 3px 3px; }
+.hud-corner.bottom-right { bottom: 6px; right: 6px; border-width: 0 3px 3px 0; }
+.biometric-scan-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #00f0ff, #ff007f, transparent);
+    box-shadow: 0 0 15px #00f0ff, 0 0 25px #ff007f;
+    animation: biometricLaserSweep 1.3s ease-in-out infinite;
+}
+.biometric-target-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 0, 127, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.biometric-target-icon {
+    font-size: 1.8rem;
+    animation: biometricIconPulse 1.3s ease-in-out infinite;
+}
+
+/* 🚀 3. HYPERSPACE VISUAL */
+.hyperspace-singularity {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffffff, #c77dff, #7209b7);
+    box-shadow: 0 0 45px #c77dff, 0 0 90px #7209b7;
+    animation: hyperspaceSingularityPulse 1.4s ease-out infinite;
+}
+.hyperspace-light-rays {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, rgba(199, 125, 255, 0.4), transparent, rgba(255, 255, 255, 0.6), transparent);
+    animation: hyperspaceRaysSpin 2s linear infinite;
+}
+.hyperspace-warp-ring {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 30px #c77dff;
+    animation: hyperspaceSingularityPulse 1.4s ease-out infinite;
+    animation-delay: 0.35s;
+}
+
+/* 💥 4. SUPERNOVA VISUAL */
+.supernova-heart-core {
+    font-size: 4rem;
+    animation: supernovaHeartThump 1.2s ease-in-out infinite;
+    z-index: 2;
+}
+.supernova-shockwave {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #ff4d6d;
+    box-shadow: 0 0 25px #ff758f;
+    animation: supernovaShockwaveExpand 1.2s cubic-bezier(0.2, 0.8, 0.3, 1) infinite;
+}
+.supernova-shockwave.wave-1 { animation-delay: 0s; }
+.supernova-shockwave.wave-2 { animation-delay: 0.35s; border-color: #ffd166; }
+.supernova-shockwave.wave-3 { animation-delay: 0.7s; border-color: #ff0055; }
+
+/* 💎 5. CRYSTAL VISUAL */
+.crystal-prism-gem {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform-style: preserve-3d;
+    animation: crystalPrismSpin 6s linear infinite;
+}
+.crystal-facet {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: linear-gradient(135deg, rgba(255, 182, 193, 0.35), rgba(200, 160, 255, 0.45));
+    border-radius: 12px;
+    animation: crystalFacetShine 2s ease-in-out infinite;
+}
+.crystal-facet.facet-1 { transform: rotate(0deg) skew(15deg); }
+.crystal-facet.facet-2 { transform: rotate(45deg) skew(-15deg); }
+.crystal-facet.facet-3 { transform: rotate(90deg) scale(0.9); }
+.crystal-facet.facet-4 { transform: rotate(135deg) scale(0.85); }
+.crystal-center-sparkle {
+    font-size: 2.2rem;
+    z-index: 5;
+    animation: bounceIn 0.8s ease infinite alternate;
+}
+
+/* 🎈 6. AURORA VISUAL */
+.aurora-wave-ribbon {
+    position: absolute;
+    width: 210px;
+    height: 130px;
+    border-radius: 40%;
+    filter: blur(12px);
+    opacity: 0.85;
+}
+.aurora-wave-ribbon.ribbon-1 {
+    background: linear-gradient(90deg, #ff9a9e, #fecfef, #a1c4fd);
+    animation: auroraRibbonWave 3s ease-in-out infinite;
+}
+.aurora-wave-ribbon.ribbon-2 {
+    background: linear-gradient(90deg, #c2e9fb, #b8cbb8, #e0c3fc);
+    animation: auroraRibbonWave 3.5s ease-in-out infinite reverse;
+}
+.aurora-floating-bubble {
+    position: absolute;
+    font-size: 1.8rem;
+    animation: auroraBubbleFloat 2.2s ease-in-out infinite;
+}
+.aurora-floating-bubble.bubble-1 { left: 40px; animation-delay: 0s; }
+.aurora-floating-bubble.bubble-2 { left: 100px; animation-delay: 0.6s; font-size: 1.5rem; }
+.aurora-floating-bubble.bubble-3 { right: 40px; animation-delay: 1.2s; }
+
+/* 💌 7. PARCHMENT WAX VISUAL */
+.wax-seal-circle {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #9b111e, #580c1f);
+    border: 3px solid #ffd700;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 3px 8px rgba(255, 215, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: waxSealStampAnim 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.wax-seal-inner {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255, 215, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.wax-seal-initial {
+    font-family: 'Cinzel Decorative', 'Georgia', serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #ffd700;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 215, 0, 0.8);
+}
+.wax-seal-ripple {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    animation: waxRippleRing 1.5s ease-out infinite;
+}
+.parchment-candle-glow {
+    position: absolute;
     width: 180px;
     height: 180px;
     border-radius: 50%;
-    background: radial-gradient(circle, #fff, #ff5e7e, #f39c12);
-    box-shadow: 0 0 60px #ff5e7e, 0 0 120px #f39c12;
+    background: radial-gradient(circle, rgba(255, 170, 0, 0.35) 0%, transparent 70%);
+    animation: candleWarmthFlicker 1.8s ease-in-out infinite;
+}
+
+/* 🎡 8. WONDERLAND STARGATE VISUAL */
+.wonderland-stargate-wheel {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.stargate-ring-outer {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 30px #ffd700, inset 0 0 20px #ffd700;
+    animation: stargateOuterSpin 8s linear infinite;
+}
+.stargate-ring-inner {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px dashed #ff9e00;
+    animation: stargateInnerSpin 5s linear infinite;
+}
+.stargate-star-core {
+    font-size: 3rem;
+    z-index: 2;
+    animation: stargateCoreGlow 1.6s ease-in-out infinite;
+}
+
+/* 🏷️ กล่องข้อความและหลอด Progress ด้านล่าง */
+.warp-content-card {
+    margin-top: 24px;
+    text-align: center;
+    z-index: 20;
+    padding: 0 24px;
+    max-width: 92vw;
+}
+.warp-theme-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border-radius: 30px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(8px);
+}
+.warp-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 0 16px rgba(255, 117, 143, 0.8);
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+.warp-subtitle {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #ffd1dc;
+    opacity: 0.95;
+    line-height: 1.4;
+}
+.warp-progress-track {
+    width: 220px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+    margin: 18px auto 0 auto;
+    overflow: hidden;
+    position: relative;
+}
+.warp-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #ff4d6d, #ffd166, #06d6a0);
+    border-radius: 4px;
+    box-shadow: 0 0 10px #ff4d6d;
+}
+.portal-warp-overlay.active .warp-progress-fill {
+    animation: warpProgressAnim 1.05s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 /* ====================================================================
@@ -1907,3 +2303,60 @@ html, body {
     line-height: 1.6;
     box-shadow: inset 0 2px 6px rgba(255, 100, 130, 0.05);
 }
+
+/* ====================================================================
+   📱 RESPONSIVE ADJUSTMENTS FOR CINEMATIC WARP OVERLAY
+   ==================================================================== */
+@media (max-width: 600px) {
+    .warp-stage {
+        width: 180px;
+        height: 180px;
+    }
+    .chrono-clock-ring {
+        width: 135px;
+        height: 135px;
+    }
+    .biometric-hud-box {
+        width: 140px;
+        height: 140px;
+    }
+    .supernova-heart-core {
+        font-size: 3.2rem;
+    }
+    .crystal-prism-gem {
+        width: 100px;
+        height: 100px;
+    }
+    .wax-seal-circle {
+        width: 105px;
+        height: 105px;
+    }
+    .wax-seal-initial {
+        font-size: 2.3rem;
+    }
+    .wonderland-stargate-wheel {
+        width: 145px;
+        height: 145px;
+    }
+    .stargate-ring-outer {
+        width: 138px;
+        height: 138px;
+    }
+    .stargate-ring-inner {
+        width: 98px;
+        height: 98px;
+    }
+    .stargate-star-core {
+        font-size: 2.4rem;
+    }
+    .warp-title {
+        font-size: 1.18rem;
+    }
+    .warp-subtitle {
+        font-size: 0.88rem;
+    }
+    .warp-progress-track {
+        width: 180px;
+    }
+}
+

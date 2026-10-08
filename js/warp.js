@@ -223,9 +223,14 @@ class WarpHeartController {
 
         setTimeout(() => {
             if (this.starsAnimFrame) cancelAnimationFrame(this.starsAnimFrame);
-            if (window.app) window.app.goToCeremonyScene('scene-fireworks');
-            if (window.fireworksShow) window.fireworksShow.start();
-        }, 1200);
+            if (window.app) {
+                window.app.goToCeremonyScene('scene-fireworks', true, '🎆 จุดประกายฟ้าราตรี...', 'เตรียมชมพลุอวยพรฉลอง 20 ปี ✨', () => {
+                    if (window.fireworksShow) window.fireworksShow.start();
+                });
+            } else {
+                if (window.fireworksShow) window.fireworksShow.start();
+            }
+        }, 1000);
     }
 }
 

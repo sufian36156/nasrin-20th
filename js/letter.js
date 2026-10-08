@@ -55,6 +55,11 @@ class CinematicLetterController {
         this.isDraggingSticker = false;
         this.currentStickerProgress = 0;
 
+        // 🎵 สลับเพลงเฉพาะสำหรับหน้าจดหมายซาบซึ้ง (Letter From The Heart)
+        if (window.musicController) {
+            window.musicController.startLetterMusic(0.35);
+        }
+
         if (this.envelopeStage) this.envelopeStage.style.display = 'flex';
         if (this.pinkEnvelope) this.pinkEnvelope.classList.remove('opened');
         if (this.stickerStrip) {
@@ -246,10 +251,15 @@ class CinematicLetterController {
         const headerBand = document.createElement('div');
         headerBand.className = 'letter-header-band';
         headerBand.innerHTML = `
-            <div class="letter-header-to">${letterData.to || 'แด่ ณัสริญ มะสะ (Nasrin Masa) 👑💖✨'}</div>
+            <div class="letter-header-to">${letterData.to || 'แด่ ณัสริญ มะสะ (Nasrin Masa)'}</div>
             <div class="letter-header-date">10 ตุลาคม 2026 • 20th Anniversary 🎂</div>
         `;
         this.paragraphsContainer.appendChild(headerBand);
+
+        // 🔉 เบาเสียงดนตรีลงให้แผ่วๆ ขณะที่จดหมายกำลังพิมพ์ เพื่อให้ได้ยินเสียงปากกาขูดกระดาษชัดเจน
+        if (window.musicController) {
+            window.musicController.duckVolume(0.18);
+        }
 
         // แสดงเนื้อความแบบพิมพ์เป็นคำ/กลุ่มคำอย่างรวดเร็วและมีจังหวะ (Rhythmic Word Typewriter)
         let chain = Promise.resolve();
@@ -275,7 +285,7 @@ class CinematicLetterController {
                     const hlEl = document.createElement('div');
                     hlEl.className = 'letter-highlight-text';
                     this.paragraphsContainer.appendChild(hlEl);
-                    this.typewriterWords(hlEl, letterData.highlight || '✨ More than words can say 🤍✨', () => {
+                    this.typewriterWords(hlEl, letterData.highlight || 'More than words can say', () => {
                         window.soundManager.playChime();
                         setTimeout(resolve, 450);
                     });
@@ -287,13 +297,18 @@ class CinematicLetterController {
                     const closeEl = document.createElement('div');
                     closeEl.className = 'letter-closing-text';
                     this.paragraphsContainer.appendChild(closeEl);
-                    this.typewriterWords(closeEl, letterData.closing || 'Happy Birthday, my love.... 🌹💍💖', () => {
+                    this.typewriterWords(closeEl, letterData.closing || 'Happy Birthday, my love....', () => {
                         window.soundManager.playChime();
                         setTimeout(resolve, 600);
                     });
                 }, 200);
             });
         }).then(() => {
+            // 🔊 พิมพ์จดหมายเสร็จสิ้นแล้ว คืนระดับเสียงดนตรีให้ซาบซึ้งเต็มหัวใจ
+            if (window.musicController) {
+                window.musicController.restoreVolume();
+            }
+
             // เผยบัตรทองคำ VIP สู่ Wonderland
             setTimeout(() => {
                 if (this.goldenPassBox) {

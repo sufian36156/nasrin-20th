@@ -39,6 +39,13 @@ class Heart3DController {
         this.targetRotY = 0;
         this.currentRotX = 0;
         this.currentRotY = 0;
+        this.velRotX = 0;
+        this.velRotY = 0;
+
+        // 🎵 สลับเพลงเฉพาะสำหรับหน้าหัวใจความทรงจำ 3D (Memory Waltz 3D)
+        if (window.musicController) {
+            window.musicController.startHeart3D(0.38);
+        }
 
         if (this.animFrame) cancelAnimationFrame(this.animFrame);
         this.initThreeScene();
@@ -250,16 +257,24 @@ class Heart3DController {
     }
 
     setupInteraction() {
+        let lastMoveX = 0;
+        let lastMoveY = 0;
+
         const onStart = (e) => {
             if (this.isExploding) return;
             this.isDragging = true;
+            this.velRotX = 0;
+            this.velRotY = 0;
+
             const pt = e.touches ? e.touches[0] : e;
             this.startX = pt.clientX;
             this.startY = pt.clientY;
+            lastMoveX = pt.clientX;
+            lastMoveY = pt.clientY;
 
             // Double tap detection
             const now = Date.now();
-            if (now - this.lastTapTime < 350) {
+            if (now - this.lastTapTime < 380) {
                 this.explodeHeart();
             }
             this.lastTapTime = now;
@@ -271,20 +286,39 @@ class Heart3DController {
             const deltaX = pt.clientX - this.startX;
             const deltaY = pt.clientY - this.startY;
 
-            this.targetRotY += deltaX * 0.008;
-            this.targetRotX += deltaY * 0.008;
+            // คำนวณความเร็วเฉื่อย (Inertia Velocity)
+            this.velRotY = (pt.clientX - lastMoveX) * 0.0035;
+            this.velRotX = (pt.clientY - lastMoveY) * 0.0035;
+
+            this.targetRotY += deltaX * 0.007;
+            this.targetRotX += deltaY * 0.007;
+
+            // ลิมิตมุมก้มเงยแกน X ให้อยู่ในช่วงที่มองเห็นสวยงาม
+            this.targetRotX = Math.max(-0.8, Math.min(0.8, this.targetRotX));
 
             this.startX = pt.clientX;
             this.startY = pt.clientY;
+            lastMoveX = pt.clientX;
+            lastMoveY = pt.clientY;
+
+            if (e.cancelable && e.type.startsWith('touch')) {
+                e.preventDefault();
+            }
         };
 
         const onEnd = () => {
             this.isDragging = false;
         };
 
-        this.container.addEventListener('pointerdown', onStart);
-        window.addEventListener('pointermove', onMove);
+        // Touch & Pointer events
+        this.container.addEventListener('pointerdown', onStart, { passive: false });
+        window.addEventListener('pointermove', onMove, { passive: false });
         window.addEventListener('pointerup', onEnd);
+        window.addEventListener('pointercancel', onEnd);
+
+        this.container.addEventListener('touchstart', onStart, { passive: false });
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('touchend', onEnd);
     }
 
     explodeHeart() {
@@ -309,26 +343,36 @@ class Heart3DController {
             hint.textContent = '💥 หัวใจแห่งความทรงจำแตกกระจาย... ก้าวสู่ลูกโป่ง 20 ปี! 🎈';
         }
 
-        // Transition to 20 Balloons scene
+        // Transition to 20 Balloons scene with warp effect
         setTimeout(() => {
             if (this.animFrame) cancelAnimationFrame(this.animFrame);
-            if (window.app) window.app.goToCeremonyScene('scene-balloons');
-            if (window.balloons3D) window.balloons3D.start();
-        }, 1600);
+            if (window.app) {
+                window.app.goToCeremonyScene('scene-balloons', true, '🎈 สายลมแห่งความหวัง...', 'ปล่อยลูกโป่งความทรงจำ 20 ปี 🌟', () => {
+                    if (window.balloons3D) window.balloons3D.start();
+                });
+            } else {
+                if (window.balloons3D) window.balloons3D.start();
+            }
+        }, 1400);
     }
 
     animate() {
         if (!this.renderer || !this.scene || !this.camera) return;
 
-        // Smooth damping rotation
-        this.currentRotX += (this.targetRotX - this.currentRotX) * 0.08;
-        this.currentRotY += (this.targetRotY - this.currentRotY) * 0.08;
-
+        // Smooth damping rotation + momentum
         if (!this.isDragging && !this.isExploding) {
-            // Idle gentle 3D floating rotation
-            this.targetRotY += 0.005;
-            this.targetRotX = Math.sin(performance.now() * 0.001) * 0.15;
+            this.targetRotY += this.velRotY;
+            this.targetRotX += this.velRotX;
+            this.velRotY *= 0.94; // แรงเสียดทานหนืดนุ่ม
+            this.velRotX *= 0.94;
+
+            // Idle gentle floating
+            this.targetRotY += 0.0035;
         }
+
+        // Smooth interpolation
+        this.currentRotX += (this.targetRotX - this.currentRotX) * 0.12;
+        this.currentRotY += (this.targetRotY - this.currentRotY) * 0.12;
 
         if (this.heartGroup) {
             this.heartGroup.rotation.x = this.currentRotX;

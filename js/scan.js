@@ -45,8 +45,13 @@ class FaceKYCController {
             this.proceedBtn.addEventListener('click', () => {
                 this.stopCamera();
                 window.soundManager.playVictory();
-                if (window.app) window.app.goToCeremonyScene('scene-warp');
-                if (window.warpController) window.warpController.start();
+                if (window.app) {
+                    window.app.goToCeremonyScene('scene-warp', true, '🌌 ข้ามผ่านมิติเวลา...', 'สู่จุดศูนย์กลางแห่งความรัก 🤍', () => {
+                        if (window.warpController) window.warpController.start();
+                    });
+                } else {
+                    if (window.warpController) window.warpController.start();
+                }
             });
         }
     }

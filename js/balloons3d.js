@@ -246,27 +246,51 @@ class Balloons3DController {
         if (b.isPopped) return;
         b.isPopped = true;
 
-        window.soundManager.playPop(750 + Math.random() * 150);
+        // เล่นเสียงลูกโป่งแตกสมจริง (Realistic Balloon Latex Snap & Pop)
+        if (window.soundManager.playBalloonPop) {
+            window.soundManager.playBalloonPop();
+        } else {
+            window.soundManager.playPop(850);
+        }
 
+        const el = b.el;
+        if (!el) return;
+
+        const rect = el.getBoundingClientRect();
+        const currentX = b.x;
+        const currentY = b.y;
+
+        // ดึงออกจาก activeBalloons ทันที เพื่อไม่ให้ฟังก์ชัน loop() มาเขียนทับ transform
+        const idx = this.activeBalloons.indexOf(b);
+        if (idx !== -1) {
+            this.activeBalloons.splice(idx, 1);
+        }
+
+        // ยิงเศษประกายคอนเฟตติกระจายตรงพิกัดลูกโป่งที่แตก
         if (window.confetti) {
-            const rect = b.el.getBoundingClientRect();
             window.confetti({
-                particleCount: 30,
-                spread: 50,
-                origin: { x: (rect.left + 42) / window.innerWidth, y: (rect.top + 45) / window.innerHeight }
+                particleCount: 45,
+                spread: 70,
+                origin: {
+                    x: Math.max(0.1, Math.min(0.9, (rect.left + rect.width / 2) / window.innerWidth)),
+                    y: Math.max(0.1, Math.min(0.9, (rect.top + rect.height / 2) / window.innerHeight))
+                },
+                colors: ['#ff4d6d', '#ff758f', '#ffb3c1', '#ffd166', '#ffffff']
             });
         }
 
-        b.el.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease';
-        b.el.style.transform = 'scale(1.4)';
-        b.el.style.opacity = '0';
+        // อนิเมชันลูกโป่งแตกกระจุย ณ ตำแหน่งเดิม (ไม่วาปไปมุมขวา)
+        el.style.transition = 'transform 0.18s cubic-bezier(0.1, 0.9, 0.2, 1.2), opacity 0.18s ease-out';
+        el.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1.6) rotate(${Math.random() > 0.5 ? 25 : -25}deg)`;
+        el.style.opacity = '0';
+        el.style.filter = 'blur(4px)';
 
         setTimeout(() => {
-            if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
-            const idx = this.activeBalloons.indexOf(b);
-            if (idx !== -1) this.activeBalloons.splice(idx, 1);
+            if (el && el.parentNode) {
+                el.parentNode.removeChild(el);
+            }
             this.checkIfAllCleared();
-        }, 220);
+        }, 200);
     }
 
     loop() {
@@ -322,9 +346,14 @@ class Balloons3DController {
 
         setTimeout(() => {
             if (this.starsAnimFrame) cancelAnimationFrame(this.starsAnimFrame);
-            if (window.app) window.app.goToCeremonyScene('scene-letter');
-            if (window.cinematicLetter) window.cinematicLetter.start();
-        }, 1800);
+            if (window.app) {
+                window.app.goToCeremonyScene('scene-letter', true, '💌 ส่งผ่านความรู้สึกจากใจ...', 'ซองจดหมายฉบับพิเศษเพื่อเธอ 💖', () => {
+                    if (window.cinematicLetter) window.cinematicLetter.start();
+                });
+            } else {
+                if (window.cinematicLetter) window.cinematicLetter.start();
+            }
+        }, 1600);
     }
 }
 

@@ -15,11 +15,17 @@ class FireworksShowController {
         this.statusBadgeEl = null;
         this.currentRound = 0;
         this.rounds = [
-            { text: "Happy birthday", sub: "นัดที่ 1: สุขสันต์วันเกิด ✨", color: "#ff758f" },
-            { text: "20th year", sub: "นัดที่ 2: ก้าวสู่วัย 20 ปีบริบูรณ์ 🎂", color: "#ffd166" },
-            { text: "Nasrin Masa", sub: "นัดที่ 3: แด่คนพิเศษ ณัสริญ มะสะ 💖", color: "#06d6a0" }
+            // เริ่มต้นด้วยการนับเคาต์ดาวน์ 1 2 3
+            { text: "1", sub: "✨ หนึ่ง... เตรียมตัวนะคนเก่ง 🌟", color: "#ff9e00", isCountdown: true },
+            { text: "2", sub: "💫 สอง... หายใจเข้าลึกๆ 💖", color: "#ff4d6d", isCountdown: true },
+            { text: "3", sub: "🎆 สาม... ขอให้มีความสุขที่สุด! 🎉", color: "#c77dff", isCountdown: true },
+            // พลุข้อความคำอวยพรฉลอง 20 ปี
+            { text: "Happy birthday", sub: "สุขสันต์วันเกิดครบรอบ 20 ปี ✨", color: "#ff758f", isCountdown: false },
+            { text: "20th year", sub: "ก้าวสู่วัย 20 ปีบริบูรณ์อย่างงดงาม 🎂", color: "#ffd166", isCountdown: false },
+            { text: "Nasrin Masa", sub: "แด่คนพิเศษที่สุดในใจ ณัสริญ มะสะ 💖", color: "#06d6a0", isCountdown: false }
         ];
         this.activeTextParticles = [];
+        this.roundTimeout = null;
     }
 
     init() {
@@ -54,12 +60,22 @@ class FireworksShowController {
     }
 
     start() {
+        if (this.roundTimeout) {
+            clearTimeout(this.roundTimeout);
+            this.roundTimeout = null;
+        }
+
         this.resize();
         this.generateStars();
         this.currentRound = 0;
         this.particles = [];
         this.rockets = [];
         this.activeTextParticles = [];
+
+        // 🎵 สลับเพลงเฉพาะสำหรับหน้าพลุราตรีตระการตา!
+        if (window.musicController) {
+            window.musicController.startFireworks(0.4);
+        }
 
         if (this.animFrame) cancelAnimationFrame(this.animFrame);
         this.loop();
@@ -69,16 +85,21 @@ class FireworksShowController {
 
     launchNextRound() {
         if (this.currentRound >= this.rounds.length) {
-            // ยิงครบทั้ง 3 นัดแล้ว -> ไปต่อที่หัวใจ 3D
-            setTimeout(() => {
+            // ยิงครบทุกนัดแล้ว -> ค่อยๆ ปล่อยตัวอักษรจาง และไปต่อที่หัวใจ 3D
+            this.roundTimeout = setTimeout(() => {
                 if (this.statusBadgeEl) {
-                    this.statusBadgeEl.textContent = '✨ พลุอวยพรส่งความรักครบแล้ว... กำลังรวมความทรงจำ 🤍';
+                    this.statusBadgeEl.textContent = '✨ พลุอวยพรส่งความรักครบแล้ว... กำลังหลอมรวมความทรงจำ 🤍';
                 }
-                setTimeout(() => {
-                    if (window.app) window.app.goToCeremonyScene('scene-heart3d');
-                    if (window.heart3D) window.heart3D.start();
-                }, 1500);
-            }, 2500);
+                this.roundTimeout = setTimeout(() => {
+                    if (window.app) {
+                        window.app.goToCeremonyScene('scene-heart3d', true, '💎 หลอมรวมความทรงจำ 3D...', 'หัวใจแห่งความรัก 360 องศา 💖', () => {
+                            if (window.heart3D) window.heart3D.start();
+                        });
+                    } else {
+                        if (window.heart3D) window.heart3D.start();
+                    }
+                }, 1200);
+            }, 2200);
             return;
         }
 
@@ -87,21 +108,29 @@ class FireworksShowController {
             this.statusBadgeEl.textContent = roundData.sub;
         }
 
+        // เมื่อเริ่มยิงลูกใหม่ ให้ตัวอักษรของนัดก่อนหน้าค่อยๆ ลอยจางหายไปอย่างนุ่มนวล (ป้องกันการชนกันล่วงหน้า)
+        if (this.activeTextParticles.length > 0) {
+            this.activeTextParticles.forEach(p => {
+                p.life = Math.min(p.life, 18);
+                p.vy -= 0.6;
+            });
+        }
+
         // ยิงจรวดพลุพุ่งขึ้นพร้อมเสียงหวีดหวิวสมจริง
-        if (window.soundManager.playFireworkWhistle) {
+        if (window.soundManager && window.soundManager.playFireworkWhistle) {
             window.soundManager.playFireworkWhistle();
-        } else {
+        } else if (window.soundManager) {
             window.soundManager.playSwoosh();
         }
 
-        const startX = this.canvas.width * (0.35 + Math.random() * 0.3);
+        const startX = this.canvas.width * (0.4 + Math.random() * 0.2);
         const targetY = this.canvas.height * 0.30;
 
         this.rockets.push({
             x: startX,
             y: this.canvas.height,
             targetY: targetY,
-            speed: 9.5,
+            speed: 10.5,
             color: roundData.color,
             textData: roundData
         });
@@ -111,20 +140,20 @@ class FireworksShowController {
 
     explodeRocket(rocket) {
         // เล่นเสียงระเบิดกระหึ่มตูมมมม! (Sub-bass + Lowpass burst) และเสียงสะเก็ดไฟเปรี๊ยะๆ
-        if (window.soundManager.playFireworkBoom) {
+        if (window.soundManager && window.soundManager.playFireworkBoom) {
             window.soundManager.playFireworkBoom();
-        } else {
+        } else if (window.soundManager) {
             window.soundManager.playPop(200);
         }
 
         setTimeout(() => {
-            if (window.soundManager.playFireworkCrackle) {
+            if (window.soundManager && window.soundManager.playFireworkCrackle) {
                 window.soundManager.playFireworkCrackle();
             }
         }, 120);
 
         // สะเก็ดดาวกระจายรอบทิศ
-        const sparkCount = 100;
+        const sparkCount = 90;
         for (let i = 0; i < sparkCount; i++) {
             const angle = Math.random() * Math.PI * 2;
             const speed = Math.random() * 7 + 2;
@@ -135,63 +164,93 @@ class FireworksShowController {
                 vy: Math.sin(angle) * speed,
                 color: rocket.color,
                 alpha: 1,
-                decay: Math.random() * 0.015 + 0.01,
+                decay: Math.random() * 0.018 + 0.012,
                 size: Math.random() * 3.5 + 2
             });
         }
 
-        // สร้างตัวอักษรประกายแสงขนาดใหญ่พิเศษกลางอากาศ
-        this.createTextExplosion(rocket.x, rocket.y, rocket.textData.text, rocket.color);
+        // 🌟 แก้ไขบั๊กข้อความทับซ้อน 100%:
+        // ล้างตัวอักษรเก่าออกทั้งหมดทันทีก่อนสร้างตัวอักษรของนัดใหม่เด็ดขาด!
+        this.activeTextParticles = [];
 
-        // รอ 3.0 วินาทีแล้วยิงนัดถัดไป
-        setTimeout(() => {
+        // สร้างตัวอักษรประกายแสงขนาดใหญ่พิเศษกลางอากาศ
+        const isCountdown = Boolean(rocket.textData.isCountdown);
+        this.createTextExplosion(rocket.x, rocket.y, rocket.textData.text, rocket.color, isCountdown);
+
+        // เวลารอสำหรับนัดถัดไป (เคาต์ดาวน์ 1 2 3 ให้ฉับไว 1.8s, ข้อความยาวให้อยู่นานขึ้น 3.2s)
+        const delayBeforeNext = isCountdown ? 1800 : 3200;
+        this.roundTimeout = setTimeout(() => {
             this.launchNextRound();
-        }, 3000);
+        }, delayBeforeNext);
     }
 
-    createTextExplosion(centerX, centerY, text, color) {
-        // คำนวณขนาดตามหน้าจอจริง (Dynamic Responsive Font & Canvas)
+    createTextExplosion(centerX, centerY, text, color, isCountdown = false) {
         const screenW = window.innerWidth;
-        const cW = Math.min(840, Math.max(340, screenW * 0.92));
-        const cH = 150;
+        const screenH = window.innerHeight;
+
+        // ฟิกเกอร์พิกัดศูนย์กลางแนวนอนให้อยู่กึ่งกลางหน้าจอเสมอ
+        const safeCenterX = screenW / 2;
+        const safeCenterY = Math.max(130, Math.min(screenH * 0.32, centerY));
+
+        // ความกว้าง Canvas เสมือนสำหรับเรนเดอร์ตัวอักษร
+        const cW = Math.min(780, Math.max(310, Math.floor(screenW * 0.94)));
+        const cH = 170;
 
         const offscreen = document.createElement('canvas');
-        const offCtx = offscreen.getContext('2d');
+        const offCtx = offscreen.getContext('2d', { willReadFrequently: true });
         offscreen.width = cW;
         offscreen.height = cH;
 
+        offCtx.clearRect(0, 0, cW, cH);
         offCtx.fillStyle = '#ffffff';
-        // คำนวณขนาดตัวอักษรให้พอดีกับความกว้างหน้าจอเสมอ ไม่ตกขอบ
-        // บนมือถือ ~32px-38px, บนไอแพด ~48px-56px, บนคอม ~62px
-        let fontSize = Math.floor(cW / (text.length > 12 ? 14 : 10));
-        fontSize = Math.max(28, Math.min(64, fontSize));
 
-        offCtx.font = `900 ${fontSize}px 'Prompt', 'Kanit', sans-serif`;
+        // คำนวณขนาด Font ให้พอดี เหมาะกับมือถือและไอแพดโดยอัตโนมัติ
+        let fontSize;
+        if (isCountdown) {
+            fontSize = screenW < 600 ? 92 : 130;
+        } else if (text.length > 12) {
+            fontSize = screenW < 600 ? 32 : 54;
+        } else {
+            fontSize = screenW < 600 ? 38 : 60;
+        }
+
+        offCtx.font = `900 ${fontSize}px -apple-system, BlinkMacSystemFont, 'Prompt', 'Kanit', sans-serif`;
+        // ย่อขนาดฟอนต์ถ้าความกว้างข้อความเกินพื้นที่แสดงผล ป้องกันตัวหนังสือล้น/ทับซ้อน
+        const maxAllowedWidth = cW * 0.88;
+        while (offCtx.measureText(text).width > maxAllowedWidth && fontSize > 18) {
+            fontSize -= 2;
+            offCtx.font = `900 ${fontSize}px -apple-system, BlinkMacSystemFont, 'Prompt', 'Kanit', sans-serif`;
+        }
+
         offCtx.textAlign = 'center';
         offCtx.textBaseline = 'middle';
         offCtx.fillText(text, cW / 2, cH / 2);
 
         const imgData = offCtx.getImageData(0, 0, cW, cH);
-        const step = screenW < 600 ? 4 : 5; // ความละเอียดพิกเซล
+        const data = imgData.data;
+
+        // Step พิกเซล (มือถือ 3-4 เพื่อให้ตัวอักษรแน่น คมชัด ไม่แหว่ง และลื่นไหล)
+        const step = screenW < 600 ? 3 : 4;
+        const particleLife = isCountdown ? 90 : 155;
 
         for (let y = 0; y < cH; y += step) {
             for (let x = 0; x < cW; x += step) {
                 const index = (y * cW + x) * 4;
-                if (imgData.data[index + 3] > 128) {
-                    const targetX = centerX + (x - cW / 2);
-                    const targetY = centerY + (y - cH / 2);
+                if (data[index + 3] > 110) {
+                    const targetX = safeCenterX + (x - cW / 2);
+                    const targetY = safeCenterY + (y - cH / 2);
 
                     this.activeTextParticles.push({
                         x: centerX,
                         y: centerY,
                         tx: targetX,
                         ty: targetY,
-                        vx: (Math.random() - 0.5) * 4.5,
-                        vy: (Math.random() - 0.5) * 4.5,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4,
                         color: color,
                         alpha: 1,
-                        life: 160, // อยู่ได้นานขึ้นให้อ่านชัดเจน
-                        size: screenW < 600 ? 2.6 : 3.2
+                        life: particleLife,
+                        size: screenW < 600 ? 2.5 : 3.2
                     });
                 }
             }

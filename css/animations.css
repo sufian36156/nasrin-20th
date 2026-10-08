@@ -115,3 +115,119 @@
 .bounce-in {
     animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
+
+/* ====================================================================
+   🌌 MULTI-THEME CINEMATIC WARP KEYFRAMES (8 รูปแบบเฉพาะตัว ไม่ซ้ำกัน)
+   ==================================================================== */
+
+/* หลอด Progress Bar ด้านล่าง */
+@keyframes warpProgressAnim {
+    0% { width: 0%; opacity: 0.7; }
+    50% { width: 65%; opacity: 1; }
+    100% { width: 100%; opacity: 1; }
+}
+
+/* 1. CHRONO (กาลเวลา) */
+@keyframes chronoClockSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes chronoNeedleFast {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(1080deg); }
+}
+@keyframes chronoGlowPulse {
+    0%, 100% { transform: scale(0.96); opacity: 0.75; filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.5)); }
+    50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 35px rgba(255, 215, 0, 0.9)); }
+}
+
+/* 2. BIOMETRIC (สแกนใบหน้าไฮเทค) */
+@keyframes biometricLaserSweep {
+    0% { top: 0%; opacity: 0.3; }
+    50% { top: 92%; opacity: 1; }
+    100% { top: 0%; opacity: 0.3; }
+}
+@keyframes biometricHudPulse {
+    0%, 100% { transform: scale(0.97); box-shadow: 0 0 25px rgba(0, 240, 255, 0.4); }
+    50% { transform: scale(1.03); box-shadow: 0 0 45px rgba(255, 0, 127, 0.6); }
+}
+@keyframes biometricIconPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px #00f0ff); }
+    50% { transform: scale(1.2); filter: drop-shadow(0 0 20px #ff007f); }
+}
+
+/* 3. HYPERSPACE (พุ่งทะลุมิติ) */
+@keyframes hyperspaceSingularityPulse {
+    0% { transform: scale(0.5); opacity: 0.4; }
+    50% { transform: scale(1.4); opacity: 1; }
+    100% { transform: scale(2.8); opacity: 0; }
+}
+@keyframes hyperspaceRaysSpin {
+    0% { transform: rotate(0deg) scale(0.8); }
+    100% { transform: rotate(360deg) scale(1.4); }
+}
+
+/* 4. SUPERNOVA (คลื่นช็อกเวฟหัวใจ) */
+@keyframes supernovaHeartThump {
+    0% { transform: scale(0.85); filter: drop-shadow(0 0 10px #ff0055); }
+    25% { transform: scale(1.25); filter: drop-shadow(0 0 30px #ff4d6d); }
+    40% { transform: scale(1.05); }
+    60% { transform: scale(1.35); filter: drop-shadow(0 0 50px #ff758f); }
+    100% { transform: scale(1.15); filter: drop-shadow(0 0 25px #ff4d6d); }
+}
+@keyframes supernovaShockwaveExpand {
+    0% { width: 40px; height: 40px; opacity: 1; border-width: 4px; }
+    100% { width: 340px; height: 340px; opacity: 0; border-width: 1px; }
+}
+
+/* 5. CRYSTAL (ปริซึม 3D คริสตัล) */
+@keyframes crystalPrismSpin {
+    0% { transform: rotateX(20deg) rotateY(0deg) rotateZ(0deg); }
+    100% { transform: rotateX(20deg) rotateY(360deg) rotateZ(360deg); }
+}
+@keyframes crystalFacetShine {
+    0%, 100% { opacity: 0.6; filter: brightness(1) drop-shadow(0 0 15px rgba(255, 182, 193, 0.5)); }
+    50% { opacity: 1; filter: brightness(1.5) drop-shadow(0 0 35px rgba(220, 160, 255, 0.9)); }
+}
+
+/* 6. AURORA (แสงเหนือพาสเทล & ฟองล่องลอย) */
+@keyframes auroraRibbonWave {
+    0% { transform: scaleY(0.9) skewX(-6deg) rotate(-4deg); opacity: 0.7; }
+    50% { transform: scaleY(1.15) skewX(6deg) rotate(4deg); opacity: 1; }
+    100% { transform: scaleY(0.9) skewX(-6deg) rotate(-4deg); opacity: 0.7; }
+}
+@keyframes auroraBubbleFloat {
+    0% { transform: translateY(40px) scale(0.6); opacity: 0; }
+    40% { opacity: 1; }
+    100% { transform: translateY(-70px) scale(1.2); opacity: 0; }
+}
+
+/* 7. PARCHMENT (ตราประทับขี้ผึ้ง & กลิ่นอายจดหมาย) */
+@keyframes waxSealStampAnim {
+    0% { transform: scale(1.4) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(0.95) rotate(2deg); opacity: 1; }
+    80% { transform: scale(1.05) rotate(0deg); }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes waxRippleRing {
+    0% { width: 60px; height: 60px; opacity: 0.9; }
+    100% { width: 220px; height: 220px; opacity: 0; }
+}
+@keyframes candleWarmthFlicker {
+    0%, 100% { transform: scale(0.95); opacity: 0.7; }
+    50% { transform: scale(1.08); opacity: 0.95; }
+}
+
+/* 8. WONDERLAND (สตาร์เกตทองคำอลังการ) */
+@keyframes stargateOuterSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes stargateInnerSpin {
+    0% { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+}
+@keyframes stargateCoreGlow {
+    0%, 100% { transform: scale(0.92); filter: drop-shadow(0 0 20px #ffd700); }
+    50% { transform: scale(1.18); filter: drop-shadow(0 0 50px #ff9e00); }
+}

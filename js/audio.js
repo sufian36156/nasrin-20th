@@ -225,34 +225,8 @@ class SoundManager {
         this.playPop(850);
     }
 
-    // เสียงจรวดพลุพุ่งขึ้นฟ้าหวีดหวิว (Realistic Firework Whistle/Whoosh)
-    playFireworkWhistle() {
-        if (this.isMuted) return;
-        this.init();
-        if (!this.ctx) return;
-
-        try {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-
-            osc.type = 'sine';
-            const now = this.ctx.currentTime;
-            osc.frequency.setValueAtTime(350, now);
-            osc.frequency.exponentialRampToValueAtTime(1400, now + 0.6);
-
-            gain.gain.setValueAtTime(0.08, now);
-            gain.gain.exponentialRampToValueAtTime(0.005, now + 0.6);
-
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-
-            osc.start(now);
-            osc.stop(now + 0.6);
-        } catch (e) {}
-    }
-
-    // เสียงพลุระเบิดกระหึ่มสมจริง ตูมมมม! (Realistic Low-end Firework Boom with Reverb)
-    playFireworkBoom() {
+    // เสียงลูกโป่งแตกเป๊าะสมจริง (Realistic Balloon Latex Pop with Reverb)
+    playBalloonPop() {
         if (this.isMuted) return;
         this.init();
         if (!this.ctx) return;
@@ -260,40 +234,40 @@ class SoundManager {
         try {
             const now = this.ctx.currentTime;
 
-            // 1. Sub-bass punch (60Hz -> 30Hz)
+            // 1. Sharp snappy transient punch (ยางลูกโป่งฉีกขาดอย่างฉับพลัน)
             const osc = this.ctx.createOscillator();
             const oscGain = this.ctx.createGain();
             osc.type = 'triangle';
-            osc.frequency.setValueAtTime(75, now);
-            osc.frequency.exponentialRampToValueAtTime(30, now + 0.7);
+            osc.frequency.setValueAtTime(420, now);
+            osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
 
-            oscGain.gain.setValueAtTime(0.7, now);
-            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+            oscGain.gain.setValueAtTime(0.75, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
             osc.connect(oscGain);
             oscGain.connect(this.ctx.destination);
             osc.start(now);
-            osc.stop(now + 0.8);
+            osc.stop(now + 0.12);
 
-            // 2. White noise explosive burst with low-pass filter
-            const bufferSize = this.ctx.sampleRate * 0.9;
+            // 2. Air release snap (เสียงลมแตกกระจาย)
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.14);
             const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
             const data = buffer.getChannelData(0);
             for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * 0.75;
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (this.ctx.sampleRate * 0.03));
             }
 
             const noise = this.ctx.createBufferSource();
             noise.buffer = buffer;
 
             const filter = this.ctx.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(320, now);
-            filter.frequency.exponentialRampToValueAtTime(80, now + 0.9);
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1400, now);
+            filter.Q.setValueAtTime(1.5, now);
 
             const noiseGain = this.ctx.createGain();
-            noiseGain.gain.setValueAtTime(0.85, now);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+            noiseGain.gain.setValueAtTime(0.6, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
 
             noise.connect(filter);
             filter.connect(noiseGain);
@@ -303,7 +277,85 @@ class SoundManager {
         } catch (e) {}
     }
 
-    // เสียงประกายไฟแตกเปรี๊ยะๆ หลังพลุระเบิด (Crackling Sparkles)
+    // เสียงจรวดพลุพุ่งขึ้นฟ้าหวีดหวิว (Realistic Firework Whistle/Whoosh)
+    playFireworkWhistle() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(280, now);
+            osc.frequency.exponentialRampToValueAtTime(1600, now + 0.7);
+
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(now);
+            osc.stop(now + 0.7);
+        } catch (e) {}
+    }
+
+    // เสียงพลุระเบิดกระหึ่มกึกก้องสมจริง (Realistic Deep Low-End Fireworks Boom)
+    playFireworkBoom() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const now = this.ctx.currentTime;
+
+            // 1. Sub-bass resonant impact (65Hz -> 25Hz)
+            const osc = this.ctx.createOscillator();
+            const oscGain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(70, now);
+            osc.frequency.exponentialRampToValueAtTime(25, now + 0.9);
+
+            oscGain.gain.setValueAtTime(0.9, now);
+            oscGain.gain.exponentialRampToValueAtTime(0.0005, now + 0.95);
+
+            osc.connect(oscGain);
+            oscGain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.95);
+
+            // 2. White noise explosive burst with realistic lowpass shockwave
+            const bufferSize = Math.floor(this.ctx.sampleRate * 1.1);
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.9;
+            }
+
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(450, now);
+            filter.frequency.exponentialRampToValueAtTime(60, now + 1.1);
+
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.95, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.0005, now + 1.1);
+
+            noise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(this.ctx.destination);
+
+            noise.start(now);
+        } catch (e) {}
+    }
+
+    // เสียงประกายไฟแตกเปรี๊ยะๆ ระยิบระยับ (Crackling Sparkles)
     playFireworkCrackle() {
         if (this.isMuted) return;
         this.init();
@@ -311,16 +363,16 @@ class SoundManager {
 
         try {
             const now = this.ctx.currentTime;
-            for (let i = 0; i < 6; i++) {
-                const burstTime = now + (i * 0.08) + (Math.random() * 0.04);
+            for (let i = 0; i < 8; i++) {
+                const burstTime = now + (i * 0.07) + (Math.random() * 0.03);
                 const osc = this.ctx.createOscillator();
                 const gain = this.ctx.createGain();
 
-                osc.type = 'highpass' ? 'square' : 'triangle';
-                osc.frequency.setValueAtTime(1200 + Math.random() * 800, burstTime);
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1400 + Math.random() * 1200, burstTime);
 
-                gain.gain.setValueAtTime(0.06, burstTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, burstTime + 0.04);
+                gain.gain.setValueAtTime(0.08, burstTime);
+                gain.gain.exponentialRampToValueAtTime(0.0005, burstTime + 0.04);
 
                 osc.connect(gain);
                 gain.connect(this.ctx.destination);

@@ -31,12 +31,105 @@
     <!-- Background Floating Particles Canvas -->
     <canvas id="bg-canvas"></canvas>
 
-    <!-- Portal Warp Fullscreen Overlay -->
+    <!-- Multi-Theme Cinematic Scene Warp Overlay -->
     <div id="portal-warp-overlay" class="portal-warp-overlay">
-        <div class="portal-vortex portal-vortex-anim"></div>
-        <div style="color:white; font-size:1.3rem; font-weight:700; margin-top:24px; text-shadow:0 0 16px #ff5e7e; text-align:center; z-index:10;">
-            ✨ กำลังเปิดประตูมิติสู่โลกแห่งความสุข...<br>
-            <span style="font-size:0.95rem; color:#ffd1dc; font-weight:400;">Nasrin Masa's Wonderland 🎡</span>
+        <div class="warp-ambient-fx"></div>
+
+        <!-- Center Dynamic Stage for Each Transition Theme -->
+        <div id="warp-stage" class="warp-stage">
+            <!-- 1. Chrono Theme Visual (OTP -> Milestone) -->
+            <div class="warp-theme-visual theme-chrono">
+                <div class="chrono-clock-ring">
+                    <div class="chrono-needle-hour"></div>
+                    <div class="chrono-needle-minute"></div>
+                    <div class="chrono-marker m-1">1</div>
+                    <div class="chrono-marker m-2">10</div>
+                    <div class="chrono-marker m-3">20</div>
+                </div>
+                <div class="chrono-stardust-glow"></div>
+            </div>
+
+            <!-- 2. Biometric Theme Visual (Milestone -> Scan) -->
+            <div class="warp-theme-visual theme-biometric">
+                <div class="biometric-hud-box">
+                    <div class="hud-corner top-left"></div>
+                    <div class="hud-corner top-right"></div>
+                    <div class="hud-corner bottom-left"></div>
+                    <div class="hud-corner bottom-right"></div>
+                    <div class="biometric-scan-line"></div>
+                    <div class="biometric-mesh-grid"></div>
+                    <div class="biometric-target-circle">
+                        <span class="biometric-target-icon">🌸</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Hyperspace Theme Visual (Scan -> Heart Hold) -->
+            <div class="warp-theme-visual theme-hyperspace">
+                <div class="hyperspace-singularity"></div>
+                <div class="hyperspace-light-rays"></div>
+                <div class="hyperspace-warp-ring"></div>
+            </div>
+
+            <!-- 4. Supernova Theme Visual (Heart Hold -> Fireworks) -->
+            <div class="warp-theme-visual theme-supernova">
+                <div class="supernova-heart-core">💖</div>
+                <div class="supernova-shockwave wave-1"></div>
+                <div class="supernova-shockwave wave-2"></div>
+                <div class="supernova-shockwave wave-3"></div>
+            </div>
+
+            <!-- 5. Crystal Theme Visual (Fireworks -> 3D Heart) -->
+            <div class="warp-theme-visual theme-crystal">
+                <div class="crystal-prism-gem">
+                    <div class="crystal-facet facet-1"></div>
+                    <div class="crystal-facet facet-2"></div>
+                    <div class="crystal-facet facet-3"></div>
+                    <div class="crystal-facet facet-4"></div>
+                    <div class="crystal-center-sparkle">✨</div>
+                </div>
+                <div class="crystal-light-flares"></div>
+            </div>
+
+            <!-- 6. Aurora Theme Visual (3D Heart -> Balloons) -->
+            <div class="warp-theme-visual theme-aurora">
+                <div class="aurora-wave-ribbon ribbon-1"></div>
+                <div class="aurora-wave-ribbon ribbon-2"></div>
+                <div class="aurora-floating-bubble bubble-1">🎈</div>
+                <div class="aurora-floating-bubble bubble-2">✨</div>
+                <div class="aurora-floating-bubble bubble-3">🌸</div>
+            </div>
+
+            <!-- 7. Parchment Wax Theme Visual (Balloons -> Letter) -->
+            <div class="warp-theme-visual theme-parchment">
+                <div class="wax-seal-circle">
+                    <div class="wax-seal-inner">
+                        <span class="wax-seal-initial">N</span>
+                    </div>
+                    <div class="wax-seal-ripple"></div>
+                </div>
+                <div class="parchment-candle-glow"></div>
+            </div>
+
+            <!-- 8. Wonderland Theme Visual (Letter -> Wonderland Hub) -->
+            <div class="warp-theme-visual theme-wonderland">
+                <div class="wonderland-stargate-wheel">
+                    <div class="stargate-ring-outer"></div>
+                    <div class="stargate-ring-inner"></div>
+                    <div class="stargate-star-core">🎡</div>
+                </div>
+                <div class="wonderland-gold-fanfare"></div>
+            </div>
+        </div>
+
+        <!-- Typography & Progress Banner -->
+        <div class="warp-content-card">
+            <div id="portal-warp-badge" class="warp-theme-badge">✨ WARP TRANSITION ✨</div>
+            <div id="portal-warp-title" class="warp-title">✨ กำลังเปิดประตูมิติสู่โลกแห่งความสุข...</div>
+            <div id="portal-warp-subtitle" class="warp-subtitle">Nasrin Masa's Wonderland 🎡</div>
+            <div class="warp-progress-track">
+                <div class="warp-progress-fill"></div>
+            </div>
         </div>
     </div>
 

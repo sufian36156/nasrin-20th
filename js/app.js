@@ -165,7 +165,12 @@ class BirthdayApp {
         this.clockInterval = setInterval(updateClock, 1000);
     }
 
-    goToCeremonyScene(sceneId) {
+    goToCeremonyScene(sceneId, useWarpEffect = false, warpTitle = null, warpSubtitle = null, onArrived = null) {
+        if (useWarpEffect) {
+            this.triggerSceneWarpTransition(sceneId, warpTitle, warpSubtitle, onArrived);
+            return;
+        }
+
         document.querySelectorAll('.ceremony-scene').forEach(sc => sc.classList.remove('active'));
         const target = document.getElementById(sceneId);
         if (target) {
@@ -173,15 +178,149 @@ class BirthdayApp {
             this.currentCeremonyStep = sceneId;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        if (onArrived) onArrived();
+    }
+
+    triggerSceneWarpTransition(targetSceneId, warpTitle = null, warpSubtitle = null, onArrived = null, warpTypeOverride = null) {
+        const portalOverlay = document.getElementById('portal-warp-overlay');
+        const badgeEl = document.getElementById('portal-warp-badge');
+        const titleEl = document.getElementById('portal-warp-title');
+        const subEl = document.getElementById('portal-warp-subtitle');
+
+        const themeConfig = {
+            'scene-milestone': {
+                type: 'chrono',
+                badge: '⏳ CHRONO JOURNEY • ย้อนเวลาบันทึกการเติบโต 🌸',
+                sound: () => {
+                    if (window.soundManager) window.soundManager.playChime();
+                }
+            },
+            'scene-scan': {
+                type: 'biometric',
+                badge: '🔍 BIOMETRIC AUTH • ตรวจสอบความน่ารัก 100% ✨',
+                sound: () => {
+                    if (window.soundManager) {
+                        window.soundManager.playPop(800);
+                        setTimeout(() => window.soundManager.playPop(1200), 100);
+                    }
+                }
+            },
+            'scene-warp': {
+                type: 'hyperspace',
+                badge: '🚀 HYPERSPACE JUMP • ข้ามผ่านมิติหัวใจ 💖',
+                sound: () => {
+                    if (window.soundManager) window.soundManager.playSwoosh();
+                }
+            },
+            'scene-fireworks': {
+                type: 'supernova',
+                badge: '💥 CELEBRATION NOVA • จุดประกายราตรี 20 ปี 🎆',
+                sound: () => {
+                    if (window.soundManager && window.soundManager.playFireworkWhistle) {
+                        window.soundManager.playFireworkWhistle();
+                    } else if (window.soundManager) {
+                        window.soundManager.playSwoosh();
+                    }
+                }
+            },
+            'scene-heart3d': {
+                type: 'crystal',
+                badge: '💎 CRYSTAL MEMORY • รวมความทรงจำ 3D ไร้ขอบเขต 🤍',
+                sound: () => {
+                    if (window.soundManager) window.soundManager.playChime();
+                }
+            },
+            'scene-balloons': {
+                type: 'aurora',
+                badge: '🎈 PASTEL AURORA • ล่องลอยสู่ฟากฟ้าแห่งความฝัน 🌟',
+                sound: () => {
+                    if (window.soundManager) {
+                        window.soundManager.playPop(650);
+                        window.soundManager.playChime();
+                    }
+                }
+            },
+            'scene-letter': {
+                type: 'parchment',
+                badge: '📜 ROYAL WAX SEAL • ผนึกซองจดหมายด้วยรัก 💌',
+                sound: () => {
+                    if (window.soundManager) window.soundManager.playChime();
+                }
+            },
+            'wonderland-hub': {
+                type: 'wonderland',
+                badge: '🎡 GRAND STARGATE • ประตูสู่โลกแห่งความสุข 🌟',
+                sound: () => {
+                    if (window.soundManager) window.soundManager.playVictory();
+                }
+            }
+        };
+
+        const config = themeConfig[targetSceneId] || {
+            type: warpTypeOverride || 'hyperspace',
+            badge: '✨ WARP TRANSITION ✨',
+            sound: () => {
+                if (window.soundManager) window.soundManager.playChime();
+            }
+        };
+
+        const warpType = warpTypeOverride || config.type;
+
+        // เล่นเสียงเฉพาะสำหรับธีม
+        try {
+            config.sound();
+        } catch (e) {}
+
+        if (badgeEl) badgeEl.textContent = config.badge;
+        if (titleEl && warpTitle) titleEl.innerHTML = warpTitle;
+        if (subEl && warpSubtitle) subEl.innerHTML = warpSubtitle;
+
+        if (portalOverlay) {
+            // ล้างคลาสธีมเดิมทั้งหมด
+            portalOverlay.className = 'portal-warp-overlay';
+            // รีเซ็ตแอนิเมชัน progress bar
+            const prog = portalOverlay.querySelector('.warp-progress-fill');
+            if (prog) {
+                prog.style.animation = 'none';
+                void prog.offsetWidth; // trigger reflow
+                prog.style.animation = '';
+            }
+            // ใส่คลาสธีมใหม่และเปิด active
+            portalOverlay.classList.add(`warp-${warpType}`, 'active');
+        }
+
+        // จังหวะสลับหน้า (ที่จุด Climax ของ Transition ~ 1000ms)
+        setTimeout(() => {
+            document.querySelectorAll('.ceremony-scene').forEach(sc => sc.classList.remove('active'));
+            const target = document.getElementById(targetSceneId);
+            if (target) {
+                target.classList.add('active');
+                this.currentCeremonyStep = targetSceneId;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            if (onArrived) onArrived();
+
+            // ค่อยๆ จางหาย Transition Overlay ออกอย่างนุ่มนวล
+            setTimeout(() => {
+                if (portalOverlay) {
+                    portalOverlay.classList.remove('active');
+                }
+            }, 450);
+
+            if (window.confetti && (warpType === 'wonderland' || warpType === 'supernova')) {
+                window.confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
+            }
+        }, 1100);
     }
 
     setupCeremonyNavigation() {
         // จาก OTP ผ่านแล้ว ให้ไปที่ Milestone Counter (1-20 ขวบ)
         window.onOTPUnlockSuccess = () => {
             setTimeout(() => {
-                this.goToCeremonyScene('scene-milestone');
+                this.goToCeremonyScene('scene-milestone', true, '✨ กาลเวลาพาเราเดินทาง...', 'เข้าสู่บันทึกเส้นทางการเติบโต 🌸');
                 this.startTimelineAutoPlay();
-            }, 1200);
+            }, 1000);
         };
 
         // จาก Milestone ไปที่ สแกนหน้ายืนยันตัวตน
@@ -189,8 +328,9 @@ class BirthdayApp {
         if (toScanBtn) {
             toScanBtn.addEventListener('click', () => {
                 window.soundManager.playSwoosh();
-                this.goToCeremonyScene('scene-scan');
-                if (window.faceKYC) window.faceKYC.start();
+                this.goToCeremonyScene('scene-scan', true, '📸 ยืนยันตัวตนเจ้าของวันเกิด...', 'ระบบสแกนความน่ารัก 100% ✨', () => {
+                    if (window.faceKYC) window.faceKYC.start();
+                });
             });
         }
     }
@@ -199,28 +339,13 @@ class BirthdayApp {
     // 🌌 ประตูมิติเวทมนตร์สู่ Wonderland (WARP PORTAL)
     // ==========================================
     triggerMagicalPortalWarp() {
-        window.soundManager.playVictory();
-        window.soundManager.playChime();
-
-        const portalOverlay = document.getElementById('portal-warp-overlay');
-        if (portalOverlay) {
-            portalOverlay.classList.add('active');
-        }
-
-        setTimeout(() => {
+        this.triggerSceneWarpTransition('wonderland-hub', '✨ กำลังเปิดประตูมิติสู่โลกแห่งความสุข...', "Nasrin Masa's Wonderland 🎡", () => {
             try {
                 this.enterWonderlandHub();
             } catch (err) {
                 console.error("Error entering wonderland hub:", err);
-            } finally {
-                if (portalOverlay) {
-                    portalOverlay.classList.remove('active');
-                }
             }
-            if (window.confetti) {
-                window.confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
-            }
-        }, 1500);
+        }, 'wonderland');
     }
 
     setupTimelineJourney() {

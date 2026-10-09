@@ -211,13 +211,9 @@ window.HBD_CONFIG = {
         currentPhoto: "assets/images/kyc/current_photo.jpg",
         childhoodPhoto: "assets/images/kyc/childhood.jpg",
         steps: [
-            { id: "straight", icon: "👤", text: "มองตรงเข้าหากรอบกล้องนะคนเก่ง", actionName: "มองตรง" },
-            { id: "left", icon: "👈", text: "เอียงแก้มซ้ายหน่อยน้า", actionName: "หันซ้าย" },
-            { id: "right", icon: "👉", text: "เอียงแก้มขวาโชว์มุมสวย", actionName: "หันขวา" },
-            { id: "updown", icon: "↕️", text: "เงยหน้าแล้วก้มยิ้มหวาน", actionName: "ก้ม/เงย" },
-            { id: "mouth_open", icon: "😮", text: "อ้าปากกว้างงง น่าร้ากก", actionName: "อ้าปาก" },
-            { id: "mouth_close", icon: "🤐", text: "ปิดปากยิ้มหวานๆ ให้เค้าหน่อย", actionName: "ปิดปาก" },
-            { id: "blink", icon: "😉", text: "กะพริบตาปิ๊งๆ 2 ที มองตรง!", actionName: "กะพริบตา" }
+            { id: "straight", icon: "🌸", text: "มองตรงแล้วยิ้มหวานให้กล้องหน่อย ✨", actionName: "ยิ้มหวานมองตรง" },
+            { id: "peace", icon: "✌️", text: "เอียงคอนิดๆ ชูสองนิ้วน่ารักๆ 💕", actionName: "เอียงคอชู 2 นิ้ว" },
+            { id: "wink", icon: "💖", text: "ส่งมินิฮาร์ทหรือวิ้งค์ตาปิ๊งๆ 😉", actionName: "ส่งมินิฮาร์ท" }
         ],
         stampTitle: "สำเนาถูกต้อง",
         stampSubtitle: "ยืนยันตัวตนสำเร็จ • น่ารัก 100% 💕"

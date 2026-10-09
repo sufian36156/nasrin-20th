@@ -119,7 +119,7 @@ class FaceKYCController {
         if (this.currentStepIndex < steps.length) {
             const step = steps[this.currentStepIndex];
             if (this.stepPillEl) {
-                this.stepPillEl.innerHTML = `<span>${step.icon}</span> <span>ท่าที่ ${this.currentStepIndex + 1}/7: ${step.text}</span>`;
+                this.stepPillEl.innerHTML = `<span>${step.icon}</span> <span>ท่าที่ ${this.currentStepIndex + 1}/${steps.length}: ${step.text}</span>`;
             }
             if (this.progressFillEl) {
                 const percent = Math.round(((this.currentStepIndex + 1) / steps.length) * 100);
@@ -134,15 +134,78 @@ class FaceKYCController {
     advanceStep() {
         if (this.isCompleted) return;
 
-        window.soundManager.playPop(500 + this.currentStepIndex * 70);
-        const steps = (window.HBD_CONFIG.kyc && window.HBD_CONFIG.kyc.steps) || [];
+        // 1. เล่นเสียงชัตเตอร์สมจริง (Mechanical snap & click)
+        if (window.soundManager.playCameraShutter) {
+            window.soundManager.playCameraShutter();
+        } else {
+            window.soundManager.playPop(600);
+        }
 
+        // 2. แฟลชกล้องถ่ายรูปสว่างวาบ
+        const flashEl = document.getElementById('kyc-shutter-flash');
+        if (flashEl) {
+            flashEl.classList.add('flash-active');
+            setTimeout(() => flashEl.classList.remove('flash-active'), 120);
+        }
+
+        // 3. กล้องดีดสะเทือน Recoil นุ่มนวล
+        const frameEl = document.querySelector('.kyc-scanner-frame');
+        if (frameEl) {
+            frameEl.classList.remove('snap-recoil');
+            void frameEl.offsetWidth; // trigger reflow
+            frameEl.classList.add('snap-recoil');
+            setTimeout(() => frameEl.classList.remove('snap-recoil'), 450);
+        }
+
+        // 4. แสดงป้าย Snap badge คำชมหวานๆ
+        const badgeEl = document.getElementById('kyc-snap-badge');
+        if (badgeEl) {
+            const compliments = [
+                '📸 แชะ! รอยยิ้มน่ารักที่สุดในโลก ✨',
+                '✌️ แชะ! สดใส น่ารัก 100% เต็ม 💕',
+                '💖 แชะ! มินิฮาร์ทละลายใจคนมอง 🌸'
+            ];
+            badgeEl.textContent = compliments[this.currentStepIndex] || '📸 แชะ! สวยน่ารักระดับสิบ ✨';
+            badgeEl.classList.add('show');
+            setTimeout(() => badgeEl.classList.remove('show'), 800);
+        }
+
+        // 5. ปล่อยละอองหัวใจวิบวับรอบกล้อง
+        this.spawnSnapParticles();
+
+        const steps = (window.HBD_CONFIG.kyc && window.HBD_CONFIG.kyc.steps) || [];
         this.currentStepIndex++;
 
-        if (this.currentStepIndex < steps.length) {
-            this.updateStepUI();
-        } else {
-            this.onAllStepsCompleted();
+        // รอ Effect แชะเสร็จสักครู่แล้วอัปเดตสเต็ปถัดไป
+        setTimeout(() => {
+            if (this.currentStepIndex < steps.length) {
+                this.updateStepUI();
+            } else {
+                this.onAllStepsCompleted();
+            }
+        }, 450);
+    }
+
+    spawnSnapParticles() {
+        const frame = document.querySelector('.kyc-scanner-frame');
+        if (!frame) return;
+        const icons = ['✨', '💖', '🌸', '💫', '📸', '🥰', '💕'];
+        for (let i = 0; i < 8; i++) {
+            const p = document.createElement('div');
+            p.className = 'kyc-snap-particle';
+            p.textContent = icons[Math.floor(Math.random() * icons.length)];
+            const angle = (Math.PI * 2 * i) / 8 + (Math.random() * 0.3 - 0.15);
+            const dist = 65 + Math.random() * 60;
+            const tx = Math.cos(angle) * dist + 'px';
+            const ty = Math.sin(angle) * dist + 'px';
+            const rot = (Math.random() * 50 - 25) + 'deg';
+            p.style.setProperty('--tx', tx);
+            p.style.setProperty('--ty', ty);
+            p.style.setProperty('--rot', rot);
+            p.style.left = '50%';
+            p.style.top = '50%';
+            frame.appendChild(p);
+            setTimeout(() => p.remove(), 850);
         }
     }
 
@@ -151,9 +214,11 @@ class FaceKYCController {
         window.soundManager.playVictory();
         window.soundManager.playChime();
 
+        const steps = (window.HBD_CONFIG.kyc && window.HBD_CONFIG.kyc.steps) || [];
+
         if (this.actionBtn) this.actionBtn.style.display = 'none';
         if (this.stepPillEl) {
-            this.stepPillEl.innerHTML = `<span>🎉</span> <span>สแกนหน้าครบทั้ง 7 ท่าเรียบร้อย!</span>`;
+            this.stepPillEl.innerHTML = `<span>🎉</span> <span>สแกนหน้าครบทั้ง ${steps.length} ท่าเรียบร้อย!</span>`;
         }
         if (this.progressFillEl) this.progressFillEl.style.width = '100%';
 

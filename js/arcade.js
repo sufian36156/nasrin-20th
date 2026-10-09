@@ -246,13 +246,17 @@ class ArcadeController {
                 <div class="memory-card-inner">
                     <div class="memory-front">💖</div>
                     <div class="memory-back">
-                        <img src="${item.img}" alt="Memory" style="width:100%; height:100%; object-fit:cover; border-radius:12px; pointer-events:none;">
+                        <img src="${item.img}" alt="Memory" loading="eager" decoding="async">
                     </div>
                 </div>
             `;
 
             card.addEventListener('click', () => {
-                if (card.classList.contains('flipped') || card.classList.contains('matched') || flipped.length >= 2) return;
+                if (card.classList.contains('matched')) {
+                    this.openMemoryPhotoModal(item);
+                    return;
+                }
+                if (card.classList.contains('flipped') || flipped.length >= 2) return;
 
                 window.soundManager.playPop(520);
                 card.classList.add('flipped');
@@ -266,7 +270,11 @@ class ArcadeController {
                             flipped[1].el.classList.add('matched');
                             if (quoteEl) {
                                 quoteEl.style.display = 'block';
-                                quoteEl.textContent = `✨ ${flipped[0].item.quote}`;
+                                quoteEl.innerHTML = `
+                                    <div style="font-weight:700; color:#d90429; font-size:1rem; margin-bottom:4px;">✨ เจอคู่ความทรงจำที่ตรงกันแล้ว! 💕</div>
+                                    <div style="font-size:0.92rem; color:#444;">${flipped[0].item.quote}</div>
+                                    <div style="font-size:0.8rem; color:#ff4d6d; margin-top:3px;">(แตะที่รูปเพื่อดูรูปภาพขนาดใหญ่คมชัดได้เลยน้า)</div>
+                                `;
                             }
                             flipped = [];
                             matchedCount++;
@@ -274,7 +282,7 @@ class ArcadeController {
                                 window.soundManager.playVictory();
                                 window.confetti({ particleCount: 80, spread: 80 });
                                 if (quoteEl) {
-                                    quoteEl.textContent = `🎉 เก่งมากๆ เลยคนดี! จับคู่รูปภาพครบทั้ง 6 คู่แล้วนะ 💖✨`;
+                                    quoteEl.innerHTML = `🎉 <b>เก่งมากๆ เลยคนเก่ง!</b> จับคู่รูปภาพครบทั้ง 6 คู่แล้วนะ 💖✨`;
                                 }
                             }
                         }, 380);
@@ -290,6 +298,57 @@ class ArcadeController {
 
             grid.appendChild(card);
         });
+    }
+
+    openMemoryPhotoModal(item) {
+        let modal = document.getElementById('memory-photo-modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'memory-photo-modal';
+            modal.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.82);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                z-index: 9999;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                cursor: pointer;
+            `;
+            modal.innerHTML = `
+                <div style="position:relative; max-width:440px; width:90%; background:#fff; border-radius:24px; padding:18px; box-shadow:0 20px 50px rgba(0,0,0,0.5); text-align:center;" onclick="event.stopPropagation()">
+                    <button id="memory-modal-close" style="position:absolute; top:12px; right:12px; width:36px; height:36px; border-radius:50%; border:none; background:#ffe5ec; color:#ff2a6d; font-size:1.2rem; cursor:pointer; font-weight:700; display:flex; align-items:center; justify-content:center;">✕</button>
+                    <div style="border-radius:18px; overflow:hidden; margin-bottom:12px; box-shadow:0 4px 15px rgba(0,0,0,0.12);">
+                        <img id="memory-modal-img" src="" alt="Memory Photo" style="width:100%; max-height:60vh; object-fit:contain; display:block; background:#111;">
+                    </div>
+                    <div id="memory-modal-caption" style="font-size:0.95rem; font-weight:600; color:#333; line-height:1.4;"></div>
+                    <div style="font-size:0.8rem; color:#ff4d6d; margin-top:8px; font-weight:600;">🤍 แตะที่ใดก็ได้เพื่อปิด 🤍</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            const closeBtn = modal.querySelector('#memory-modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                });
+            }
+        }
+
+        const imgEl = modal.querySelector('#memory-modal-img');
+        const capEl = modal.querySelector('#memory-modal-caption');
+        if (imgEl) imgEl.src = item.img;
+        if (capEl) capEl.textContent = item.quote;
+        modal.style.display = 'flex';
+        if (window.soundManager && window.soundManager.playPop) {
+            window.soundManager.playPop(620);
+        }
     }
 
     // ==========================================

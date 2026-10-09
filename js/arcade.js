@@ -12,7 +12,7 @@
 
 class ArcadeController {
     constructor() {
-        this.currentMiniTab = 'wheel';
+        this.currentMiniTab = 'memory';
         // Boba Game
         this.bobaLoop = null;
         this.bobaScore = 0;
@@ -20,14 +20,10 @@ class ArcadeController {
         this.isBobaPlaying = false;
         // Love Meter
         this.lovePercent = 0;
-        // Wheel
-        this.isWheelSpinning = false;
-        this.wheelRotation = 0;
     }
 
     init() {
         this.setupSubTabs();
-        this.initWheelGame();
         this.initPopBalloonsGame();
         this.initLoveMeterGame();
         this.initMemoryGame();
@@ -209,7 +205,7 @@ class ArcadeController {
     }
 
     // ==========================================
-    // 🃏 4. MEMORY MATCH
+    // 🃏 4. MEMORY MATCH (ดึงรูปจากลูกโป่ง สุ่มคละ 6 คู่ = 12 ใบ)
     // ==========================================
     initMemoryGame() {
         const grid = document.getElementById('arcade-memory-grid');
@@ -217,16 +213,31 @@ class ArcadeController {
         if (!grid) return;
 
         grid.innerHTML = '';
-        const cardsData = [
-            { id: 1, icon: "☕", quote: "กาแฟแก้วแรกที่เราไปดื่มด้วยกัน 💕" },
-            { id: 2, icon: "🌸", quote: "รอยยิ้มของณัสริญคือพลังใจที่ดีที่สุด ✨" },
-            { id: 3, icon: "🏖️", quote: "ทริปเที่ยวทะเลกับคนโปรด 🌊" },
-            { id: 4, icon: "🍰", quote: "ของหวานโปรดที่ต้องกินด้วยกันเสมอ 🍓" }
-        ];
 
-        let deck = [...cardsData, ...cardsData].sort(() => Math.random() - 0.5);
+        // รวบรวมรูปภาพจากโฟลเดอร์เดียวกันกับลูกโป่ง (assets/images/balloons/)
+        const allPhotos = [];
+        for (let i = 1; i <= 20; i++) {
+            allPhotos.push({
+                id: i,
+                img: `assets/images/balloons/balloon_${i}.jpg`,
+                quote: `ความทรงจำที่แสนงดงามรูปที่ ${i} กับคนพิเศษที่สุด 💖`
+            });
+        }
+
+        // สุ่มเลือก 6 รูป จาก 20 รูป (ไม่ซ้ำกันในแต่ละตา)
+        const shuffledPool = [...allPhotos].sort(() => Math.random() - 0.5);
+        const selectedPairs = shuffledPool.slice(0, 6);
+
+        // นำมาจับคู่เป็นการ์ด 12 ใบ แล้วสับตำแหน่ง
+        let deck = [];
+        selectedPairs.forEach((item, index) => {
+            deck.push({ ...item, pairKey: `p_${index}_a` });
+            deck.push({ ...item, pairKey: `p_${index}_b` });
+        });
+        deck.sort(() => Math.random() - 0.5);
+
         let flipped = [];
-        let matched = 0;
+        let matchedCount = 0;
 
         deck.forEach(item => {
             const card = document.createElement('div');
@@ -234,14 +245,16 @@ class ArcadeController {
             card.innerHTML = `
                 <div class="memory-card-inner">
                     <div class="memory-front">💖</div>
-                    <div class="memory-back"><span style="font-size:2rem;">${item.icon}</span></div>
+                    <div class="memory-back">
+                        <img src="${item.img}" alt="Memory" style="width:100%; height:100%; object-fit:cover; border-radius:12px; pointer-events:none;">
+                    </div>
                 </div>
             `;
 
             card.addEventListener('click', () => {
                 if (card.classList.contains('flipped') || card.classList.contains('matched') || flipped.length >= 2) return;
 
-                window.soundManager.playPop(500);
+                window.soundManager.playPop(520);
                 card.classList.add('flipped');
                 flipped.push({ el: card, item });
 
@@ -253,14 +266,18 @@ class ArcadeController {
                             flipped[1].el.classList.add('matched');
                             if (quoteEl) {
                                 quoteEl.style.display = 'block';
-                                quoteEl.textContent = `💌 ${flipped[0].item.quote}`;
+                                quoteEl.textContent = `✨ ${flipped[0].item.quote}`;
                             }
                             flipped = [];
-                            matched++;
-                            if (matched === 4 && window.confetti) {
-                                window.confetti({ particleCount: 50, spread: 60 });
+                            matchedCount++;
+                            if (matchedCount === 6 && window.confetti) {
+                                window.soundManager.playVictory();
+                                window.confetti({ particleCount: 80, spread: 80 });
+                                if (quoteEl) {
+                                    quoteEl.textContent = `🎉 เก่งมากๆ เลยคนดี! จับคู่รูปภาพครบทั้ง 6 คู่แล้วนะ 💖✨`;
+                                }
                             }
-                        }, 400);
+                        }, 380);
                     } else {
                         setTimeout(() => {
                             flipped[0].el.classList.remove('flipped');
@@ -276,7 +293,7 @@ class ArcadeController {
     }
 
     // ==========================================
-    // 🧋 5. BOBA & TREATS CATCH (แก้บั๊กจอ iPad & ปรับให้เล่นง่าย)
+    // 🧋 5. BOBA & TREATS CATCH (ล็อกหน้าจอ iPad & ปรับสมูท 60fps)
     // ==========================================
     resizeBobaCanvas() {
         const canvas = document.getElementById('boba-game-canvas');
@@ -297,26 +314,44 @@ class ArcadeController {
 
         const ctx = canvas.getContext('2d');
         let basketX = 160;
+        let targetBasketX = 160;
         let items = [];
-        const treats = ['🧋', '💖', '🍰', '🍓', '🎀'];
+        const treats = ['🧋', '💖', '🍰', '🍓', '⭐', '🎀'];
 
         this.resizeBobaCanvas();
 
         const moveBasket = (clientX) => {
             const rect = canvas.getBoundingClientRect();
-            basketX = Math.max(35, Math.min(canvas.width - 35, clientX - rect.left));
+            targetBasketX = Math.max(38, Math.min(canvas.width - 38, clientX - rect.left));
         };
 
+        // ล็อกหน้าจอมือถือและไอแพดอย่างสมบูรณ์แบบ ไม่ให้หน้าเว็บเลื่อนตามนิ้ว
+        canvas.style.touchAction = 'none';
+        if (canvas.parentElement) {
+            canvas.parentElement.style.touchAction = 'none';
+        }
+
         canvas.addEventListener('mousemove', (e) => moveBasket(e.clientX));
-        canvas.addEventListener('touchmove', (e) => {
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
             if (e.touches && e.touches[0]) moveBasket(e.touches[0].clientX);
-        }, { passive: true });
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (e.touches && e.touches[0]) moveBasket(e.touches[0].clientX);
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+        }, { passive: false });
 
         const spawnItem = () => {
             items.push({
                 x: 25 + Math.random() * (canvas.width - 50),
-                y: -10,
-                speed: 1.8 + Math.random() * 1.5, // ความเร็วพอดีๆ เล่นง่าย
+                y: -15,
+                speed: 2.0 + Math.random() * 1.5,
                 emoji: treats[Math.floor(Math.random() * treats.length)]
             });
         };
@@ -325,33 +360,42 @@ class ArcadeController {
             if (!this.isBobaPlaying) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // วาดตะกร้าขนาดใหญ่ขึ้น (กว้าง 68px)
-            ctx.fillStyle = '#ff5e7e';
-            ctx.beginPath();
-            ctx.roundRect(basketX - 34, canvas.height - 28, 68, 20, 10);
-            ctx.fill();
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 11px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('🧺 รับรัก', basketX, canvas.height - 14);
+            // คำนวณตำแหน่งตะกร้าแบบ Smooth Interpolation (lerp)
+            basketX += (targetBasketX - basketX) * 0.45;
 
-            items.forEach((item, idx) => {
+            // วาดตะกร้าสีชมพูหวานเรืองแสง
+            ctx.shadowColor = 'rgba(255, 105, 180, 0.45)';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#ff4d6d';
+            ctx.beginPath();
+            ctx.roundRect(basketX - 38, canvas.height - 30, 76, 22, 11);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('🧺 รับชานม', basketX, canvas.height - 15);
+
+            for (let idx = items.length - 1; idx >= 0; idx--) {
+                const item = items[idx];
                 item.y += item.speed;
-                ctx.font = '24px serif';
+                ctx.font = '26px serif';
+                ctx.textAlign = 'center';
                 ctx.fillText(item.emoji, item.x, item.y);
 
-                // ตรวจจับชนตะกร้าง่ายขึ้น
-                if (item.y > canvas.height - 38 && item.y < canvas.height - 5 && Math.abs(item.x - basketX) < 42) {
+                // ตรวจจับชนตะกร้าอย่างแม่นยำ
+                if (item.y > canvas.height - 40 && item.y < canvas.height - 4 && Math.abs(item.x - basketX) < 46) {
                     this.bobaScore += 10;
                     if (scoreDisplay) scoreDisplay.textContent = `คะแนน: ${this.bobaScore}`;
-                    window.soundManager.playPop(700);
+                    window.soundManager.playPop(750);
                     items.splice(idx, 1);
                 } else if (item.y > canvas.height + 25) {
                     items.splice(idx, 1);
                 }
-            });
+            }
 
-            if (Math.random() < 0.05) spawnItem();
+            if (Math.random() < 0.055) spawnItem();
 
             this.bobaLoop = requestAnimationFrame(gameLoop);
         };
@@ -360,6 +404,8 @@ class ArcadeController {
             startBtn.addEventListener('click', () => {
                 if (this.isBobaPlaying) return;
                 this.resizeBobaCanvas();
+                basketX = canvas.width / 2;
+                targetBasketX = basketX;
                 this.isBobaPlaying = true;
                 this.bobaScore = 0;
                 this.bobaTimeLeft = 20;

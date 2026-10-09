@@ -40,13 +40,22 @@ class VideoVaultController {
             const card = document.createElement('div');
             card.className = 'video-card';
 
-            const isVideoThumb = vid.thumbnail && /\.(mp4|mov|webm|m4v)$/i.test(vid.thumbnail);
+            const candidates = [
+                vid.thumbnail,
+                vid.videoUrl,
+                `assets/images/videos/video_${vid.id}.mp4`,
+                `assets/images/video_thumb_${vid.id}.mp4`,
+                `assets/images/videos/video_thumb_${vid.id}.mp4`
+            ].filter(Boolean);
+
+            const firstSrc = candidates[0] || `assets/images/videos/video_${vid.id}.mp4`;
+            const isVideoThumb = /\.(mp4|mov|webm|m4v)$/i.test(firstSrc);
 
             card.innerHTML = `
-                <div class="video-thumb-box">
+                <div class="video-thumb-box" style="background:#ffd9e2; position:relative; overflow:hidden;">
                     ${isVideoThumb 
-                        ? `<video src="${vid.thumbnail}#t=0.5" muted playsinline webkit-playsinline preload="metadata" style="width:100%; height:100%; object-fit:cover;"></video>`
-                        : `<img src="${vid.thumbnail}" alt="${vid.title}" onerror="this.onerror=null; this.src='assets/images/video_thumb_1.svg';">`
+                        ? `<video src="${firstSrc}#t=0.1" muted playsinline webkit-playsinline preload="metadata" style="width:100%; height:100%; object-fit:cover; pointer-events:none;"></video>`
+                        : `<img src="${firstSrc}" alt="${vid.title}" onerror="this.onerror=null; this.src='assets/images/polaroids/placeholder.jpg';">`
                     }
                     <div class="play-circle">▶</div>
                 </div>
@@ -57,19 +66,27 @@ class VideoVaultController {
             `;
 
             card.addEventListener('click', () => {
-                this.openModal(vid);
+                this.openModal(vid, candidates);
             });
 
             this.grid.appendChild(card);
         });
     }
 
-    openModal(vid) {
+    openModal(vid, customCandidates) {
         if (!this.modal || !this.playerContainer) return;
         window.soundManager.playPop(700);
 
         this.playerContainer.innerHTML = '';
-        const targetUrl = (vid.videoUrl || (vid.thumbnail && /\.(mp4|mov|webm|m4v)$/i.test(vid.thumbnail) ? vid.thumbnail : '') || '').trim();
+        const candidates = customCandidates && customCandidates.length > 0 ? customCandidates : [
+            vid.videoUrl,
+            vid.thumbnail,
+            `assets/images/videos/video_${vid.id}.mp4`,
+            `assets/images/video_thumb_${vid.id}.mp4`,
+            `assets/images/videos/video_thumb_${vid.id}.mp4`
+        ].filter(Boolean);
+
+        const targetUrl = candidates[0] || '';
 
         if (targetUrl && (targetUrl.includes('youtube.com') || targetUrl.includes('youtu.be'))) {
             // เล่น YouTube
@@ -81,8 +98,8 @@ class VideoVaultController {
             iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
             iframe.allowFullscreen = true;
             this.playerContainer.appendChild(iframe);
-        } else if (targetUrl && /\.(mp4|mov|webm|m4v)$/i.test(targetUrl)) {
-            // เล่นไฟล์ MP4 / วิดีโอในเครื่อง (รองรับทั้ง .mp4 และ .MP4 และ iOS Safari)
+        } else if (candidates.some(c => /\.(mp4|mov|webm|m4v)$/i.test(c))) {
+            // เล่นไฟล์ MP4 / วิดีโอในเครื่อง (พร้อมระบบสลับไฟล์อัตโนมัติหากไฟล์แรกหาไม่เจอ)
             const video = document.createElement('video');
             video.style.width = '100%';
             video.style.borderRadius = '14px';
@@ -92,9 +109,26 @@ class VideoVaultController {
             video.playsInline = true;
             video.setAttribute('playsinline', '');
             video.setAttribute('webkit-playsinline', '');
-            video.src = targetUrl;
+
+            let currentIdx = 0;
+            const mp4Candidates = candidates.filter(c => /\.(mp4|mov|webm|m4v)$/i.test(c));
+
+            const tryLoadCandidate = () => {
+                if (currentIdx < mp4Candidates.length) {
+                    video.src = mp4Candidates[currentIdx++];
+                    video.load();
+                    video.play().catch(() => {});
+                }
+            };
+
+            video.onerror = () => {
+                if (currentIdx < mp4Candidates.length) {
+                    tryLoadCandidate();
+                }
+            };
+
             this.playerContainer.appendChild(video);
-            video.play().catch(() => {});
+            tryLoadCandidate();
         } else {
             // Placeholder เมื่อยังไม่ได้ใส่ลิงก์จริง
             this.playerContainer.innerHTML = `

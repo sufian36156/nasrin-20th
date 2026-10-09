@@ -15,10 +15,10 @@ class FireworksShowController {
         this.statusBadgeEl = null;
         this.currentRound = 0;
         this.rounds = [
-            // เริ่มต้นด้วยการนับเคาต์ดาวน์ 1 2 3
-            { text: "1", sub: "✨ หนึ่ง... เตรียมตัวนะคนเก่ง 🌟", color: "#ff9e00", isCountdown: true },
-            { text: "2", sub: "💫 สอง... หายใจเข้าลึกๆ 💖", color: "#ff4d6d", isCountdown: true },
-            { text: "3", sub: "🎆 สาม... ขอให้มีความสุขที่สุด! 🎉", color: "#c77dff", isCountdown: true },
+            // เริ่มต้นด้วยการนับเคาต์ดาวน์ 3 2 1
+            { text: "3", sub: "✨ สาม... หายใจเข้าลึกๆ 🌟", color: "#c77dff", isCountdown: true },
+            { text: "2", sub: "💫 สอง... เตรียมตัวนะคนเก่ง 💖", color: "#ff4d6d", isCountdown: true },
+            { text: "1", sub: "🎆 หนึ่ง... ขอให้มีความสุขที่สุด! 🎉", color: "#ff9e00", isCountdown: true },
             // พลุข้อความคำอวยพรฉลอง 20 ปี
             { text: "Happy birthday", sub: "สุขสันต์วันเกิดครบรอบ 20 ปี ✨", color: "#ff758f", isCountdown: false },
             { text: "20th year", sub: "ก้าวสู่วัย 20 ปีบริบูรณ์อย่างงดงาม 🎂", color: "#ffd166", isCountdown: false },

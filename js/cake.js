@@ -63,6 +63,47 @@ class CakeController {
         }
     }
 
+    resetAndStart() {
+        this.isBlown = false;
+        this.isCut = false;
+        if (this.micCheckInterval) clearInterval(this.micCheckInterval);
+
+        // จุดไฟเทียนใหม่
+        document.querySelectorAll('.candle-flame').forEach(f => f.classList.remove('extinguished'));
+
+        // ประกบซีกเค้กคืนรูป
+        const leftHalf = document.getElementById('cake-half-left');
+        const rightHalf = document.getElementById('cake-half-right');
+        if (leftHalf) leftHalf.classList.remove('cut-left');
+        if (rightHalf) rightHalf.classList.remove('cut-right');
+
+        const instruction = document.getElementById('cake-instruction-text');
+        const blowBtn = document.getElementById('cake-blow-btn');
+        const cutBtn = document.getElementById('cake-cut-action-btn');
+        const cutGuide = document.getElementById('cake-cut-guide');
+        const celebrationCard = document.getElementById('cake-celebration-card');
+        const backBtn = document.getElementById('cake-to-letter-btn');
+
+        if (blowBtn) blowBtn.style.display = 'inline-flex';
+        if (cutBtn) cutBtn.style.display = 'none';
+        if (cutGuide) cutGuide.style.display = 'none';
+        if (celebrationCard) celebrationCard.style.display = 'none';
+        if (backBtn) {
+            backBtn.style.display = 'inline-flex';
+            backBtn.innerHTML = '🎡 กลับสู่ Wonderland Hub ✨';
+            backBtn.onclick = () => {
+                if (window.app) window.app.enterWonderlandHub();
+            };
+        }
+
+        if (instruction) {
+            instruction.textContent = "อธิษฐานแล้วแตะปุ่มด้านล่าง (หรือเป่าลมใส่ไมค์) เพื่อดับเทียนนะ 💨";
+            instruction.style.color = "var(--primary-dark)";
+        }
+
+        this.requestMicrophone();
+    }
+
     // ขออนุญาตใช้ไมค์
     async requestMicrophone() {
         const micBadge = document.getElementById('mic-status');

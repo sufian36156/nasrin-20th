@@ -42,11 +42,14 @@ class PolaroidGallery {
             const baseWithoutExt = item.image.replace(/\.[^/.]+$/, "");
             const fallbackCandidates = [
                 item.image,
-                baseWithoutExt + '.jpeg',
                 baseWithoutExt + '.jpg',
+                baseWithoutExt + '.jpeg',
                 baseWithoutExt + '.png',
-                baseWithoutExt + '.svg',
-                'assets/images/polaroids/placeholder.svg'
+                baseWithoutExt + '.webp',
+                'assets/images/polaroids/' + (index + 1) + '.jpg',
+                'assets/images/polaroids/' + (index + 1) + '.jpeg',
+                'assets/images/balloons/balloon_' + ((index % 20) + 1) + '.jpg',
+                'assets/images/polaroids/placeholder.jpg'
             ];
 
             card.innerHTML = `
@@ -64,13 +67,13 @@ class PolaroidGallery {
                 while (currentIdx < fallbackCandidates.length) {
                     const nextSrc = fallbackCandidates[currentIdx++];
                     this.setAttribute('data-src-idx', currentIdx);
-                    if (nextSrc !== this.getAttribute('src')) {
+                    if (nextSrc && nextSrc !== this.getAttribute('src')) {
                         this.src = nextSrc;
                         return;
                     }
                 }
                 this.onerror = null;
-                this.src = 'assets/images/polaroids/placeholder.svg';
+                this.src = 'assets/images/polaroids/placeholder.jpg';
             };
 
             this.container.appendChild(card);

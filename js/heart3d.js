@@ -259,66 +259,76 @@ class Heart3DController {
     setupInteraction() {
         let lastMoveX = 0;
         let lastMoveY = 0;
+        let downTime = 0;
+        let downX = 0;
+        let downY = 0;
+        let totalDrag = 0;
 
         const onStart = (e) => {
             if (this.isExploding) return;
             this.isDragging = true;
             this.velRotX = 0;
             this.velRotY = 0;
+            totalDrag = 0;
+            downTime = Date.now();
 
             const pt = e.touches ? e.touches[0] : e;
+            downX = pt.clientX;
+            downY = pt.clientY;
             this.startX = pt.clientX;
             this.startY = pt.clientY;
             lastMoveX = pt.clientX;
             lastMoveY = pt.clientY;
-
-            // Double tap detection
-            const now = Date.now();
-            if (now - this.lastTapTime < 380) {
-                this.explodeHeart();
-            }
-            this.lastTapTime = now;
         };
 
         const onMove = (e) => {
             if (!this.isDragging || this.isExploding) return;
             const pt = e.touches ? e.touches[0] : e;
-            const deltaX = pt.clientX - this.startX;
-            const deltaY = pt.clientY - this.startY;
+            const deltaX = pt.clientX - lastMoveX;
+            const deltaY = pt.clientY - lastMoveY;
+
+            totalDrag += Math.hypot(deltaX, deltaY);
 
             // คำนวณความเร็วเฉื่อย (Inertia Velocity)
-            this.velRotY = (pt.clientX - lastMoveX) * 0.0035;
-            this.velRotX = (pt.clientY - lastMoveY) * 0.0035;
+            this.velRotY = deltaX * 0.005;
+            this.velRotX = deltaY * 0.005;
 
+            // หมุน 3D ได้อย่างอิสระ 360 องศาทุกทิศทาง (ไม่จำกัดมุมก้มเงย)
             this.targetRotY += deltaX * 0.007;
             this.targetRotX += deltaY * 0.007;
 
-            // ลิมิตมุมก้มเงยแกน X ให้อยู่ในช่วงที่มองเห็นสวยงาม
-            this.targetRotX = Math.max(-0.8, Math.min(0.8, this.targetRotX));
-
-            this.startX = pt.clientX;
-            this.startY = pt.clientY;
             lastMoveX = pt.clientX;
             lastMoveY = pt.clientY;
 
-            if (e.cancelable && e.type.startsWith('touch')) {
+            if (e.cancelable) {
                 e.preventDefault();
             }
         };
 
-        const onEnd = () => {
+        const onEnd = (e) => {
+            if (!this.isDragging) return;
             this.isDragging = false;
+
+            // ดับเบิลแท็บ (Double Tap) แท้จริง:
+            // ต้องเป็นการแตะแบบแทบไม่ขยับนิ้ว (totalDrag < 16px) และปล่อยภายใน 350ms
+            const tapDuration = Date.now() - downTime;
+            if (totalDrag < 16 && tapDuration < 350) {
+                const now = Date.now();
+                if (this.lastTapTime && (now - this.lastTapTime < 450)) {
+                    // แตะครบ 2 ครั้งติดต่อกัน -> ระเบิดหัวใจ 3D!
+                    this.lastTapTime = 0;
+                    this.explodeHeart();
+                } else {
+                    this.lastTapTime = now;
+                }
+            }
         };
 
-        // Touch & Pointer events
+        // ใช้ Pointer Events รองรับทั้งเมาส์, มือถือ, และ Apple Pencil บน iPad ได้อย่างลื่นไหล
         this.container.addEventListener('pointerdown', onStart, { passive: false });
         window.addEventListener('pointermove', onMove, { passive: false });
         window.addEventListener('pointerup', onEnd);
         window.addEventListener('pointercancel', onEnd);
-
-        this.container.addEventListener('touchstart', onStart, { passive: false });
-        window.addEventListener('touchmove', onMove, { passive: false });
-        window.addEventListener('touchend', onEnd);
     }
 
     explodeHeart() {

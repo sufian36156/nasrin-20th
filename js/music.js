@@ -11,28 +11,21 @@ class MusicController {
         this.isPlaying = false;
         this.timer = null;
         this.step = 0;
-        this.audioEl = null;
-        this.hasRealAudio = false;
+        this.currentAudio = null;
+        this.currentMode = null;
+        this.volumeMultiplier = 1.0;
+        this.baseVolume = 0.5;
+        this.trackMap = {
+            main: { file: 'assets/music/bgm_main.mp3', title: '🌸 Nostalgic Journey (เพลงการเดินทาง) 🎵' },
+            fireworks: { file: 'assets/music/bgm_fireworks.mp3', title: '🎆 Fireworks Grand Night (เพลงพลุราตรีตระการตา) 🎵' },
+            heart3d: { file: 'assets/music/bgm_heart3d.mp3', title: '💎 Memory Waltz 3D (เพลงวอลซ์แห่งความทรงจำ) 🎵' },
+            balloons: { file: 'assets/music/bgm_balloons.mp3', title: '🎈 Balloons In The Sky (เพลงปล่อยลูกโป่ง 20 ปี) 🎵' },
+            letter: { file: 'assets/music/bgm_letter.mp3', title: '💌 Letter From The Heart (บทเพลงจดหมายจากใจ) 🎵' },
+            wonderland: { file: 'assets/music/bgm_wonderland.mp3', title: '🎡 Wonderland Celebration (เพลงเฉลิมฉลอง) 🎵' }
+        };
     }
 
     init() {
-        // ทดสอบโหลดไฟล์เพลงจริง assets/music/bgm.mp3
-        try {
-            this.audioEl = new Audio('assets/music/bgm.mp3');
-            this.audioEl.loop = true;
-            this.audioEl.volume = 0.7;
-
-            this.audioEl.addEventListener('canplaythrough', () => {
-                this.hasRealAudio = true;
-            });
-
-            this.audioEl.addEventListener('error', () => {
-                this.hasRealAudio = false;
-            });
-        } catch (e) {
-            this.hasRealAudio = false;
-        }
-
         const musicBar = document.getElementById('mini-music-bar');
         if (musicBar) {
             musicBar.addEventListener('click', () => {
@@ -50,138 +43,96 @@ class MusicController {
     }
 
     start() {
-        this.startSoft(0.65);
+        this.startSoft(0.5);
     }
 
-    startCosmic(volume = 0.35) {
+    playTrack(mode, defaultVolume = 0.5, synthFallback = null) {
         window.soundManager.init();
-        if (this.currentMode === 'cosmic' && this.isPlaying) return;
-        this.stop();
+        if (this.currentMode === mode && this.isPlaying) return;
+        this.stopSynth();
+
+        if (this.currentAudio) {
+            try {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+            } catch(e) {}
+            this.currentAudio = null;
+        }
 
         this.isPlaying = true;
-        this.currentMode = 'cosmic';
-        this.step = 0;
+        this.currentMode = mode;
+        this.baseVolume = defaultVolume;
 
+        const trackInfo = this.trackMap[mode];
         const bar = document.getElementById('mini-music-bar');
         const text = document.getElementById('music-title-text');
         if (bar) {
             bar.style.display = 'flex';
             bar.classList.add('playing');
         }
-        if (text) text.textContent = "🌌 Starry Cosmic Dream (เพลงค่ำคืนดวงดาว) 🎵";
+        if (text && trackInfo) {
+            text.textContent = trackInfo.title;
+        }
 
-        this.startCosmicSynthFallback();
+        if (trackInfo && trackInfo.file) {
+            const audio = new Audio(trackInfo.file);
+            audio.loop = true;
+            audio.volume = defaultVolume * (this.volumeMultiplier || 1.0);
+            this.currentAudio = audio;
+
+            audio.play().catch(() => {
+                if (synthFallback) synthFallback();
+            });
+        } else {
+            if (synthFallback) synthFallback();
+        }
     }
 
-    startFireworks(volume = 0.38) {
-        window.soundManager.init();
-        if (this.currentMode === 'fireworks' && this.isPlaying) return;
-        this.stop();
-
-        this.isPlaying = true;
-        this.currentMode = 'fireworks';
-        this.step = 0;
-
-        const bar = document.getElementById('mini-music-bar');
-        const text = document.getElementById('music-title-text');
-        if (bar) {
-            bar.style.display = 'flex';
-            bar.classList.add('playing');
-        }
-        if (text) text.textContent = "🎆 Fireworks Grand Night (เพลงพลุราตรีตระการตา) 🎵";
-
-        // เพลงพลุ: ท่วงทำนองยิ่งใหญ่ กังวาน อลังการรับวันเกิด (Bbmaj7 - Gm7 - Ebmaj7 - F)
-        this.startFireworksSynth();
+    startCosmic(volume = 0.45) {
+        this.playTrack('main', volume, () => this.startCosmicSynthFallback());
     }
 
-    startHeart3D(volume = 0.36) {
-        window.soundManager.init();
-        if (this.currentMode === 'heart3d' && this.isPlaying) return;
-        this.stop();
-
-        this.isPlaying = true;
-        this.currentMode = 'heart3d';
-        this.step = 0;
-
-        const bar = document.getElementById('mini-music-bar');
-        const text = document.getElementById('music-title-text');
-        if (bar) {
-            bar.style.display = 'flex';
-            bar.classList.add('playing');
-        }
-        if (text) text.textContent = "💎 Memory Waltz 3D (เพลงวอลซ์แห่งความทรงจำ) 🎵";
-
-        // เพลงหัวใจ 3D: เพลงวอลซ์หวานซึ้ง หมุนวนเป็นจังหวะ 3/4 โรแมนติก (C - Em - F - G)
-        this.startHeart3DSynth();
+    startFireworks(volume = 0.55) {
+        this.playTrack('fireworks', volume, () => this.startFireworksSynth());
     }
 
-    startLetterMusic(volume = 0.35) {
-        window.soundManager.init();
-        if (this.currentMode === 'letter' && this.isPlaying) return;
-        this.stop();
+    startHeart3D(volume = 0.48) {
+        this.playTrack('heart3d', volume, () => this.startHeart3DSynth());
+    }
 
-        this.isPlaying = true;
-        this.currentMode = 'letter';
-        this.volumeMultiplier = 1.0;
-        this.step = 0;
+    startBalloons(volume = 0.5) {
+        this.playTrack('balloons', volume, () => this.startCosmicSynthFallback());
+    }
 
-        const bar = document.getElementById('mini-music-bar');
-        const text = document.getElementById('music-title-text');
-        if (bar) {
-            bar.style.display = 'flex';
-            bar.classList.add('playing');
-        }
-        if (text) text.textContent = "💌 Letter From The Heart (บทเพลงจดหมายจากใจ) 🎵";
-
-        // เพลงเฉพาะหน้าจดหมาย: ท่วงทำนองเปียโนลอยละล่อง อบอุ่น ซาบซึ้งใจ (Dmaj7 - Bm7 - Gmaj7 - A)
-        this.startLetterSynth();
+    startLetterMusic(volume = 0.42) {
+        this.playTrack('letter', volume, () => this.startLetterSynth());
     }
 
     // เบาเสียงดนตรีลงเหลือแค่แผ่วๆ ขณะที่จดหมายกำลังพิมพ์
     duckVolume(duckLevel = 0.18) {
         this.volumeMultiplier = duckLevel;
-        if (this.audioEl) {
-            try { this.audioEl.volume = Math.max(0.04, this.audioEl.volume * duckLevel); } catch(e) {}
+        if (this.currentAudio) {
+            try {
+                this.currentAudio.volume = Math.max(0.04, this.baseVolume * duckLevel);
+            } catch(e) {}
         }
     }
 
     // คืนระดับเสียงดนตรีเมื่อพิมพ์จดหมายเสร็จ
     restoreVolume() {
         this.volumeMultiplier = 1.0;
-        if (this.audioEl) {
-            try { this.audioEl.volume = 0.4; } catch(e) {}
+        if (this.currentAudio) {
+            try {
+                this.currentAudio.volume = this.baseVolume;
+            } catch(e) {}
         }
     }
 
-    startWonderland(volume = 0.65) {
-        window.soundManager.init();
-        this.stop();
-
-        this.isPlaying = true;
-        this.currentMode = 'wonderland';
-        this.volumeMultiplier = 1.0;
-        this.step = 0;
-
-        const bar = document.getElementById('mini-music-bar');
-        const text = document.getElementById('music-title-text');
-        if (bar) {
-            bar.style.display = 'flex';
-            bar.classList.add('playing');
-        }
-        if (text) text.textContent = "🎡 Wonderland Celebration 🎵";
-
-        // เล่นไฟล์จริง หรือ เล่นดนตรีรื่นเริง
-        if (this.audioEl) {
-            this.audioEl.volume = volume;
-            this.audioEl.play().catch(() => {
-                this.startWonderlandSynth();
-            });
-        } else {
-            this.startWonderlandSynth();
-        }
+    startWonderland(volume = 0.6) {
+        this.playTrack('wonderland', volume, () => this.startWonderlandSynth());
     }
 
-    startSoft(volume = 0.35) {
+    startSoft(volume = 0.45) {
         this.startCosmic(volume);
     }
 
@@ -310,12 +261,23 @@ class MusicController {
         });
     }
 
+    stopSynth() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+    }
+
     stop() {
         this.isPlaying = false;
         this.currentMode = null;
-        if (this.timer) clearInterval(this.timer);
-        if (this.audioEl) {
-            try { this.audioEl.pause(); } catch(e) {}
+        this.stopSynth();
+        if (this.currentAudio) {
+            try {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+            } catch(e) {}
+            this.currentAudio = null;
         }
 
         const bar = document.getElementById('mini-music-bar');

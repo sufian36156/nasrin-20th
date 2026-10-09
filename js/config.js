@@ -86,17 +86,27 @@ window.HBD_CONFIG = {
     ],
 
     // ==========================================
-    // 📸 รูปภาพโพลารอยด์ (POLAROIDS)
+    // 📸 รูปภาพโพลารอยด์ (POLAROIDS - 8 รูปความทรงจำ)
     // ==========================================
     polaroids: [
-        { image: "assets/images/polaroids/1.jpeg", caption: "วันแรกๆ ที่ได้ไปเที่ยวด้วยกัน เขินจนตาหยี", date: "Memory #01", angle: -4 },
-        { image: "assets/images/polaroids/2.svg", caption: "คาเฟ่นี้เธอบอกขนมอร่อยมาก แต่เค้ามองแต่หน้าเธอ", date: "Memory #02", angle: 5 },
-        { image: "assets/images/polaroids/3.svg", caption: "โมเมนต์หลุดๆ แต่น่ารักที่สุดในสายตาเค้า", date: "Memory #03", angle: -5 },
-        { image: "assets/images/polaroids/4.svg", caption: "ท้องฟ้าสวย แต่คนข้างๆ สวยกว่าท้องฟ้าเยอะเลย", date: "Memory #04", angle: 3 },
-        { image: "assets/images/polaroids/5.svg", caption: "ตอนเผลอยังน่ารักขนาดนี้ได้ยังไงเนี่ยยย", date: "Memory #05", angle: -3 },
-        { image: "assets/images/polaroids/6.svg", caption: "ขอบคุณที่เดินทางผ่านเรื่องราวต่างๆ มาด้วยกันนะ", date: "Memory #06", angle: 6 },
-        { image: "assets/images/polaroids/7.svg", caption: "ก้าวเข้าสู่วัย 20 ไปด้วยกันแบบสดใสนะคะ", date: "Memory #07", angle: -4 },
-        { image: "assets/images/polaroids/8.svg", caption: "เค้าจะคอยเป็นตากล้องประจำตัวเธอตลอดไป 📷", date: "Memory #08", angle: 4 }
+        { image: "assets/images/polaroids/1.jpg", caption: "วันแรกๆ ที่ได้ไปเที่ยวด้วยกัน เขินจนตาหยี", date: "Memory #01", angle: -4 },
+        { image: "assets/images/polaroids/2.jpg", caption: "คาเฟ่นี้เธอบอกขนมอร่อยมาก แต่เค้ามองแต่หน้าเธอ", date: "Memory #02", angle: 5 },
+        { image: "assets/images/polaroids/3.jpg", caption: "โมเมนต์หลุดๆ แต่น่ารักที่สุดในสายตาเค้า", date: "Memory #03", angle: -5 },
+        { image: "assets/images/polaroids/4.jpg", caption: "ท้องฟ้าสวย แต่คนข้างๆ สวยกว่าท้องฟ้าเยอะเลย", date: "Memory #04", angle: 3 },
+        { image: "assets/images/polaroids/5.jpg", caption: "ตอนเผลอยังน่ารักขนาดนี้ได้ยังไงเนี่ยยย", date: "Memory #05", angle: -3 },
+        { image: "assets/images/polaroids/6.jpg", caption: "ขอบคุณที่เดินทางผ่านเรื่องราวต่างๆ มาด้วยกันนะ", date: "Memory #06", angle: 6 },
+        { image: "assets/images/polaroids/7.jpg", caption: "ก้าวเข้าสู่วัย 20 ไปด้วยกันแบบสดใสนะคะ", date: "Memory #07", angle: -4 },
+        { image: "assets/images/polaroids/8.jpg", caption: "เค้าจะคอยเป็นตากล้องประจำตัวเธอตลอดไป 📷", date: "Memory #08", angle: 4 }
+    ],
+
+    // ==========================================
+    // 📸 โฟโต้บูธ 4 ช่อง (PHOTOBOOTH 4-CUTS)
+    // ==========================================
+    photoboothPhotos: [
+        "assets/images/photobooth/1.jpg",
+        "assets/images/photobooth/2.jpg",
+        "assets/images/photobooth/3.jpg",
+        "assets/images/photobooth/4.jpg"
     ],
 
     // ==========================================
@@ -107,25 +117,25 @@ window.HBD_CONFIG = {
             id: 1,
             title: "รวมโมเมนต์น่ารักๆ ของเรา",
             desc: "คลิปรอยยิ้มและเสียงหัวเราะ",
-            thumbnail: "assets/images/video_thumb_1.MP4",
-            videoUrl: "assets/images/video_thumb_1.MP4",
+            thumbnail: "assets/images/videos/video_1.mp4",
+            videoUrl: "assets/images/videos/video_1.mp4",
             duration: "00:03"
         },
         {
             id: 2,
             title: "ทริปเที่ยวและความทรงจำ",
             desc: "การเดินทางที่อบอุ่นหัวใจ",
-            thumbnail: "assets/images/video_thumb_2.svg",
-            videoUrl: "",
-            duration: "02:15"
+            thumbnail: "assets/images/videos/video_2.mp4",
+            videoUrl: "assets/images/videos/video_2.mp4",
+            duration: "00:10"
         },
         {
             id: 3,
             title: "คำอวยพรพิเศษจากเค้า",
             desc: "อัดคลิปนี้เพื่อบอกเธอโดยเฉพาะ",
-            thumbnail: "assets/images/video_thumb_3.svg",
-            videoUrl: "",
-            duration: "00:45"
+            thumbnail: "assets/images/videos/video_3.mp4",
+            videoUrl: "assets/images/videos/video_3.mp4",
+            duration: "00:35"
         }
     ],
 

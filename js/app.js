@@ -21,6 +21,7 @@ class BirthdayApp {
         this.preventIPadPinchZoom();
         this.initBackgroundParticles();
         this.populateStaticTexts();
+        this.initPhotobooth();
         this.setupCeremonyNavigation();
         this.setupHubNavigation();
         this.setupLoveReasonsSlider();
@@ -171,127 +172,102 @@ class BirthdayApp {
             return;
         }
 
-        document.querySelectorAll('.ceremony-scene').forEach(sc => sc.classList.remove('active'));
+        // รีเซ็ต inline style display ที่อาจติดมาจาก wonderland hub
+        document.querySelectorAll('.ceremony-scene').forEach(sc => {
+            sc.style.display = '';
+            sc.classList.remove('active');
+        });
+
+        // หากกำลังไปที่ฉากพิธี ให้ซ่อน wonderland-hub และแถบนำทางด้านล่าง
+        const hub = document.getElementById('wonderland-hub');
+        const bottomNav = document.getElementById('bottom-nav-bar');
+        if (hub) hub.classList.remove('active');
+        if (bottomNav) bottomNav.style.display = 'none';
+
         const target = document.getElementById(sceneId);
         if (target) {
             target.classList.add('active');
             this.currentCeremonyStep = sceneId;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        if (sceneId === 'scene-cake' && window.cakeController) {
+            window.cakeController.resetAndStart();
+        }
+
         if (onArrived) onArrived();
     }
 
     triggerSceneWarpTransition(targetSceneId, warpTitle = null, warpSubtitle = null, onArrived = null, warpTypeOverride = null) {
         const portalOverlay = document.getElementById('portal-warp-overlay');
-        const badgeEl = document.getElementById('portal-warp-badge');
         const titleEl = document.getElementById('portal-warp-title');
         const subEl = document.getElementById('portal-warp-subtitle');
 
         const themeConfig = {
-            'scene-milestone': {
-                type: 'chrono',
-                badge: '⏳ CHRONO JOURNEY • ย้อนเวลาบันทึกการเติบโต 🌸',
-                sound: () => {
-                    if (window.soundManager) window.soundManager.playChime();
-                }
-            },
-            'scene-scan': {
-                type: 'biometric',
-                badge: '🔍 BIOMETRIC AUTH • ตรวจสอบความน่ารัก 100% ✨',
-                sound: () => {
-                    if (window.soundManager) {
-                        window.soundManager.playPop(800);
-                        setTimeout(() => window.soundManager.playPop(1200), 100);
-                    }
-                }
-            },
-            'scene-warp': {
-                type: 'hyperspace',
-                badge: '🚀 HYPERSPACE JUMP • ข้ามผ่านมิติหัวใจ 💖',
-                sound: () => {
-                    if (window.soundManager) window.soundManager.playSwoosh();
-                }
-            },
-            'scene-fireworks': {
-                type: 'supernova',
-                badge: '💥 CELEBRATION NOVA • จุดประกายราตรี 20 ปี 🎆',
-                sound: () => {
-                    if (window.soundManager && window.soundManager.playFireworkWhistle) {
-                        window.soundManager.playFireworkWhistle();
-                    } else if (window.soundManager) {
-                        window.soundManager.playSwoosh();
-                    }
-                }
-            },
-            'scene-heart3d': {
-                type: 'crystal',
-                badge: '💎 CRYSTAL MEMORY • รวมความทรงจำ 3D ไร้ขอบเขต 🤍',
-                sound: () => {
-                    if (window.soundManager) window.soundManager.playChime();
-                }
-            },
-            'scene-balloons': {
-                type: 'aurora',
-                badge: '🎈 PASTEL AURORA • ล่องลอยสู่ฟากฟ้าแห่งความฝัน 🌟',
-                sound: () => {
-                    if (window.soundManager) {
-                        window.soundManager.playPop(650);
-                        window.soundManager.playChime();
-                    }
-                }
-            },
-            'scene-letter': {
-                type: 'parchment',
-                badge: '📜 ROYAL WAX SEAL • ผนึกซองจดหมายด้วยรัก 💌',
-                sound: () => {
-                    if (window.soundManager) window.soundManager.playChime();
-                }
-            },
-            'wonderland-hub': {
-                type: 'wonderland',
-                badge: '🎡 GRAND STARGATE • ประตูสู่โลกแห่งความสุข 🌟',
-                sound: () => {
-                    if (window.soundManager) window.soundManager.playVictory();
-                }
-            }
+            'scene-milestone': { type: 'chrono', sound: () => window.soundManager && window.soundManager.playChime() },
+            'scene-scan': { type: 'biometric', sound: () => window.soundManager && window.soundManager.playChime() },
+            'scene-warp': { type: 'hyperspace', sound: () => window.soundManager && window.soundManager.playSwoosh() },
+            'scene-fireworks': { type: 'supernova', sound: () => window.soundManager && window.soundManager.playFireworkWhistle ? window.soundManager.playFireworkWhistle() : window.soundManager.playSwoosh() },
+            'scene-heart3d': { type: 'crystal', sound: () => window.soundManager && window.soundManager.playChime() },
+            'scene-balloons': { type: 'aurora', sound: () => window.soundManager && window.soundManager.playChime() },
+            'scene-letter': { type: 'parchment', sound: () => window.soundManager && window.soundManager.playChime() },
+            'scene-cake': { type: 'parchment', sound: () => window.soundManager && window.soundManager.playChime() },
+            'wonderland-hub': { type: 'wonderland', sound: () => window.soundManager && window.soundManager.playVictory() }
         };
 
         const config = themeConfig[targetSceneId] || {
             type: warpTypeOverride || 'hyperspace',
-            badge: '✨ WARP TRANSITION ✨',
-            sound: () => {
-                if (window.soundManager) window.soundManager.playChime();
-            }
+            sound: () => window.soundManager && window.soundManager.playChime()
         };
 
         const warpType = warpTypeOverride || config.type;
 
-        // เล่นเสียงเฉพาะสำหรับธีม
         try {
             config.sound();
         } catch (e) {}
 
-        if (badgeEl) badgeEl.textContent = config.badge;
         if (titleEl && warpTitle) titleEl.innerHTML = warpTitle;
         if (subEl && warpSubtitle) subEl.innerHTML = warpSubtitle;
 
-        if (portalOverlay) {
-            // ล้างคลาสธีมเดิมทั้งหมด
-            portalOverlay.className = 'portal-warp-overlay';
-            // รีเซ็ตแอนิเมชัน progress bar
-            const prog = portalOverlay.querySelector('.warp-progress-fill');
-            if (prog) {
-                prog.style.animation = 'none';
-                void prog.offsetWidth; // trigger reflow
-                prog.style.animation = '';
-            }
-            // ใส่คลาสธีมใหม่และเปิด active
-            portalOverlay.classList.add(`warp-${warpType}`, 'active');
+        const badgeEl = document.getElementById('portal-warp-badge');
+        const badgeMap = {
+            'chrono': '⏳ CHRONO WARP • บันทึกกาลเวลา',
+            'biometric': '🔍 BIOMETRIC SCAN • ยืนยันความน่ารัก',
+            'hyperspace': '🚀 HYPERSPACE • มิติความรัก',
+            'supernova': '💥 SUPERNOVA • ประกายพลุราตรี',
+            'crystal': '💎 CRYSTAL PRISM • ผลึกความทรงจำ 3D',
+            'aurora': '🎈 AURORA WISH • สายลมลูกโป่ง 20 ขวบ',
+            'parchment': '💌 ROYAL WAX SEAL • จดหมายลับจากใจ',
+            'wonderland': '🎡 WONDERLAND • สวนสนุกแห่งความสุข'
+        };
+        if (badgeEl) {
+            badgeEl.textContent = badgeMap[warpType] || '✨ WARP TRANSITION ✨';
         }
 
-        // จังหวะสลับหน้า (ที่จุด Climax ของ Transition ~ 1000ms)
+        if (portalOverlay) {
+            portalOverlay.className = `portal-warp-overlay warp-${warpType} active`;
+            const fillBar = portalOverlay.querySelector('.warp-progress-fill');
+            if (fillBar) {
+                fillBar.style.animation = 'none';
+                void fillBar.offsetWidth;
+                fillBar.style.animation = '';
+            }
+        }
+
+        // จังหวะเปลี่ยนฉากมิติภาพยนตร์ (Multi-Theme Cinematic Transition)
         setTimeout(() => {
-            document.querySelectorAll('.ceremony-scene').forEach(sc => sc.classList.remove('active'));
+            document.querySelectorAll('.ceremony-scene').forEach(sc => {
+                sc.style.display = '';
+                sc.classList.remove('active');
+            });
+
+            const hub = document.getElementById('wonderland-hub');
+            const bottomNav = document.getElementById('bottom-nav-bar');
+            if (targetSceneId !== 'wonderland-hub') {
+                if (hub) hub.classList.remove('active');
+                if (bottomNav) bottomNav.style.display = 'none';
+            }
+
             const target = document.getElementById(targetSceneId);
             if (target) {
                 target.classList.add('active');
@@ -299,19 +275,23 @@ class BirthdayApp {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
+            if (targetSceneId === 'scene-cake' && window.cakeController) {
+                window.cakeController.resetAndStart();
+            }
+
             if (onArrived) onArrived();
 
-            // ค่อยๆ จางหาย Transition Overlay ออกอย่างนุ่มนวล
+            // ค่อยๆ จาง Overlay ออกอย่างนุ่มนวล
             setTimeout(() => {
                 if (portalOverlay) {
                     portalOverlay.classList.remove('active');
                 }
-            }, 450);
+            }, 550);
 
             if (window.confetti && (warpType === 'wonderland' || warpType === 'supernova')) {
-                window.confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
+                window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 } });
             }
-        }, 1100);
+        }, 650);
     }
 
     setupCeremonyNavigation() {
@@ -514,6 +494,13 @@ class BirthdayApp {
         window.soundManager.playPop(520);
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
+        if (tabName === 'home') {
+            this.initPhotobooth();
+        }
+        if (tabName === 'gallery') {
+            if (window.polaroidGallery) window.polaroidGallery.init();
+            if (window.videoVault) window.videoVault.init();
+        }
         if (tabName === 'coupons') {
             if (window.scratchController) window.scratchController.init();
             if (window.doodleController) window.doodleController.resize();
@@ -524,6 +511,47 @@ class BirthdayApp {
         if (tabName === 'gift' && window.balloonController) {
             window.balloonController.init();
         }
+    }
+
+    initPhotobooth() {
+        const frame = document.getElementById('photobooth-4cuts-frame');
+        if (!frame) return;
+        const slots = frame.querySelectorAll('.four-cuts-slot img');
+        const photos = window.HBD_CONFIG.photoboothPhotos || [
+            "assets/images/photobooth/1.jpg",
+            "assets/images/photobooth/2.jpg",
+            "assets/images/photobooth/3.jpg",
+            "assets/images/photobooth/4.jpg"
+        ];
+
+        slots.forEach((img, idx) => {
+            const desiredSrc = photos[idx] || `assets/images/photobooth/${idx + 1}.jpg`;
+            const baseWithoutExt = desiredSrc.replace(/\.[^/.]+$/, "");
+            const candidates = [
+                desiredSrc,
+                baseWithoutExt + '.jpg',
+                baseWithoutExt + '.jpeg',
+                baseWithoutExt + '.png',
+                `assets/images/photobooth/${idx + 1}.jpg`,
+                `assets/images/photobooth/${idx + 1}.jpeg`,
+                `assets/images/polaroids/${idx + 1}.jpg`,
+                `assets/images/polaroids/${idx + 1}.jpeg`,
+                `assets/images/balloons/balloon_${idx + 1}.jpg`,
+                'assets/images/polaroids/placeholder.jpg'
+            ];
+
+            img.onerror = function() {
+                let currentIdx = parseInt(this.getAttribute('data-tried') || '0', 10);
+                if (currentIdx < candidates.length) {
+                    this.setAttribute('data-tried', currentIdx + 1);
+                    this.src = candidates[currentIdx];
+                } else {
+                    this.onerror = null;
+                    this.src = 'assets/images/polaroids/placeholder.jpg';
+                }
+            };
+            img.src = candidates[0];
+        });
     }
 
     setupLoveReasonsSlider() {
@@ -585,20 +613,43 @@ class BirthdayApp {
         window.addEventListener('resize', resize);
         resize();
 
-        const count = window.innerWidth > 768 ? 32 : 20;
-        const emojis = ['🌸', '✨', '💖', '🤍', '🌷', '🎂', '⭐'];
+        // โหลดรูปแฟนที่ร่วงลงมา (จากโฟลเดอร์ assets/images/falling/)
+        const fallingPhotoPaths = [
+            'assets/images/falling/fan_1.jpg',
+            'assets/images/falling/fan_2.jpg',
+            'assets/images/falling/fan_3.jpg',
+            'assets/images/falling/fan_4.jpg',
+            'assets/images/falling/fan_5.jpg',
+            'assets/images/falling/fan_6.jpg'
+        ];
+        this.loadedFallingImages = [];
+        fallingPhotoPaths.forEach(path => {
+            const img = new Image();
+            img.src = path;
+            img.onload = () => {
+                this.loadedFallingImages.push(img);
+            };
+        });
 
+        const count = window.innerWidth > 768 ? 34 : 22;
+        const emojis = ['🌸', '✨', '💖', '🤍', '🌷', '🎂', '⭐', '🎀'];
+
+        this.particles = [];
         for (let i = 0; i < count; i++) {
+            // สัดส่วน: ประมาณ 35% เป็นรูปแฟน และ 65% เป็นอิโมจิ
+            const isPhoto = (i % 3 === 0);
             this.particles.push({
+                isPhoto: isPhoto,
+                photoIdx: Math.floor(Math.random() * fallingPhotoPaths.length),
                 x: Math.random() * this.canvas.width,
                 y: Math.random() * this.canvas.height,
-                size: 14 + Math.random() * 12,
-                speedX: -0.5 + Math.random() * 1,
-                speedY: 0.4 + Math.random() * 0.9,
+                size: isPhoto ? (17 + Math.random() * 8) : (14 + Math.random() * 12),
+                speedX: -0.4 + Math.random() * 0.8,
+                speedY: isPhoto ? (0.35 + Math.random() * 0.6) : (0.4 + Math.random() * 0.9),
                 emoji: emojis[Math.floor(Math.random() * emojis.length)],
-                opacity: 0.25 + Math.random() * 0.45,
+                opacity: isPhoto ? (0.7 + Math.random() * 0.25) : (0.25 + Math.random() * 0.45),
                 angle: Math.random() * 360,
-                spinSpeed: -1 + Math.random() * 2
+                spinSpeed: -0.8 + Math.random() * 1.6
             });
         }
 
@@ -610,21 +661,47 @@ class BirthdayApp {
                 p.x += p.speedX;
                 p.angle += p.spinSpeed;
 
-                if (p.y > this.canvas.height + 25) {
-                    p.y = -25;
+                const limit = p.isPhoto ? (p.size * 2 + 10) : 30;
+                if (p.y > this.canvas.height + limit) {
+                    p.y = -limit;
                     p.x = Math.random() * this.canvas.width;
+                    if (p.isPhoto) {
+                        p.photoIdx = Math.floor(Math.random() * 10);
+                    }
                 }
-                if (p.x > this.canvas.width + 25) p.x = -25;
-                if (p.x < -25) p.x = this.canvas.width + 25;
+                if (p.x > this.canvas.width + limit) p.x = -limit;
+                if (p.x < -limit) p.x = this.canvas.width + limit;
 
                 this.ctx.save();
                 this.ctx.translate(p.x, p.y);
                 this.ctx.rotate((p.angle * Math.PI) / 180);
                 this.ctx.globalAlpha = p.opacity;
-                this.ctx.font = `${p.size}px serif`;
-                this.ctx.textAlign = 'center';
-                this.ctx.textBaseline = 'middle';
-                this.ctx.fillText(p.emoji, 0, 0);
+
+                if (p.isPhoto && this.loadedFallingImages.length > 0) {
+                    const img = this.loadedFallingImages[p.photoIdx % this.loadedFallingImages.length];
+                    const r = p.size;
+                    
+                    // กรอบเรืองแสงสีขาว-ชมพูหวาน
+                    this.ctx.shadowColor = 'rgba(255, 105, 180, 0.45)';
+                    this.ctx.shadowBlur = 8;
+                    this.ctx.beginPath();
+                    this.ctx.arc(0, 0, r + 2.5, 0, Math.PI * 2);
+                    this.ctx.fillStyle = '#ffffff';
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0;
+
+                    // คลิปเป็นวงกลมตัดขอบรูปแฟน
+                    this.ctx.beginPath();
+                    this.ctx.arc(0, 0, r, 0, Math.PI * 2);
+                    this.ctx.clip();
+                    this.ctx.drawImage(img, -r, -r, r * 2, r * 2);
+                } else {
+                    // วาดอิโมจิปกติ
+                    this.ctx.font = `${p.size}px serif`;
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillText(p.emoji, 0, 0);
+                }
                 this.ctx.restore();
             });
 

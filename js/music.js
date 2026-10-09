@@ -20,7 +20,8 @@ class MusicController {
         // คลังเพลงแยกตามแต่ละหน้า
         this.trackMap = {
             main: {
-                file: 'assets/music/bgm_main.mp3',
+                file: 'assets/music/bgm.mp3',
+                fallbackFile: 'assets/music/bgm_main.mp3',
                 title: '🌸 Nostalgic Journey (เพลงการเดินทาง) 🎵',
                 volume: 0.45
             },
@@ -38,11 +39,6 @@ class MusicController {
                 file: 'assets/music/bgm_balloons.mp3',
                 title: '🎈 Balloons In The Sky (เพลงปล่อยลูกโป่ง 20 ปี) 🎵',
                 volume: 0.48
-            },
-            cake: {
-                file: 'assets/music/bgm.mp3',
-                title: '🎂 Birthday Candle Wishes (เพลงวันเกิดเค้กแสนหวาน) 🎵',
-                volume: 0.50
             },
             letter: {
                 file: 'assets/music/bgm_letter.mp3',
@@ -65,14 +61,20 @@ class MusicController {
             });
         }
 
-        // ปลดล็อกระบบเสียงเมื่อผู้ใช้สัมผัสหน้าจอครั้งแรก (Browser Gesture Unlock)
-        const unlockAudio = () => {
+        // ปลดล็อกระบบเสียงและเริ่มเล่นเพลงหน้าเริ่มต้น (OTP) ทันทีที่ผู้ใช้แตะหน้าจอครั้งแรก (Autoplay Gesture Handler)
+        const startOnFirstGesture = () => {
             if (window.soundManager) window.soundManager.init();
-            document.removeEventListener('click', unlockAudio);
-            document.removeEventListener('touchstart', unlockAudio);
+            if (!this.isPlaying && !this.isUserMuted) {
+                const activeScene = this.getCurrentActiveSceneId();
+                this.playTrack(this.getSceneMode(activeScene));
+            }
+            document.removeEventListener('click', startOnFirstGesture);
+            document.removeEventListener('touchstart', startOnFirstGesture);
+            document.removeEventListener('keydown', startOnFirstGesture);
         };
-        document.addEventListener('click', unlockAudio, { once: true });
-        document.addEventListener('touchstart', unlockAudio, { once: true });
+        document.addEventListener('click', startOnFirstGesture, { passive: true });
+        document.addEventListener('touchstart', startOnFirstGesture, { passive: true });
+        document.addEventListener('keydown', startOnFirstGesture, { passive: true });
     }
 
     // แปลง Scene ID เป็น Mode เพลงประจำหน้านั้นๆ
@@ -90,10 +92,9 @@ class MusicController {
                 return 'heart3d';
             case 'scene-balloons':
                 return 'balloons';
-            case 'scene-cake':
-                return 'cake';
             case 'scene-letter':
                 return 'letter';
+            case 'scene-cake':
             case 'wonderland-hub':
                 return 'wonderland';
             default:
@@ -219,32 +220,41 @@ class MusicController {
         this.currentMode = mode;
         this.updateBarUI(mode);
 
-        if (trackInfo && trackInfo.file) {
-            const audio = new Audio(trackInfo.file);
+        const tryAudio = (src, onFail) => {
+            const audio = new Audio(src);
             audio.loop = true;
             audio.volume = volume * (this.volumeMultiplier || 1.0);
             this.currentAudio = audio;
 
-            const fallback = () => {
-                if (customFallback) customFallback();
-                else this.triggerSynthForMode(mode);
-            };
-
             audio.onerror = () => {
-                console.warn(`Could not load audio file ${trackInfo.file}, using synthesizer fallback.`);
-                fallback();
+                console.warn(`Could not load audio file ${src}`);
+                if (onFail) onFail();
             };
 
             const p = audio.play();
             if (p !== undefined) {
                 p.catch(err => {
-                    console.warn(`Playback prevented for ${mode}:`, err);
-                    fallback();
+                    console.warn(`Playback prevented for ${src}:`, err);
+                    if (onFail) onFail();
                 });
             }
-        } else {
+        };
+
+        const fallback = () => {
             if (customFallback) customFallback();
             else this.triggerSynthForMode(mode);
+        };
+
+        if (trackInfo && trackInfo.file) {
+            tryAudio(trackInfo.file, () => {
+                if (trackInfo.fallbackFile) {
+                    tryAudio(trackInfo.fallbackFile, fallback);
+                } else {
+                    fallback();
+                }
+            });
+        } else {
+            fallback();
         }
     }
 

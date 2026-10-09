@@ -68,7 +68,10 @@ class FaceKYCController {
             this.actionBtn.style.display = 'inline-flex';
             this.actionBtn.textContent = '📸 บันทึกท่านี้ ✨';
         }
-        if (this.proceedBtn) this.proceedBtn.style.display = 'none';
+        // 🔉 หรี่เสียงเพลงลงแผ่วๆ ขณะสแกนหน้า ให้ได้ยินเสียงชัตเตอร์ชัดเจน
+        if (window.musicController) {
+            window.musicController.duckVolume(0.18);
+        }
 
         this.updateStepUI();
         this.startCamera();
@@ -111,6 +114,9 @@ class FaceKYCController {
         if (this.stream) {
             this.stream.getTracks().forEach(track => track.stop());
             this.stream = null;
+        }
+        if (window.musicController) {
+            window.musicController.restoreVolume();
         }
     }
 

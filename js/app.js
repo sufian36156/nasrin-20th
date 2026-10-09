@@ -196,6 +196,9 @@ class BirthdayApp {
         }
 
         if (window.musicController) {
+            if (sceneId !== 'scene-scan') {
+                window.musicController.restoreVolume();
+            }
             window.musicController.onSceneTransition(sceneId);
         }
 
@@ -284,6 +287,9 @@ class BirthdayApp {
             }
 
             if (window.musicController) {
+                if (targetSceneId !== 'scene-scan') {
+                    window.musicController.restoreVolume();
+                }
                 window.musicController.onSceneTransition(targetSceneId);
             }
 

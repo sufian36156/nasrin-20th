@@ -71,11 +71,6 @@ class CakeController {
         // จุดไฟเทียนใหม่
         document.querySelectorAll('.candle-flame').forEach(f => f.classList.remove('extinguished'));
 
-        // 🎵 สลับเพลงเฉพาะสำหรับหน้าเป่าเค้กวันเกิด (Birthday Candle Wishes)
-        if (window.musicController) {
-            window.musicController.startCake(0.50);
-        }
-
         // ประกบซีกเค้กคืนรูป
         const leftHalf = document.getElementById('cake-half-left');
         const rightHalf = document.getElementById('cake-half-right');

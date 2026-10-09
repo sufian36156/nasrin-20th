@@ -53,11 +53,22 @@ class OTPController {
                 }
             });
 
-            // เมื่อแตะช่องแรก
+            // เมื่อแตะช่องกรอก
             input.addEventListener('focus', () => {
                 window.soundManager.init();
+                if (window.musicController && !window.musicController.isPlaying && !window.musicController.isUserMuted) {
+                    window.musicController.playTrack('main');
+                }
             });
         });
+
+        if (this.cardElement) {
+            this.cardElement.addEventListener('click', () => {
+                if (window.musicController && !window.musicController.isPlaying && !window.musicController.isUserMuted) {
+                    window.musicController.playTrack('main');
+                }
+            });
+        }
     }
 
     getCurrentCode() {

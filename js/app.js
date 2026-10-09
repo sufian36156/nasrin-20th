@@ -195,6 +195,10 @@ class BirthdayApp {
             window.cakeController.resetAndStart();
         }
 
+        if (window.musicController) {
+            window.musicController.onSceneTransition(sceneId);
+        }
+
         if (onArrived) onArrived();
     }
 
@@ -279,6 +283,10 @@ class BirthdayApp {
                 window.cakeController.resetAndStart();
             }
 
+            if (window.musicController) {
+                window.musicController.onSceneTransition(targetSceneId);
+            }
+
             if (onArrived) onArrived();
 
             // ค่อยๆ จาง Overlay ออกอย่างนุ่มนวล
@@ -297,6 +305,9 @@ class BirthdayApp {
     setupCeremonyNavigation() {
         // จาก OTP ผ่านแล้ว ให้ไปที่ Milestone Counter (1-20 ขวบ)
         window.onOTPUnlockSuccess = () => {
+            if (window.musicController) {
+                window.musicController.onSceneTransition('scene-milestone');
+            }
             setTimeout(() => {
                 this.goToCeremonyScene('scene-milestone', true, '✨ กาลเวลาพาเราเดินทาง...', 'เข้าสู่บันทึกเส้นทางการเติบโต 🌸');
                 this.startTimelineAutoPlay();
@@ -467,7 +478,7 @@ class BirthdayApp {
         this.switchHubTab('home');
 
         if (window.musicController) {
-            window.musicController.startWonderland(0.65);
+            window.musicController.onSceneTransition('wonderland-hub');
         }
     }
 

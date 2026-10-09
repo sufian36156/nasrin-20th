@@ -87,6 +87,11 @@ class Balloons3DController {
         this.isFinished = false;
         this.activeDragBalloon = null;
 
+        // 🎵 สลับเพลงเฉพาะสำหรับหน้าปล่อยลูกโป่ง (Balloons In The Sky)
+        if (window.musicController) {
+            window.musicController.startBalloons(0.48);
+        }
+
         if (this.waveTimer) clearTimeout(this.waveTimer);
         if (this.starsAnimFrame) cancelAnimationFrame(this.starsAnimFrame);
         this.loopStars();

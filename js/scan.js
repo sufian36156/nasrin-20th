@@ -54,6 +54,29 @@ class FaceKYCController {
                 }
             });
         }
+
+        this.toggleCamBtn = document.getElementById('kyc-toggle-cam-btn');
+        this.loaderEl = document.getElementById('kyc-camera-loader');
+
+        if (this.toggleCamBtn) {
+            this.toggleCamBtn.addEventListener('click', () => {
+                if (this.videoEl && this.videoEl.style.display !== 'none') {
+                    this.stopCamera();
+                    this.useMockCamera();
+                } else {
+                    this.startCamera();
+                }
+            });
+        }
+    }
+
+    setCameraLoading(isLoading) {
+        if (!this.loaderEl) {
+            this.loaderEl = document.getElementById('kyc-camera-loader');
+        }
+        if (this.loaderEl) {
+            this.loaderEl.style.display = isLoading ? 'flex' : 'none';
+        }
     }
 
     start() {
@@ -68,6 +91,8 @@ class FaceKYCController {
             this.actionBtn.style.display = 'inline-flex';
             this.actionBtn.textContent = '📸 บันทึกท่านี้ ✨';
         }
+        if (this.proceedBtn) this.proceedBtn.style.display = 'none';
+
         // 🔉 หรี่เสียงเพลงลงแผ่วๆ ขณะสแกนหน้า ให้ได้ยินเสียงชัตเตอร์ชัดเจน
         if (window.musicController) {
             window.musicController.duckVolume(0.18);
@@ -78,19 +103,60 @@ class FaceKYCController {
     }
 
     async startCamera() {
+        this.setCameraLoading(true);
+        if (this.toggleCamBtn) this.toggleCamBtn.textContent = '📷 แตะเพื่อสลับใช้รูปภาพ';
+
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             this.useMockCamera();
             return;
         }
 
         try {
-            this.stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
-            });
+            if (this.stream) {
+                this.stream.getTracks().forEach(track => track.stop());
+                this.stream = null;
+            }
+
+            const constraints = {
+                video: {
+                    facingMode: { ideal: 'user' },
+                    width: { min: 320, ideal: 640 },
+                    height: { min: 240, ideal: 480 }
+                },
+                audio: false
+            };
+
+            this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+
             if (this.videoEl) {
+                this.videoEl.setAttribute('autoplay', '');
+                this.videoEl.setAttribute('muted', '');
+                this.videoEl.setAttribute('playsinline', '');
+                this.videoEl.setAttribute('webkit-playsinline', '');
+                this.videoEl.muted = true;
                 this.videoEl.srcObject = this.stream;
                 this.videoEl.style.display = 'block';
                 if (this.mockImgEl) this.mockImgEl.style.display = 'none';
+
+                try {
+                    await this.videoEl.play();
+                } catch (playErr) {
+                    console.log("video play error:", playErr);
+                }
+
+                // ตรวจสอบว่ากล้องส่งสัญญาณภาพจริงมาหรือไม่ (ป้องกันจอดำบน iPad)
+                let checkCount = 0;
+                const verifyVideoActive = setInterval(() => {
+                    checkCount++;
+                    if (this.videoEl.videoWidth > 0 && !this.videoEl.paused) {
+                        clearInterval(verifyVideoActive);
+                        this.setCameraLoading(false);
+                    } else if (checkCount >= 8) { // รอ 2 วินาที ถ้ายังมืดหรือไม่มีภาพ ให้สลับใช้รูปภาพทันที
+                        clearInterval(verifyVideoActive);
+                        console.warn("Camera feed not ready or black, fallback to mock photo.");
+                        this.useMockCamera();
+                    }
+                }, 250);
             }
         } catch (err) {
             console.log("Webcam not available or permission denied, fallback to mock camera:", err);
@@ -99,6 +165,7 @@ class FaceKYCController {
     }
 
     useMockCamera() {
+        this.setCameraLoading(false);
         if (this.videoEl) this.videoEl.style.display = 'none';
         if (this.mockImgEl) {
             this.mockImgEl.style.display = 'block';
@@ -108,6 +175,7 @@ class FaceKYCController {
                 this.mockImgEl.src = 'assets/images/polaroids/1.jpeg';
             };
         }
+        if (this.toggleCamBtn) this.toggleCamBtn.textContent = '🎥 แตะเพื่อเปิดกล้องสด';
     }
 
     stopCamera() {

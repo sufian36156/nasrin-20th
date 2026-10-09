@@ -170,21 +170,37 @@
 
                 <div class="otp-container">
                     <div class="otp-group">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" autofocus>
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
                     </div>
                     <span class="otp-separator">-</span>
                     <div class="otp-group">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
                     </div>
                     <span class="otp-separator">-</span>
                     <div class="otp-group">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
-                        <input type="tel" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code">
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
+                        <input type="tel" class="otp-input" maxlength="1" inputmode="none" pattern="[0-9]*" placeholder="•" autocomplete="one-time-code" readonly>
                     </div>
+                </div>
+
+                <!-- 📱 แป้นพิมพ์ตัวเลขบนหน้าจอ (Virtual Number Pad) -->
+                <div class="virtual-numpad" id="otp-virtual-numpad">
+                    <button type="button" class="numpad-key" data-val="1">1</button>
+                    <button type="button" class="numpad-key" data-val="2">2</button>
+                    <button type="button" class="numpad-key" data-val="3">3</button>
+                    <button type="button" class="numpad-key" data-val="4">4</button>
+                    <button type="button" class="numpad-key" data-val="5">5</button>
+                    <button type="button" class="numpad-key" data-val="6">6</button>
+                    <button type="button" class="numpad-key" data-val="7">7</button>
+                    <button type="button" class="numpad-key" data-val="8">8</button>
+                    <button type="button" class="numpad-key" data-val="9">9</button>
+                    <button type="button" class="numpad-key numpad-fn" data-val="clear">ล้าง</button>
+                    <button type="button" class="numpad-key" data-val="0">0</button>
+                    <button type="button" class="numpad-key numpad-fn" data-val="backspace">⌫</button>
                 </div>
 
                 <div id="otp-hint" class="otp-hint-msg">กรอกรหัสวันเกิด 8 ช่องให้ครบนะ 😉</div>
@@ -308,6 +324,9 @@
                         <!-- Childhood Photo (morphs in after stamp) -->
                         <img id="kyc-childhood-img" class="kyc-childhood-img" src="assets/images/kyc/childhood.jpg" alt="Nasrin Childhood" onerror="this.onerror=null; this.src='assets/images/nasrin_childhood.jpg';">
 
+                        <!-- Camera Connecting Loader -->
+                        <div id="kyc-camera-loader" class="kyc-camera-loader">🌸 กำลังเปิดกล้องคนสวย... ✨</div>
+
                         <!-- Shutter flash overlay & Snapshot badge -->
                         <div id="kyc-shutter-flash" class="kyc-shutter-flash"></div>
                         <div id="kyc-snap-badge" class="kyc-snap-badge">📸 แชะ! น่าร้ากกก ✨</div>
@@ -323,12 +342,17 @@
                         ทำตามคำสั่งน่ารักๆ หรือแตะปุ่มด้านล่างเพื่อบันทึกท่า ✨
                     </div>
 
-                    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:4px;">
-                        <button id="kyc-action-btn" class="btn-secondary" style="font-size:0.95rem; padding:10px 22px;">
-                            📸 บันทึกท่านี้ ✨
-                        </button>
-                        <button id="kyc-proceed-btn" class="btn-romantic" style="display:none;">
-                            วาร์ปสู่มิติความรัก 🌌💖
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:4px;">
+                        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                            <button id="kyc-action-btn" class="btn-secondary" style="font-size:0.95rem; padding:10px 22px;">
+                                📸 บันทึกท่านี้ ✨
+                            </button>
+                            <button id="kyc-proceed-btn" class="btn-romantic" style="display:none;">
+                                วาร์ปสู่มิติความรัก 🌌💖
+                            </button>
+                        </div>
+                        <button id="kyc-toggle-cam-btn" type="button" style="font-size:0.83rem; color:#a3485d; background:rgba(255,255,255,0.7); border:1px solid #ffccd5; border-radius:20px; padding:4px 14px; cursor:pointer; transition:all 0.2s;">
+                            📷 แตะเพื่อสลับใช้รูปภาพ
                         </button>
                     </div>
                 </div>

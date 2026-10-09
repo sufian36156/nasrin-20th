@@ -33,8 +33,6 @@
 
     <!-- Multi-Theme Cinematic Scene Warp Overlay -->
     <div id="portal-warp-overlay" class="portal-warp-overlay">
-        <div class="warp-ambient-fx"></div>
-
         <!-- Center Dynamic Stage for Each Transition Theme -->
         <div id="warp-stage" class="warp-stage">
             <!-- 1. Chrono Theme Visual (OTP -> Milestone) -->
@@ -57,7 +55,6 @@
                     <div class="hud-corner bottom-left"></div>
                     <div class="hud-corner bottom-right"></div>
                     <div class="biometric-scan-line"></div>
-                    <div class="biometric-mesh-grid"></div>
                     <div class="biometric-target-circle">
                         <span class="biometric-target-icon">🌸</span>
                     </div>
@@ -88,7 +85,6 @@
                     <div class="crystal-facet facet-4"></div>
                     <div class="crystal-center-sparkle">✨</div>
                 </div>
-                <div class="crystal-light-flares"></div>
             </div>
 
             <!-- 6. Aurora Theme Visual (3D Heart -> Balloons) -->
@@ -118,7 +114,6 @@
                     <div class="stargate-ring-inner"></div>
                     <div class="stargate-star-core">🎡</div>
                 </div>
-                <div class="wonderland-gold-fanfare"></div>
             </div>
         </div>
 
@@ -421,7 +416,10 @@
             <div class="ambient-room-msg">🕯️ หลับตาแล้วอธิษฐานในใจนะคนเก่ง... ✨</div>
 
             <div class="glass-card cake-glass-card">
-                <span class="cake-badge-top">🇰🇷 VINTAGE BENTO CAKE EDITION 🎂</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:8px;">
+                    <button class="btn-secondary" style="font-size:0.8rem; padding:4px 10px;" onclick="window.app.enterWonderlandHub();">← กลับสู่ Wonderland 🎡</button>
+                    <span class="cake-badge-top" style="margin:0;">🇰🇷 VINTAGE BENTO CAKE 🎂</span>
+                </div>
                 <h2 style="font-size:1.45rem; color:var(--primary-dark); font-weight:700; margin-top:4px;">Happy 20th Birthday, Nasrin! 🎂</h2>
                 
                 <div id="mic-status" class="mic-status-badge">
@@ -631,7 +629,7 @@
 
                 <div style="margin-top:18px;">
                     <button id="cake-to-letter-btn" class="btn-romantic" style="display:none;" onclick="window.app.enterWonderlandHub();">
-                        เข้าสู่ Wonderland 🎡✨
+                        🎡 กลับสู่ Wonderland Hub ✨
                     </button>
                 </div>
             </div>
@@ -808,11 +806,11 @@
                     <h3 style="font-size:1.15rem; color:var(--primary-dark); margin-bottom:2px;">📸 Photobooth 4-Cuts Edition</h3>
                     <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">เฟรมรูปคู่ฉลองอายุ 20 ขวบ สไตล์ตู้ถ่ายรูปเกาหลี</p>
 
-                    <div class="four-cuts-frame">
-                        <div class="four-cuts-slot"><img src="assets/images/polaroids/1.jpeg" alt="Photo 1" onerror="this.onerror=null; this.src='assets/images/polaroids/1.svg';"></div>
-                        <div class="four-cuts-slot"><img src="assets/images/polaroids/2.jpeg" alt="Photo 2" onerror="this.onerror=null; this.src='assets/images/polaroids/2.svg';"></div>
-                        <div class="four-cuts-slot"><img src="assets/images/polaroids/3.jpeg" alt="Photo 3" onerror="this.onerror=null; this.src='assets/images/polaroids/3.svg';"></div>
-                        <div class="four-cuts-slot"><img src="assets/images/polaroids/4.jpeg" alt="Photo 4" onerror="this.onerror=null; this.src='assets/images/polaroids/4.svg';"></div>
+                    <div id="photobooth-4cuts-frame" class="four-cuts-frame">
+                        <div class="four-cuts-slot"><img src="assets/images/photobooth/1.jpg" alt="Photo 1" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='assets/images/polaroids/1.jpg';}else{this.onerror=null; this.src='assets/images/polaroids/placeholder.jpg';}"></div>
+                        <div class="four-cuts-slot"><img src="assets/images/photobooth/2.jpg" alt="Photo 2" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='assets/images/polaroids/2.jpg';}else{this.onerror=null; this.src='assets/images/polaroids/placeholder.jpg';}"></div>
+                        <div class="four-cuts-slot"><img src="assets/images/photobooth/3.jpg" alt="Photo 3" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='assets/images/polaroids/3.jpg';}else{this.onerror=null; this.src='assets/images/polaroids/placeholder.jpg';}"></div>
+                        <div class="four-cuts-slot"><img src="assets/images/photobooth/4.jpg" alt="Photo 4" onerror="if(!this.dataset.tried){this.dataset.tried=1; this.src='assets/images/polaroids/4.jpg';}else{this.onerror=null; this.src='assets/images/polaroids/placeholder.jpg';}"></div>
                         <div class="four-cuts-footer">
                             <div class="four-cuts-title">NASRIN MASA • 20th EDITION</div>
                             <div class="four-cuts-date">10.10.2026 • WITH LOVE</div>
@@ -822,64 +820,6 @@
                     <button class="btn-secondary" onclick="alert('💡 แคปหน้าจอ (Screenshot) เฟรม 4 ช่องนี้ นำไปลง Story IG ได้เลยนะคนเก่ง! 🌸');" style="margin-top:10px;">
                         📸 แคปรูปไปลง Story IG
                     </button>
-                </div>
-            </div>
-
-            <!-- TAB 2: 💌 ความในใจ (OUR STORY & LOVE) -->
-            <div id="hub-content-story" class="hub-tab-content">
-                <!-- 20 Reasons -->
-                <div class="glass-card" style="margin-bottom:18px;">
-                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">💌 20 เหตุผลที่รักเธอ</h2>
-                    <p style="font-size:0.88rem; color:var(--text-muted); margin-top:4px;">
-                        ในวัย 20 ขวบ มี 20 เรื่องราวในตัวเธอที่ทำให้เค้าตกหลุมรักซ้ำๆ
-                    </p>
-
-                    <div id="love-reason-card" class="reason-card-wrapper"></div>
-
-                    <div class="reason-nav-controls">
-                        <button id="reason-prev-btn" class="btn-secondary">◀ ย้อนกลับ</button>
-                        <span id="reason-counter" style="font-weight:700; color:var(--primary);">1 / 20</span>
-                        <button id="reason-next-btn" class="btn-romantic">ข้อถัดไป ▶</button>
-                    </div>
-                </div>
-
-                <!-- Re-read Secret Letter -->
-                <div class="glass-card" style="margin-bottom:18px;">
-                    <span style="font-size:2rem;">✉️🌸</span>
-                    <h3 style="font-size:1.2rem; color:var(--primary-dark); margin-top:4px;">จดหมายวันเกิดจากเค้า</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">
-                        จดหมายฉบับพิเศษที่เค้าเขียนให้เธอจากใจ
-                    </p>
-                    <div style="text-align:left; margin-top:14px; background:#fffbfb; border:1.5px solid #ffe1e8; border-radius:20px; padding:18px;">
-                        <h4 style="color:#d83a56; font-size:1.05rem; margin-bottom:8px;">แด่... ณัสริญ มะสะ (Nasrin Masa) 🌸</h4>
-                        <p style="font-size:0.9rem; line-height:1.7; color:#4a2f33;">
-                            สุขสันต์วันเกิดครบรอบ 20 ปีนะ ณัสริญ ✨ ขอบคุณสำหรับทุกความทรงจำ ทุกรอยยิ้ม และทุกการเดินทางที่เราได้จับมือกัน ขอให้ในวัย 20 นี้ เป็นปีที่ใจดีกับเธอที่สุด ได้กินของอร่อย นอนหลับฝันดี และจำไว้เสมอนะว่าจะมีเค้าคอยอยู่ข้างๆ เธอเสมอ 💖
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Time Capsule 2036 -->
-                <div class="glass-card">
-                    <span style="font-size:2rem;">⏳🔒</span>
-                    <h3 style="font-size:1.2rem; color:var(--primary-dark); margin-top:4px;">ไทม์แคปซูลถึงวัย 30 (ปี 2036)</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:2px; margin-bottom:12px;">
-                        ข้อความลับจากวัย 20 ส่งถึงตัวเองในอีก 10 ปีข้างหน้า จะถูกเก็บล็อกไว้ที่นี่
-                    </p>
-
-                    <div id="capsule-form-box" class="capsule-form">
-                        <textarea id="capsule-input-text" class="capsule-textarea" rows="4" placeholder="เขียนความฝัน คำสัญญา หรือสิ่งที่อยากบอกตัวเองในวัย 30 ปี..."></textarea>
-                        <div style="margin-top:10px;">
-                            <button id="capsule-seal-btn" class="btn-romantic">🔒 ปิดผนึกไทม์แคปซูล</button>
-                        </div>
-                    </div>
-
-                    <div id="capsule-locked-card" class="capsule-locked" style="display:none;">
-                        <div class="capsule-lock-badge">🔒 SEALED UNTIL 10 OCT 2036</div>
-                        <p id="capsule-saved-msg" class="capsule-msg-preview"></p>
-                        <p style="font-size:0.82rem; color:#7d535b; margin-top:8px;">
-                            ไทม์แคปซูลถูกปิดผนึกไว้อย่างปลอดภัยแล้ว อีก 10 ปีข้างหน้าเราจะมาเปิดอ่านด้วยกันนะ 🤍✨
-                        </p>
-                    </div>
                 </div>
             </div>
 
@@ -941,29 +881,27 @@
             <!-- TAB 5: 🎮 ARCADE MINI GAMES (6 GAMES) -->
             <div id="hub-content-arcade" class="hub-tab-content">
                 <div class="glass-card">
-                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎮 ห้องเกมคาเฟ่ 6 ด่าน</h2>
+                    <h2 style="font-size:1.35rem; color:var(--primary-dark); font-weight:700;">🎮 ห้องเกมคาเฟ่ 5 ด่านแสนหวาน</h2>
                     <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">มินิเกมเล่นง่าย ได้ความสุขทุกเกม 🍬</p>
 
-                    <!-- 6 Subtabs -->
+                    <!-- 5 Subtabs -->
                     <div style="display:flex; justify-content:center; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
-                        <button class="btn-secondary arcade-subtab-btn active" data-tab="wheel">🎡 วงล้อรัก</button>
+                        <button class="btn-secondary arcade-subtab-btn active" data-tab="memory">🃏 จับคู่รูปภาพ</button>
+                        <button class="btn-secondary arcade-subtab-btn" data-tab="boba">🧋 รับชานม</button>
                         <button class="btn-secondary arcade-subtab-btn" data-tab="balloons">🎈 จิ้มลูกโป่ง</button>
                         <button class="btn-secondary arcade-subtab-btn" data-tab="meter">💖 ปั๊มหัวใจ</button>
-                        <button class="btn-secondary arcade-subtab-btn" data-tab="memory">🃏 จับคู่</button>
-                        <button class="btn-secondary arcade-subtab-btn" data-tab="boba">🧋 รับชานม</button>
                         <button class="btn-secondary arcade-subtab-btn" data-tab="quiz">❓ ควิซ</button>
                     </div>
 
-                    <!-- 1. Wheel -->
-                    <div id="arcade-view-wheel" class="arcade-game-view">
-                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🎡 วงล้อเสี่ยงทายความรัก</h3>
-                        <p style="font-size:0.82rem; color:var(--text-muted);">กดปุ่มเพื่อหมุนลุ้นรางวัลหวานๆ</p>
-                        <div style="position:relative; width:260px; height:260px; margin:14px auto;">
-                            <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); font-size:1.8rem; z-index:5;">🔻</div>
-                            <canvas id="wheel-game-canvas" width="260" height="260" style="width:100%; height:100%; border-radius:50%; box-shadow:0 8px 24px rgba(255,100,130,0.3); transition:transform 4s cubic-bezier(0.17,0.67,0.12,0.99);"></canvas>
+                    <!-- 1. Memory Match (Primary Default) -->
+                    <div id="arcade-view-memory" class="arcade-game-view">
+                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🃏 การ์ดจับคู่ความทรงจำ</h3>
+                        <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:10px;">เปิดการ์ดหารูปคู่ที่เหมือนกัน สุ่มรูปจากอัลบั้มลูกโป่งทุกรอบ!</p>
+                        <div id="arcade-memory-grid" class="memory-grid"></div>
+                        <div style="margin-top:12px;">
+                            <button class="btn-secondary" style="font-size:0.85rem; padding:6px 14px;" onclick="if(window.arcadeController) window.arcadeController.initMemoryGame();">🔄 สุ่มรูปใหม่ & เริ่มรอบใหม่</button>
                         </div>
-                        <button id="wheel-game-spin-btn" class="btn-romantic" style="margin-top:6px;">หมุนวงล้อเลย 🎯</button>
-                        <div id="wheel-game-result" class="quote-toast" style="margin-top:12px;"></div>
+                        <div id="arcade-memory-quote" class="quote-toast"></div>
                     </div>
 
                     <!-- 2. Pop Balloons -->
@@ -986,13 +924,6 @@
                             <div id="love-meter-percent" style="font-size:1.2rem; font-weight:800; color:var(--primary);">0%</div>
                         </div>
                         <div id="love-meter-win" class="quote-toast"></div>
-                    </div>
-
-                    <!-- 4. Memory -->
-                    <div id="arcade-view-memory" class="arcade-game-view" style="display:none;">
-                        <h3 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:4px;">🃏 การ์ดจับคู่ความทรงจำ</h3>
-                        <div id="arcade-memory-grid" class="memory-grid"></div>
-                        <div id="arcade-memory-quote" class="quote-toast"></div>
                     </div>
 
                     <!-- 5. Boba Catch -->
@@ -1092,10 +1023,6 @@
             <button class="nav-tab-btn active" data-tab="home">
                 <span class="tab-icon">🏠</span>
                 <span>หน้าแรก</span>
-            </button>
-            <button class="nav-tab-btn" data-tab="story">
-                <span class="tab-icon">💌</span>
-                <span>ความในใจ</span>
             </button>
             <button class="nav-tab-btn" data-tab="coupons">
                 <span class="tab-icon">🎫</span>

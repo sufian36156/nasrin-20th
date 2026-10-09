@@ -1,9 +1,12 @@
 /**
  * ====================================================================
- * 🎵 ROMANTIC BGM CONTROLLER (ระบบควบคุมเสียงดนตรีประกอบทุกหน้า)
+ * 🎵 ROMANTIC BGM CONTROLLER (ระบบเล่นเพลง MP3 จริง 100% ประจำแต่ละหน้า)
  * ====================================================================
- * รองรับไฟล์เพลง MP3 จริงแยกแต่ละฉาก และมีระบบดนตรีสังเคราะห์สำรองอัตโนมัติ
- * พร้อมระบบจำเพลงตามหน้าที่กำลังเปิดอยู่ หากกดปิดแล้วเปิดใหม่จะเล่นเพลงเดิมของหน้านั้นเสมอ
+ * - เล่นไฟล์เพลง MP3 จริงตามแต่ละฉาก ไม่ใช้ดนตรีสังเคราะห์
+ * - ใช้ Persistent HTMLAudioElement ตัวเดิมเพื่อข้ามข้อจำกัด Autoplay ของ iPad / iOS Safari
+ * - ปลดล็อกเสียงทันทีที่ผู้ใช้แตะหน้าจอครั้งแรก (หน้า OTP)
+ * - มีระบบจำเพลงและเล่นต่อจากท่อนเดิมเมื่อกดปิด/เปิดใหม่
+ * - รองรับการหรี่เสียงเพลงอัตโนมัติ (Duck volume) ขณะสแกนหน้า และพิมพ์จดหมาย
  */
 
 class MusicController {
@@ -11,13 +14,11 @@ class MusicController {
         this.isPlaying = false;
         this.isUserMuted = false;
         this.currentMode = null;
-        this.currentAudio = null;
+        this.audio = null; // Persistent audio instance
         this.volumeMultiplier = 1.0;
         this.baseVolume = 0.5;
-        this.timer = null;
-        this.step = 0;
 
-        // คลังเพลงแยกตามแต่ละหน้า
+        // คลังเพลง MP3 จริงแยกแต่ละหน้า
         this.trackMap = {
             main: {
                 file: 'assets/music/bgm.mp3',
@@ -54,6 +55,13 @@ class MusicController {
     }
 
     init() {
+        // สร้าง Persistent Audio Element ตั้งแต่ต้น
+        if (!this.audio) {
+            this.audio = new Audio();
+            this.audio.loop = true;
+            this.audio.preload = 'auto';
+        }
+
         const musicBar = document.getElementById('mini-music-bar');
         if (musicBar) {
             musicBar.addEventListener('click', () => {
@@ -61,17 +69,21 @@ class MusicController {
             });
         }
 
-        // ปลดล็อกระบบเสียงและเริ่มเล่นเพลงหน้าเริ่มต้น (OTP) ทันทีที่ผู้ใช้แตะหน้าจอครั้งแรก (Autoplay Gesture Handler)
+        // ปลดล็อกระบบเสียงทันทีที่ผู้ใช้แตะหน้าจอครั้งแรก (หน้า OTP)
         const startOnFirstGesture = () => {
             if (window.soundManager) window.soundManager.init();
+
             if (!this.isPlaying && !this.isUserMuted) {
                 const activeScene = this.getCurrentActiveSceneId();
-                this.playTrack(this.getSceneMode(activeScene));
+                const mode = this.getSceneMode(activeScene);
+                this.playTrack(mode);
             }
+
             document.removeEventListener('click', startOnFirstGesture);
             document.removeEventListener('touchstart', startOnFirstGesture);
             document.removeEventListener('keydown', startOnFirstGesture);
         };
+
         document.addEventListener('click', startOnFirstGesture, { passive: true });
         document.addEventListener('touchstart', startOnFirstGesture, { passive: true });
         document.addEventListener('keydown', startOnFirstGesture, { passive: true });
@@ -122,28 +134,25 @@ class MusicController {
     onSceneTransition(sceneId) {
         const targetMode = this.getSceneMode(sceneId);
 
-        // ให้แถบเพลงแสดงเสมอเพื่อให้ผู้ใช้เห็นและควบคุมได้
+        // แสดงแถบเพลงเสมอเพื่อให้ผู้ใช้เห็นและควบคุมได้
         const bar = document.getElementById('mini-music-bar');
         if (bar) bar.style.display = 'flex';
 
         // หากผู้ใช้เคยกดปิดเพลงไว้ ไม่เล่นเอง แต่จำไว้ว่าหน้านี้คือเพลงอะไร
         if (this.isUserMuted) {
             this.currentMode = targetMode;
-            if (this.currentAudio) {
-                try {
-                    this.currentAudio.pause();
-                } catch(e) {}
-                this.currentAudio = null;
+            if (this.audio) {
+                try { this.audio.pause(); } catch(e) {}
             }
             return;
         }
 
         // ถ้าเล่นเพลงของโหมดนี้อยู่แล้ว ไม่ต้องรีสตาร์ท ปล่อยให้เล่นต่อเนื่อง
-        if (this.currentMode === targetMode && this.isPlaying && this.currentAudio && !this.currentAudio.paused) {
+        if (this.currentMode === targetMode && this.isPlaying && this.audio && !this.audio.paused) {
             return;
         }
 
-        // เปลี่ยนเพลงเป็นเพลงประจำฉากใหม่
+        // เปลี่ยนเพลงเป็นเพลง MP3 ประจำฉากใหม่
         this.playTrack(targetMode);
     }
 
@@ -156,16 +165,13 @@ class MusicController {
         }
     }
 
-    // หยุดเพลงชั่วคราว (Pause) โดยไม่ทำลายตำแหน่งและจำเพลงเดิมไว้
+    // หยุดเพลงชั่วคราว (Pause) โดยจำเพลงเดิมและท่อนเดิมไว้
     pause() {
         this.isPlaying = false;
         this.isUserMuted = true;
-        this.stopSynth();
 
-        if (this.currentAudio) {
-            try {
-                this.currentAudio.pause();
-            } catch (e) {}
+        if (this.audio) {
+            try { this.audio.pause(); } catch (e) {}
         }
 
         const bar = document.getElementById('mini-music-bar');
@@ -174,17 +180,17 @@ class MusicController {
         if (text) text.textContent = "เปิดเพลงคลอ 🎵";
     }
 
-    // เปิดเพลงต่อ (Resume) เล่นต่อจากเพลงของหน้าที่กำลังเปิดอยู่เสมอ!
+    // เปิดเพลงต่อ (Resume) เล่นต่อจากเพลงของหน้าที่กำลังเปิดอยู่เสมอ
     resume() {
         this.isUserMuted = false;
         const activeSceneId = this.getCurrentActiveSceneId();
         const expectedMode = this.getSceneMode(activeSceneId);
 
         // ถ้ามีเพลงเดิมที่ตรงกับหน้านี้ค้างอยู่ ให้เล่นต่อจากตำแหน่งเดิมทันที
-        if (this.currentAudio && this.currentMode === expectedMode) {
+        if (this.audio && this.currentMode === expectedMode) {
             this.isPlaying = true;
             this.updateBarUI(expectedMode);
-            this.currentAudio.play().catch(() => {
+            this.audio.play().catch(() => {
                 this.playTrack(expectedMode);
             });
         } else {
@@ -193,8 +199,8 @@ class MusicController {
         }
     }
 
-    // เริ่มเล่นเพลงในโหมดที่ระบุ
-    playTrack(mode, overrideVolume = null, customFallback = null) {
+    // เริ่มเล่นเพลง MP3 จริงในโหมดที่ระบุ (ไม่ใช้ดนตรีสังเคราะห์ใดๆ)
+    playTrack(mode, overrideVolume = null) {
         if (window.soundManager) window.soundManager.init();
 
         const trackInfo = this.trackMap[mode] || this.trackMap['main'];
@@ -202,59 +208,45 @@ class MusicController {
         this.baseVolume = volume;
 
         // หากกำลังเล่นเพลงเดียวกันอยู่แล้ว
-        if (this.currentMode === mode && this.isPlaying && this.currentAudio && !this.currentAudio.paused) {
+        if (this.currentMode === mode && this.isPlaying && this.audio && !this.audio.paused) {
             return;
         }
 
-        this.stopSynth();
-
-        if (this.currentAudio) {
-            try {
-                this.currentAudio.pause();
-                this.currentAudio.currentTime = 0;
-            } catch(e) {}
-            this.currentAudio = null;
+        if (!this.audio) {
+            this.audio = new Audio();
+            this.audio.loop = true;
         }
 
         this.isPlaying = true;
         this.currentMode = mode;
         this.updateBarUI(mode);
 
-        const tryAudio = (src, onFail) => {
-            const audio = new Audio(src);
-            audio.loop = true;
-            audio.volume = volume * (this.volumeMultiplier || 1.0);
-            this.currentAudio = audio;
+        const targetSrc = trackInfo.file;
+        const calculatedVolume = Math.min(1.0, Math.max(0.01, volume * (this.volumeMultiplier || 1.0)));
 
-            audio.onerror = () => {
-                console.warn(`Could not load audio file ${src}`);
-                if (onFail) onFail();
+        // ตั้งค่าเสียงและเล่นไฟล์ MP3 จริง
+        try {
+            this.audio.volume = calculatedVolume;
+            this.audio.src = targetSrc;
+            this.audio.currentTime = 0;
+
+            this.audio.onerror = () => {
+                // หากไฟล์หลักโหลดไม่ติด ลองใช้ไฟล์สำรอง (ถ้ามี)
+                if (trackInfo.fallbackFile && this.audio.src !== trackInfo.fallbackFile) {
+                    console.log(`Trying fallback track: ${trackInfo.fallbackFile}`);
+                    this.audio.src = trackInfo.fallbackFile;
+                    this.audio.play().catch(e => console.warn("Fallback play error:", e));
+                }
             };
 
-            const p = audio.play();
-            if (p !== undefined) {
-                p.catch(err => {
-                    console.warn(`Playback prevented for ${src}:`, err);
-                    if (onFail) onFail();
+            const playPromise = this.audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(err => {
+                    console.warn(`Autoplay prevented for ${targetSrc}:`, err);
                 });
             }
-        };
-
-        const fallback = () => {
-            if (customFallback) customFallback();
-            else this.triggerSynthForMode(mode);
-        };
-
-        if (trackInfo && trackInfo.file) {
-            tryAudio(trackInfo.file, () => {
-                if (trackInfo.fallbackFile) {
-                    tryAudio(trackInfo.fallbackFile, fallback);
-                } else {
-                    fallback();
-                }
-            });
-        } else {
-            fallback();
+        } catch (err) {
+            console.error("Audio playback error:", err);
         }
     }
 
@@ -293,10 +285,6 @@ class MusicController {
         this.playTrack('letter', volume);
     }
 
-    startCake(volume = 0.50) {
-        this.playTrack('cake', volume);
-    }
-
     startWonderland(volume = 0.55) {
         this.playTrack('wonderland', volume);
     }
@@ -313,164 +301,23 @@ class MusicController {
         this.pause();
     }
 
-    // เบาเสียงดนตรีลงขณะพิมพ์จดหมาย
+    // เบาเสียงดนตรีลงเหลือแผ่วๆ ขณะสแกนหน้า หรือพิมพ์จดหมาย
     duckVolume(duckLevel = 0.18) {
         this.volumeMultiplier = duckLevel;
-        if (this.currentAudio) {
+        if (this.audio) {
             try {
-                this.currentAudio.volume = Math.max(0.03, this.baseVolume * duckLevel);
+                this.audio.volume = Math.max(0.03, this.baseVolume * duckLevel);
             } catch(e) {}
         }
     }
 
-    // คืนระดับเสียงดนตรีเมื่อพิมพ์จดหมายเสร็จ
+    // คืนระดับเสียงดนตรีกลับมาเป็นปกติ
     restoreVolume() {
         this.volumeMultiplier = 1.0;
-        if (this.currentAudio) {
+        if (this.audio) {
             try {
-                this.currentAudio.volume = this.baseVolume;
+                this.audio.volume = this.baseVolume;
             } catch(e) {}
-        }
-    }
-
-    // ==========================================
-    // 🎹 SYNTHESIZER FALLBACK ENGINES
-    // ==========================================
-    triggerSynthForMode(mode) {
-        switch (mode) {
-            case 'fireworks':
-                this.startFireworksSynth();
-                break;
-            case 'heart3d':
-                this.startHeart3DSynth();
-                break;
-            case 'letter':
-                this.startLetterSynth();
-                break;
-            case 'wonderland':
-                this.startWonderlandSynth();
-                break;
-            case 'balloons':
-            case 'cake':
-            case 'main':
-            default:
-                this.startCosmicSynthFallback();
-                break;
-        }
-    }
-
-    startCosmicSynthFallback() {
-        this.stopSynth();
-        const chords = [
-            [174.61, 261.63, 329.63, 440.00], // Fmaj7
-            [164.81, 246.94, 329.63, 392.00], // Em7
-            [146.83, 220.00, 261.63, 349.23], // Dm7
-            [130.81, 196.00, 261.63, 329.63]  // Cmaj7
-        ];
-        this.timer = setInterval(() => {
-            if (!this.isPlaying) return;
-            const chord = chords[this.step % chords.length];
-            this.playChord(chord, 'triangle', 2.4, 0.035);
-            this.step++;
-        }, 2200);
-    }
-
-    startFireworksSynth() {
-        this.stopSynth();
-        const chords = [
-            [233.08, 293.66, 349.23, 440.00], // Bbmaj7
-            [196.00, 233.08, 293.66, 349.23], // Gm7
-            [155.56, 196.00, 233.08, 293.66], // Ebmaj7
-            [174.61, 220.00, 261.63, 349.23]  // F
-        ];
-        this.timer = setInterval(() => {
-            if (!this.isPlaying) return;
-            const chord = chords[this.step % chords.length];
-            this.playChord(chord, 'sine', 2.0, 0.045);
-            this.step++;
-        }, 1800);
-    }
-
-    startHeart3DSynth() {
-        this.stopSynth();
-        const chords = [
-            [261.63, 329.63, 392.00, 523.25], // C
-            [164.81, 246.94, 329.63, 392.00], // Em
-            [174.61, 220.00, 261.63, 349.23], // F
-            [196.00, 246.94, 293.66, 392.00]  // G
-        ];
-        this.timer = setInterval(() => {
-            if (!this.isPlaying) return;
-            const chord = chords[this.step % chords.length];
-            this.playChord(chord, 'triangle', 1.8, 0.038);
-            this.step++;
-        }, 1600);
-    }
-
-    startLetterSynth() {
-        this.stopSynth();
-        const chords = [
-            [146.83, 220.00, 277.18, 369.99], // Dmaj7
-            [123.47, 185.00, 220.00, 293.66], // Bm7
-            [196.00, 246.94, 293.66, 369.99], // Gmaj7
-            [220.00, 277.18, 329.63, 440.00]  // A
-        ];
-        this.timer = setInterval(() => {
-            if (!this.isPlaying) return;
-            const chord = chords[this.step % chords.length];
-            this.playChord(chord, 'sine', 2.2, 0.04);
-            this.step++;
-        }, 2000);
-    }
-
-    startWonderlandSynth() {
-        this.stopSynth();
-        const chords = [
-            [261.63, 329.63, 392.00, 493.88], // Cmaj7
-            [220.00, 261.63, 329.63, 392.00], // Am7
-            [293.66, 349.23, 440.00, 523.25], // Dm7
-            [196.00, 246.94, 293.66, 349.23]  // G7
-        ];
-        this.timer = setInterval(() => {
-            if (!this.isPlaying) return;
-            const chord = chords[this.step % chords.length];
-            this.playChord(chord, 'sine', 1.4, 0.05);
-            this.step++;
-        }, 1500);
-    }
-
-    playChord(frequencies, type = 'sine', duration = 1.6, baseGain = 0.04) {
-        if (window.soundManager && window.soundManager.isMuted) return;
-        const ctx = window.soundManager && window.soundManager.ctx;
-        if (!ctx) return;
-
-        const mult = (typeof this.volumeMultiplier === 'number') ? this.volumeMultiplier : 1.0;
-        const actualGain = baseGain * mult;
-
-        frequencies.forEach((freq, idx) => {
-            try {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, ctx.currentTime + (idx * 0.05));
-
-                gain.gain.setValueAtTime(actualGain, ctx.currentTime + (idx * 0.05));
-                gain.gain.exponentialRampToValueAtTime(0.0005, ctx.currentTime + duration);
-
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                osc.start(ctx.currentTime + (idx * 0.05));
-                osc.stop(ctx.currentTime + duration);
-            } catch (e) {}
-        });
-    }
-
-    stopSynth() {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
         }
     }
 }

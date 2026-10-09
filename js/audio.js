@@ -220,6 +220,66 @@ class SoundManager {
         } catch (e) {}
     }
 
+    // เสียงชัตเตอร์กล้องถ่ายรูป (Camera Shutter Click & Snap)
+    playCameraShutter() {
+        if (this.isMuted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        try {
+            const now = this.ctx.currentTime;
+
+            // 1. Mechanical mirror click (คลิกแรก)
+            const osc1 = this.ctx.createOscillator();
+            const gain1 = this.ctx.createGain();
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(800, now);
+            osc1.frequency.exponentialRampToValueAtTime(160, now + 0.04);
+            gain1.gain.setValueAtTime(0.35, now);
+            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+            osc1.connect(gain1);
+            gain1.connect(this.ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.04);
+
+            // 2. White noise shutter curtain flutter (เสียงม่านชัตเตอร์)
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.09);
+            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * 0.35;
+            }
+            const noise = this.ctx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1300, now + 0.025);
+            filter.Q.setValueAtTime(1.5, now + 0.025);
+
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.38, now + 0.025);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.11);
+
+            noise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(this.ctx.destination);
+            noise.start(now + 0.025);
+
+            // 3. Crisp mechanical snap (สแน็ปปิดท้าย ชัดเจน)
+            const osc2 = this.ctx.createOscillator();
+            const gain2 = this.ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(1100, now + 0.08);
+            osc2.frequency.exponentialRampToValueAtTime(220, now + 0.13);
+            gain2.gain.setValueAtTime(0.28, now + 0.08);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.13);
+            osc2.connect(gain2);
+            gain2.connect(this.ctx.destination);
+            osc2.start(now + 0.08);
+            osc2.stop(now + 0.13);
+        } catch (e) {}
+    }
+
     // หมุนวงล้อ ติ๊กๆ (Wheel Tick)
     playTick() {
         this.playPop(850);

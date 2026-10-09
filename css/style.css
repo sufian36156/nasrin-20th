@@ -1117,16 +1117,30 @@ html, body {
 .memory-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 10px;
     width: 100%;
-    max-width: 360px;
+    max-width: 440px;
     margin: 16px auto;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+@media (min-width: 600px) {
+    .memory-grid {
+        max-width: 520px;
+        gap: 14px;
+    }
 }
 
 .memory-card {
     aspect-ratio: 1;
     perspective: 1000px;
+    -webkit-perspective: 1000px;
     cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 16px;
 }
 
 .memory-card-inner {
@@ -1136,39 +1150,73 @@ html, body {
     text-align: center;
     transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
     transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
     border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(255, 150, 170, 0.2);
+    box-shadow: 0 4px 14px rgba(255, 150, 170, 0.25);
+    will-change: transform;
 }
 
 .memory-card.flipped .memory-card-inner,
 .memory-card.matched .memory-card-inner {
     transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+}
+
+.memory-card.matched .memory-card-inner {
+    box-shadow: 0 0 16px rgba(255, 75, 140, 0.55), 0 0 6px rgba(255, 255, 255, 0.8);
+    border: 2px solid #ff758f;
 }
 
 .memory-front, .memory-back {
     position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .memory-front {
     background: linear-gradient(135deg, #ff9a9e, #fecfef);
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     border: 2px solid white;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .memory-back {
-    background: white;
-    transform: rotateY(180deg);
+    background: #ffffff;
+    transform: rotateY(180deg) translateZ(1px);
+    -webkit-transform: rotateY(180deg) translateZ(1px);
     border: 2px solid #ffd1dc;
-    font-size: 1.8rem;
+    will-change: transform;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.memory-back img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 14px;
+    display: block;
+    pointer-events: none;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    image-rendering: high-quality;
+    transform: translateZ(1px);
+    -webkit-transform: translateZ(1px);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 /* 2. Pop Balloon Area */
